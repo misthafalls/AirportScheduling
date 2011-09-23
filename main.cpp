@@ -6,38 +6,24 @@
  */
 #include "Graph/Node.h"
 #include "Graph/Edge.h"
+
+#include "Pathfinder.h"
 #include <iostream>
 
 void createEdge ( Node* n1, Node* n2, int weight ) {
-//	std::cout << n1->toString() << " " << n2->toString() << std::endl;
-
-//	Edge* ed1 = new Edge(weight, n1);
-//	std::cout << ed1->toString() << std::endl;
-	Edge* ed2 = new Edge(weight, n2);
-//	std::cout << ed2->toString() << std::endl;
-	n1->addEdge(ed2);
-//	std::cout << "First edge added" << std::endl;
-//	n2->addEdge(ed1);
-//	std::cout << "Second edge added" << std::endl;
-
-//	std::cout << n1->toString() << " " << n2->toString() << std::endl;
+	if ( n2->x != 3 || ( n2->y == 4 ) ) {
+		Edge* ed2 = new Edge(weight, n2);
+		n1->addEdge(ed2);
+	}
 }
 
-void createEdges( std::vector<Node*>* nodes ) {
-
-}
-
-int main( int argc, const char* argv[] ) {
+std::vector<Node*>* createGraph( int width, int length) {
 	std::vector<Node*>* nodes = new std::vector<Node*>();
-
-	//Values for the size of the graph (square)
-	int x = 5;
-	int y = 7;
 
 	//Below here the nodes are being generated
 	Node* node = 0;
-	for ( int i = 0; i < x; i++ ) {
-		for ( int j = 0; j < y; j++ ) {
+	for ( int i = 0; i < width; i++ ) {
+		for ( int j = 0; j < length; j++ ) {
 			node = new Node(i, j);
 			nodes->push_back(node);
 		}
@@ -48,22 +34,56 @@ int main( int argc, const char* argv[] ) {
 	for ( int i = 0; i < max; i++ ) {
 		Node* node = nodes->at(i);
 
-		if ( ( i + 5 ) < max ) {
-			createEdge( node, nodes->at(i+5), 10);
-		}
-		if( ( i + 1 ) < max ) {
-			createEdge( node, nodes->at(i+1), 10);
-		}
+		int bottom	= i + 1;
+		int top		= i - 1;
 
-		if( ( i - 5 ) >= 0 ) {
-			createEdge( node, nodes->at(i-5), 10);
-		}
-		if( ( i - 1 ) >= 0 ) {
-			createEdge( node, nodes->at(i-1), 10);
-		}
+		int right	= i + length;
+		int left	= i - length;
+
+		//Left
+		if ( left >= 0 ) { createEdge( node, nodes->at(left), 10 ); }
+		//Right
+		if ( right < max ) { createEdge( node, nodes->at(right), 10 ); }
+
+		//Bottom
+		if ( bottom < max && (bottom % length) != 0 ) { createEdge( node, nodes->at(bottom), 10); }
+		//Top
+		if ( top >= 0 && (i % length) != 0 ) { createEdge( node, nodes->at(top), 10); }
+
+
+
+
+//		//Right-bottom
+//		if ( (i + length + 1) < max && (i + 1) % length != 0) { createEdge( node, nodes->at(i+length+1), 14); }
+//		//Right-top
+//		if ( (i + length - 1) < max && i % length != 0 ) { createEdge( node, nodes->at(i+length-1), 14); }
+//
+//
+//		//Left-top
+//		if ( (i - length - 1) >= 0 && (i -length - 1) % length != 0 ) { createEdge( node, nodes->at(i-length-1), 14); }
+//		//Left-bottom
+//		if ( (i - length + 1) >= 0 && (i - length + 1) % length != 0 ) { createEdge( node, nodes->at(i-length+1), 14); }
+
 	}
 
-	std::cout << nodes->at(7)->toString() << std::endl;
+	return nodes;
+}
+
+int main( int argc, const char* argv[] ) {
+	std::vector<Node*>* nodes = createGraph(7, 5);
+	Node* start = nodes->at(7);
+
+	std::cout << start->toString() << std::endl;
+
+	Node* end = nodes->at(27);
+
+	Pathfinder* find = new Pathfinder(nodes);
+	std::stack<Node*>* path = find->getPath(start, end);
+
+	while ( !path->empty() ) {
+		std::cout << path->top()->toString(false) << std::endl;
+		path->pop();
+	}
 
 	return 0;
 }

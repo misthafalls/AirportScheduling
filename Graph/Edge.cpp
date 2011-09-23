@@ -23,3 +23,11 @@ std::string Edge::toString() {
 	weight << this->weight;
 	return "Edge to " + this->node->toString(false) + " has weight " + weight.str();
 }
+
+int Edge::getWeight() {
+	return this->weight;
+}
+
+Node* Edge::getNode() {
+	return this->node;
+}

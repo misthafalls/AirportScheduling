@@ -24,10 +24,11 @@ public:
 	//toString to print information about this node and its edges
 	std::string toString( bool stop = true);
 
-private:
 	int x;
 	int y;
+	Node* parent; //TODO: Temporary for pathfinding, this needs brushing up later!
 
+private:
 	std::vector<Edge*>* edges; //The connections to other nodes
 };
 

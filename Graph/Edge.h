@@ -20,6 +20,9 @@ public:
 	//toString to print information about this edge
 	std::string toString();
 
+	int getWeight();
+	Node* getNode();
+
 private:
 	int weight;
 	Node* node;
