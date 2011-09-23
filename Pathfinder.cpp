@@ -82,6 +82,10 @@ std::stack<Node*>* Pathfinder::getPath ( Node* start, Node* end ) {
 		}
 	}
 
+	std::cout << "\nOpen list: " << std::endl;
+	for ( std::map<Node*, int>::iterator it = open->begin(); it != open->end(); ++it ) {
+		std::cout << "Open: " << it->first->toString(false) << std::endl;
+	}
 	std::stack<Node*>* path = new std::stack<Node*>();
 	if ( node == end) {
 		path->push( node );

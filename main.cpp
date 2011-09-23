@@ -80,6 +80,7 @@ int main( int argc, const char* argv[] ) {
 	Pathfinder* find = new Pathfinder(nodes);
 	std::stack<Node*>* path = find->getPath(start, end);
 
+	std::cout << "\nPath: " << std::endl;
 	while ( !path->empty() ) {
 		std::cout << path->top()->toString(false) << std::endl;
 		path->pop();
