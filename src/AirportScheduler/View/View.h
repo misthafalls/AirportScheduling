@@ -18,6 +18,7 @@ public:
 
 	bool setup();
 
+	void print();
 
 protected:
 	Model * model;

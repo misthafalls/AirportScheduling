@@ -10,6 +10,8 @@
 
 #include "Scheduler.h"
 
+#include <vector>
+
 class Model
 {
 public:
@@ -20,6 +22,8 @@ public:
 
 private:
 	Scheduler * schedulers;
+
+	std::vector<Plane> planes;
 
 };
 

@@ -13,6 +13,7 @@
 class Algorithm
 {
 public:
+
 };
 
 #endif /* ALGORITHM_H_ */

@@ -15,6 +15,8 @@ View::~View() {
 }
 
 bool View::setup() {
-
 	return true;
+}
+
+void View::print() {
 }
