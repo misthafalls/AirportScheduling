@@ -8,6 +8,7 @@
 #include "AirportScheduler.h"
 
 #include "Model/Logger.h"
+#include "FileIO/CSVReader.h"
 
 AirportScheduler::AirportScheduler() {
 	model = new Model();
@@ -23,10 +24,12 @@ AirportScheduler::~AirportScheduler() {
 
 bool AirportScheduler::setup() {
 	Logger::getInstance()->log("hi");
-
-
-
 	return true;
+}
+
+bool AirportScheduler::readFile( const char* file ) {
+    CSVReader reader( model );
+    return reader.read_file( file );
 }
 
 void AirportScheduler::cleanup() {

@@ -12,7 +12,7 @@
 // -----------------------------------------------------------------------------
 
 bool
-CSVReader::read_file( const char* file ) const {
+CSVReader::read_file( const char* file ){
     char buffer[ BUFFERSIZE ];
     std::ifstream infile;
 
@@ -34,7 +34,7 @@ CSVReader::read_file( const char* file ) const {
 // -----------------------------------------------------------------------------
 
 bool
-CSVReader::process_line( const std::string& line ) const {
+CSVReader::process_line( const std::string& line ){
     std::cout << line << std::endl;
     size_t cpos = 0;
     std::string name;
