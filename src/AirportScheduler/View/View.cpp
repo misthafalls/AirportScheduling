@@ -19,4 +19,5 @@ bool View::setup() {
 }
 
 void View::print() {
+	Logger::getInstance()->log("View::print()");
 }
