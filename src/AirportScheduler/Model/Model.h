@@ -10,7 +10,8 @@
 
 #include "Scheduler.h"
 
-#include <vector>
+#include <map>
+#include <string>
 
 class Model
 {
@@ -19,11 +20,12 @@ public:
 	virtual ~Model();
 
 	bool setup();
+    bool addPlane( std::string name, int arrivalTime );
 
 private:
 	Scheduler * schedulers;
 
-	std::vector<Plane> planes;
+	std::map<std::string, Plane*> planes;
 
 };
 

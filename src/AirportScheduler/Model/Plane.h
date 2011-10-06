@@ -9,16 +9,24 @@
 #define PLANE_H_
 
 #include <string>
+#include <time.h>
 
 class Plane {
+//TODO: Lege (default) constructor; expectedTime, planetype, 
+//      fuel{remaining & usage}
 public:
+    enum PlaneType {
+        CARGO,
+        PASSENGER
+    };
+
 	Plane(std::string name, int arrivalTime);
 	virtual ~Plane();
 
 	std::string getName() { return name; }
 	int getArrivalTime() { return arrivalTime; }
 
-protected:
+private:
 	std::string name;
 	int arrivalTime;
 };
