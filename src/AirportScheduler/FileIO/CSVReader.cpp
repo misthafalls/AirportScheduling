@@ -6,7 +6,7 @@
 #include <vector>
 #include <string>
 
-#define PRINT_DEBUG 1
+#define PRINT_DEBUG 0
 
 
 // -----------------------------------------------------------------------------
@@ -35,7 +35,9 @@ CSVReader::readFile( const char* file ){
 
 bool
 CSVReader::processLine( const std::string& line ){
+#if PRINT_DEBUG
     std::cout << line << std::endl;
+#endif
     size_t cpos = 0;
     std::string name;
     int arrivalTime;
@@ -43,8 +45,10 @@ CSVReader::processLine( const std::string& line ){
         int npos = line.find( ',', cpos );
         int size = npos - cpos;
         std::string s;
+#if PRINT_DEBUG
         std::cout << "Substring = " << line.substr( cpos, size ) << std::endl <<
             "    Between: " << cpos << " and " << npos << std::endl;
+#endif
         switch ( t ) {
             case 0: 
                 name = line.substr( cpos, size ); 
@@ -70,7 +74,9 @@ CSVReader::processLine( const std::string& line ){
 //                p.fuel_usage = atoi( line.substr( cpos, size ).c_str( ) );
                 break;
             default:
+#if PRINT_DEBUG
                 std::cout << "Argument count out of bounds" << std::endl;
+#endif
                 break;
         }
         cpos = npos + 1;
