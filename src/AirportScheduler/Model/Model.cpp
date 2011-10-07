@@ -7,13 +7,15 @@
 
 #include "Model.h"
 #include <memory>
+#include "ScheduleAlgorithms/FIFOAlgorithm.h"
 
 Model::Model() {
-
+	schedulers = new Scheduler();
+	schedulers->setAlgorithm(new FIFOAlgorithm());
 }
 
 Model::~Model() {
-
+	delete schedulers;
 }
 
 bool Model::setup() {

@@ -7,10 +7,14 @@
 
 #include "Plane.h"
 
-Plane::Plane(std::string name, int arrivalTime) {
+Plane::Plane( std::string name, int arrivalTime ) {
 	this->name = name;
 	this->arrivalTime = arrivalTime;
 }
 
-Plane::~Plane() {
+Plane::~Plane( ) {
+}
+
+void Plane::setScheduledArrivalTime( int time ) {
+	scheduledTime = time;
 }
