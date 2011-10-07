@@ -6,13 +6,13 @@
 #include <vector>
 #include <string>
 
-#define PRINT_DEBUG 0
+#define PRINT_DEBUG 1
 
 
 // -----------------------------------------------------------------------------
 
 bool
-CSVReader::readFile( const char* file ) const{
+CSVReader::read_file( const char* file ){
     char buffer[ BUFFERSIZE ];
     std::ifstream infile;
 
@@ -26,7 +26,7 @@ CSVReader::readFile( const char* file ) const{
     while( !infile.eof( ) ) {
         infile.getline( buffer, BUFFERSIZE ); 
         std::string s ( buffer );
-        if( !processLine( s ) ) return false;;
+        if( !process_line( s ) ) return false;;
     }
     return true;
 }
@@ -34,7 +34,7 @@ CSVReader::readFile( const char* file ) const{
 // -----------------------------------------------------------------------------
 
 bool
-CSVReader::processLine( const std::string& line ) const{
+CSVReader::process_line( const std::string& line ){
     std::cout << line << std::endl;
     size_t cpos = 0;
     std::string name;

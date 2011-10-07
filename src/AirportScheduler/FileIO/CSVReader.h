@@ -31,12 +31,12 @@ public:
         mModel( model )
     { };
 
-    bool readFile( const char* file ) const;
+    bool read_file( const char* file );
 
     bool setModel( Model* model ) { mModel = model; return true; };
 
 private:
-    bool processLine( const std::string& line ) const;
+    bool process_line( const std::string& line );
 
 private: //member values
     Model* mModel;
