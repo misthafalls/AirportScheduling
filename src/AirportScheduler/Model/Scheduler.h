@@ -16,11 +16,11 @@
 class Scheduler
 {
 public:
-	Scheduler();
-	virtual ~Scheduler();
+	Scheduler() {};
+	virtual ~Scheduler() {};
 
 	void setAlgorithm(Algorithm * algorithm);
-	void setTime(unsigned int time);
+	//void setTime(unsigned int time);
 
 	std::vector<Plane*> makeSchedule(std::vector<Plane*> list);
 
