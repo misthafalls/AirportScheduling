@@ -21,6 +21,7 @@ public:
 	void cleanup();
 
 	void start();
+    bool readFile( const char* file );
 protected:
 	Model * model;
 	View * view;
