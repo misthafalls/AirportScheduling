@@ -14,17 +14,17 @@
 bool
 CSVReader::readFile( const char* file ){
     char buffer[ BUFFERSIZE ];
-    std::ifstream infile;
+    std::ifstream inFile;
 
-    infile.open( file, std::ios::binary );
-    if( !infile.good( ) ) {
+    inFile.open( file, std::ios::binary );
+    if( !inFile.good( ) ) {
 #if PRINT_DEBUG
         std::cout << "Error opening file: "<< file << std::endl;
 #endif
         return false;
     }
-    while( !infile.eof( ) ) {
-        infile.getline( buffer, BUFFERSIZE ); 
+    while( !inFile.eof( ) ) {
+        inFile.getline( buffer, BUFFERSIZE ); 
         std::string s ( buffer );
         if( !processLine( s ) ) return false;;
     }
