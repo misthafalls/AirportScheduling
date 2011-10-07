@@ -27,9 +27,9 @@ bool AirportScheduler::setup() {
 	return true;
 }
 
-bool AirportScheduler::readFile( const char* file ) {
+bool AirportScheduler::readFile( const char* file ) const {
     CSVReader reader( model );
-    return reader.read_file( file );
+    return reader.readFile( file );
 }
 
 void AirportScheduler::cleanup() {
