@@ -6,6 +6,7 @@
  */
 
 #include "View.h"
+#include "../Model/Logger.h"
 
 #include "../Model/Logger.h"
 

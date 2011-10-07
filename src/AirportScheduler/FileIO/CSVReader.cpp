@@ -11,8 +11,7 @@
 
 // -----------------------------------------------------------------------------
 
-bool
-CSVReader::readFile( const char* file ){
+bool CSVReader::readFile( const char* file ){
     char buffer[ BUFFERSIZE ];
     std::ifstream inFile;
 
