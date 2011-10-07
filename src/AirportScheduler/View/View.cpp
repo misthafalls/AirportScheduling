@@ -6,6 +6,7 @@
  */
 
 #include "View.h"
+#include "../Model/Logger.h"
 
 View::View(Model * model) {
 	this->model = model;
