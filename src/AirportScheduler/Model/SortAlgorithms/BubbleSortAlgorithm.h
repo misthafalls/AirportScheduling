@@ -15,7 +15,7 @@ public:
 	BubbleSortAlgorithm();
 	virtual ~BubbleSortAlgorithm();
 
-	std::vector<Plane>& schedule(std::vector<Plane> &planes);
+	std::vector<Plane*>& schedule(std::vector<Plane*> &planes);
 };
 
 #endif /* BUBBLESORTALGORITHM_H_ */

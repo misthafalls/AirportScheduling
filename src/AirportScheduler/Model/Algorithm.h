@@ -14,7 +14,7 @@
 class Algorithm
 {
 public:
-	virtual std::vector<Plane>& schedule( std::vector<Plane>& planes ) = 0;
+	virtual std::vector<Plane*>& schedule( std::vector<Plane*>& planes ) = 0;
 	virtual ~Algorithm( ) {};
 };
 

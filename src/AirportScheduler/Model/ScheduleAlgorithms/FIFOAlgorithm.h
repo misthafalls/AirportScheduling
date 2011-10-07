@@ -15,7 +15,7 @@ public:
 	FIFOAlgorithm( );
 	virtual ~FIFOAlgorithm( );
 
-	std::vector<Plane>& schedule( std::vector<Plane>& planes );
+	std::vector<Plane*>& schedule( std::vector<Plane*>& planes );
 };
 
 #endif /* FIFOALGORITHM_H_ */

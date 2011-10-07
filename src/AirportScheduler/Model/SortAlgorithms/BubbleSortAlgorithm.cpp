@@ -12,7 +12,7 @@ BubbleSortAlgorithm::BubbleSortAlgorithm( ) : Algorithm( ) { }
 
 BubbleSortAlgorithm::~BubbleSortAlgorithm( ) { }
 
-std::vector<Plane>& BubbleSortAlgorithm::schedule( std::vector<Plane> &planes ) {
+std::vector<Plane*>& BubbleSortAlgorithm::schedule( std::vector<Plane*> &planes ) {
 	int n = planes.size( );
 	int j = 0;
 	bool swapped = true;
@@ -20,12 +20,12 @@ std::vector<Plane>& BubbleSortAlgorithm::schedule( std::vector<Plane> &planes ) 
 		swapped = false;
 		j++;
 		for ( int i = 0; i < n - j; i++ ) {
-			if ( planes.at( i ).getArrivalTime( ) > planes.at( i + 1 ).getArrivalTime( ) ) {
-				Plane tmp = planes.at( i );
+			if ( planes.at( i )->getArrivalTime( ) > planes.at( i + 1 )->getArrivalTime( ) ) {
+				Plane* tmp = planes.at( i );
 				planes.at( i ) = planes.at( i+1 );
 				planes.at( i+1 ) = tmp;
 				swapped = true;
-				Logger::getInstance( )->log( tmp.getName( ) + " swap with " + planes.at( i ).getName( ) );
+				Logger::getInstance( )->log( tmp->getName( ) + " swap with " + planes.at( i )->getName( ) );
 			}
 		}
 	}

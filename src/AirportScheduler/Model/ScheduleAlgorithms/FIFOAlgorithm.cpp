@@ -11,7 +11,7 @@
 FIFOAlgorithm::FIFOAlgorithm( ) : Algorithm( ) { }
 FIFOAlgorithm::~FIFOAlgorithm( ) { }
 
-std::vector<Plane>& FIFOAlgorithm::schedule( std::vector<Plane> &planes ) {
+std::vector<Plane*>& FIFOAlgorithm::schedule( std::vector<Plane*> &planes ) {
 	Algorithm* arrivalTimeSort = new BubbleSortAlgorithm( );
 
 	planes = arrivalTimeSort->schedule( planes );
@@ -19,13 +19,13 @@ std::vector<Plane>& FIFOAlgorithm::schedule( std::vector<Plane> &planes ) {
 	unsigned int time = 0;
 
 	for( int i = 0; i < planes.size( ); i++ ) {
-		unsigned int arrTime = planes[i].getArrivalTime( );
+		unsigned int arrTime = planes[i]->getArrivalTime( );
 
 		//5 is a relative safety time differences between planes
 		unsigned int safetyTime = time + 5;
 
 		if( arrTime >= time && arrTime <= ( safetyTime ) ) {
-			planes[i].setScheduledArrivalTime( safetyTime );
+			planes[i]->setScheduledArrivalTime( safetyTime );
 			time = safetyTime;
 		} else {
 			time = arrTime;
