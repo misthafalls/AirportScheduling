@@ -6,27 +6,27 @@
 #include <vector>
 #include <string>
 
-#define PRINT_DEBUG 1
+#define PRINT_DEBUG 0
 
 
 // -----------------------------------------------------------------------------
 
 bool
-CSVReader::read_file( const char* file ){
+CSVReader::readFile( const char* file ){
     char buffer[ BUFFERSIZE ];
-    std::ifstream infile;
+    std::ifstream inFile;
 
-    infile.open( file, std::ios::binary );
-    if( !infile.good( ) ) {
+    inFile.open( file, std::ios::binary );
+    if( !inFile.good( ) ) {
 #if PRINT_DEBUG
         std::cout << "Error opening file: "<< file << std::endl;
 #endif
         return false;
     }
-    while( !infile.eof( ) ) {
-        infile.getline( buffer, BUFFERSIZE ); 
+    while( !inFile.eof( ) ) {
+        inFile.getline( buffer, BUFFERSIZE ); 
         std::string s ( buffer );
-        if( !process_line( s ) ) return false;;
+        if( !processLine( s ) ) return false;;
     }
     return true;
 }
@@ -34,8 +34,10 @@ CSVReader::read_file( const char* file ){
 // -----------------------------------------------------------------------------
 
 bool
-CSVReader::process_line( const std::string& line ){
+CSVReader::processLine( const std::string& line ){
+#if PRINT_DEBUG
     std::cout << line << std::endl;
+#endif
     size_t cpos = 0;
     std::string name;
     int arrivalTime;
@@ -43,8 +45,10 @@ CSVReader::process_line( const std::string& line ){
         int npos = line.find( ',', cpos );
         int size = npos - cpos;
         std::string s;
+#if PRINT_DEBUG
         std::cout << "Substring = " << line.substr( cpos, size ) << std::endl <<
             "    Between: " << cpos << " and " << npos << std::endl;
+#endif
         switch ( t ) {
             case 0: 
                 name = line.substr( cpos, size ); 
@@ -70,7 +74,9 @@ CSVReader::process_line( const std::string& line ){
 //                p.fuel_usage = atoi( line.substr( cpos, size ).c_str( ) );
                 break;
             default:
+#if PRINT_DEBUG
                 std::cout << "Argument count out of bounds" << std::endl;
+#endif
                 break;
         }
         cpos = npos + 1;
