@@ -22,9 +22,7 @@ bool View::setup() {
 }
 
 void View::print() {
-	//get list from Model
-
-	//print Plane list
+	printPlaneList(model->getSchedule());
 }
 
 void View::printPlaneList(std::vector<Plane*> & list) {
@@ -36,6 +34,6 @@ void View::printPlaneList(std::vector<Plane*> & list) {
 
 		Plane * plane = *it;
 
-		Logger::getInstance()->logex( "Plane %d: %s", i, plane->getName().c_str() );
+		Logger::getInstance()->logex( "Plane %02d: %s arriving at %d", i, plane->getName().c_str(), plane->getArrivalTime() );
 	}
 }

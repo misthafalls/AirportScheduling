@@ -17,6 +17,8 @@ public:
 	void log(std::string txt);
 	void logex(const char * fmt, ...);
 
+	void wait();
+
 };
 
 #endif /* LOGGER_H_ */

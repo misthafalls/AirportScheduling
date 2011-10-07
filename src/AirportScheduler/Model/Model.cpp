@@ -22,9 +22,21 @@ bool Model::setup() {
 	return true;
 }
 
-bool Model::addPlane( std::string name, int arrivalTime ) {
-    std::auto_ptr< Plane > newPlane ( new Plane( name, arrivalTime ) );
+bool Model::addPlane( std::string name, int arrivalTime, int scheduledTime ) {
+    std::auto_ptr< Plane > newPlane ( new Plane( name, arrivalTime, scheduledTime ) );
     if( !newPlane.get( ) ) return false;// No plane created.. error!
     planes[ name ] = newPlane.release( );
     return true;
+}
+
+void Model::begin() {
+	std::vector<Plane*> planesToSchedule;
+
+	for (std::map<std::string, Plane*>::iterator it = planes.begin(); it != planes.end(); it++ ) {
+		Plane * plane = (*it).second;
+
+		planesToSchedule.push_back(plane);
+	}
+
+	schedule = schedulers->makeSchedule(planesToSchedule);
 }

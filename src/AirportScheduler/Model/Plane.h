@@ -20,12 +20,13 @@ public:
         PASSENGER
     };
 
-	Plane(std::string name, int arrivalTime);
+	Plane(std::string name, int arrivalTime, int scheduledTime);
 	virtual ~Plane();
 
 	std::string getName( ) { return name; }
 	int getArrivalTime( ) { return arrivalTime; }
-	void setScheduledArrivalTime( int time );
+	int getScheduledTime() { return scheduledTime; }
+	void setScheduledTime( int time );
 
 private:
 	std::string name;

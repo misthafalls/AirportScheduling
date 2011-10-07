@@ -25,7 +25,7 @@ std::vector<Plane*>& FIFOAlgorithm::schedule( std::vector<Plane*> &planes ) {
 		unsigned int safetyTime = time + 5;
 
 		if( arrTime >= time && arrTime <= ( safetyTime ) ) {
-			planes[i]->setScheduledArrivalTime( safetyTime );
+			planes[i]->setScheduledTime( safetyTime );
 			time = safetyTime;
 		} else {
 			time = arrTime;

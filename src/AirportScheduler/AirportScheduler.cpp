@@ -23,7 +23,7 @@ AirportScheduler::~AirportScheduler() {
 }
 
 bool AirportScheduler::setup() {
-	Logger::getInstance()->log("hi");
+	Logger::getInstance()->log("AirportScheduler::setup()");
 	return true;
 }
 
@@ -33,16 +33,16 @@ bool AirportScheduler::readFile( const char* file ) const {
 }
 
 bool AirportScheduler::addPlane( std::string name, int time ) const {
-    return model->addPlane( name, time );
+    return model->addPlane( name, time, 0 );
 }
 
 void AirportScheduler::cleanup() {
 }
 
 void AirportScheduler::start() {
-	//begin scheduling
+	model->begin();
 
-	//print schedule
+	view->print();
 
-	//return
+	Logger::getInstance()->wait();
 }

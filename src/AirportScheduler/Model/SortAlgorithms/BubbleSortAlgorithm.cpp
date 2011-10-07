@@ -29,5 +29,6 @@ std::vector<Plane*>& BubbleSortAlgorithm::schedule( std::vector<Plane*> &planes 
 			}
 		}
 	}
+
 	return planes;
 }

@@ -12,6 +12,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 class Model
 {
@@ -20,12 +21,18 @@ public:
 	virtual ~Model();
 
 	bool setup();
-    bool addPlane( std::string name, int arrivalTime );
+    bool addPlane( std::string name, int arrivalTime, int scheduledTime );
+
+    void begin();
+
+    std::vector<Plane*> & getSchedule() { return schedule; }
 
 private:
 	Scheduler * schedulers;
 
 	std::map<std::string, Plane*> planes;
+
+	std::vector<Plane*> schedule;
 
 };
 

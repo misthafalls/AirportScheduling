@@ -15,8 +15,6 @@ using namespace std;
 
 void Logger::log(string txt) {
 	cout << txt << endl;
-
-	cin.get();
 }
 
 void Logger::logex(const char * fmt, ...) {
@@ -29,4 +27,9 @@ void Logger::logex(const char * fmt, ...) {
 	va_end(vl);
 
 	log(msg);
+}
+
+void Logger::wait() {
+	cin.get();
+	cin.get();
 }
