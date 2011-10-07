@@ -15,6 +15,7 @@ public:
 	static Logger * getInstance() { static Logger l; return &l; }
 
 	void log(std::string txt);
+	void logex(const char * fmt, ...);
 
 };
 

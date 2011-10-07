@@ -70,7 +70,7 @@ int main( int argc, char* argv[ ] )
             }
         }
     }
-	//Construct
+
 	AirportScheduler airportScheduler;
 
 	//Setup
@@ -90,8 +90,6 @@ int main( int argc, char* argv[ ] )
 
 	//Cleanup
 	airportScheduler.cleanup();
-
-	//Deconstruct
 
 	return 0;
 }

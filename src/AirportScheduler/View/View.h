@@ -10,6 +10,8 @@
 
 #include "../Model/Model.h"
 
+#include <vector>
+
 class View
 {
 public:
@@ -19,6 +21,7 @@ public:
 	bool setup();
 
 	void print();
+	void printPlaneList(std::vector<Plane*> & list);
 
 protected:
 	Model * model;

@@ -40,5 +40,9 @@ void AirportScheduler::cleanup() {
 }
 
 void AirportScheduler::start() {
+	//begin scheduling
 
+	//print schedule
+
+	//return
 }
