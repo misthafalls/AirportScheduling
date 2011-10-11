@@ -8,7 +8,6 @@
 #include "AirportScheduler.h"
 
 #include "Model/Logger.h"
-#include "FileIO/CSVReader.h"
 
 AirportScheduler::AirportScheduler() {
 	model = new Model();

@@ -11,6 +11,8 @@
 #include "../Model/Model.h"
 #include "../View/View.h"
 
+#include "CSVReader.h"
+
 class Controller
 {
 public:
