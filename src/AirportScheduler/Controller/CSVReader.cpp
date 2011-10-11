@@ -5,6 +5,7 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <memory>
 
 #define PRINT_DEBUG 0
 
@@ -37,13 +38,16 @@ CSVReader::processLine( const std::string& line ){
 #if PRINT_DEBUG
     std::cout << line << std::endl;
 #endif
+    std::auto_ptr< Plane > p ( new Plane( ) );
     size_t cpos = 0;
     std::string name;
-    int arrivalTime = 0;
+    int fooInt;
+    
     for( unsigned int t = 0; t < ARGUMENT_COUNT; t++ ) {
         int npos = line.find( ',', cpos );
         int size = npos - cpos;
         std::string s;
+        Plane::PlaneType planeType;
 #if PRINT_DEBUG
         std::cout << "Substring = " << line.substr( cpos, size ) << std::endl <<
             "    Between: " << cpos << " and " << npos << std::endl;
@@ -51,25 +55,31 @@ CSVReader::processLine( const std::string& line ){
         switch ( t ) {
             case 0: 
                 name = line.substr( cpos, size ); 
+                p->setName( name );
                 break;
             case 1: 
-                arrivalTime = atoi( line.substr( cpos, size ).c_str( ) );
+                fooInt = atoi( line.substr( cpos, size ).c_str( ) );
+                p->setArrivalTime( fooInt );
                 break;
             case 2:
+                fooInt = atoi( line.substr( cpos, size ).c_str( ) );
+                p->setScheduledTime( fooInt );
                 break;
             case 3:
-/*                s = line.substr( cpos, size );
-                if ( !s.compare( "CARGO" ) ) p.type = CARGO;
-                else if ( !s.compare( "PASSENGER" ) ) 
-                        p.type = PASSENGER;
+                s = line.substr( cpos, size );
+                if ( !s.compare( "CARGO" ) ) planeType = Plane::CARGO;
+                else if ( !s.compare( "PASSENGER" ) )  planeType = Plane::PASSENGER;
                 else std::cout << "ERROR: type not found in: " << 
                         s << std::endl;
+                p->setPlaneType( planeType );
                 break;
-*/            case 4:
-//                p.fuel_remaining = atoi( line.substr( cpos, size ).c_str( ) );
+            case 4:
+                fooInt = atoi( line.substr( cpos, size ).c_str( ) );
+                p->setFuel( fooInt );
                 break;
             case 5:
-//                p.fuel_usage = atoi( line.substr( cpos, size ).c_str( ) );
+                fooInt = atoi( line.substr( cpos, size ).c_str( ) );
+                p->setFuelUsage( fooInt );
                 break;
             default:
 #if PRINT_DEBUG
@@ -79,6 +89,6 @@ CSVReader::processLine( const std::string& line ){
         }
         cpos = npos + 1;
     }
-    mModel->addPlane( name, arrivalTime );
+    mModel->addPlane( p.release( ) );
     return true;
 }

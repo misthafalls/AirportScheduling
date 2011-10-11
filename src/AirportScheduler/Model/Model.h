@@ -21,7 +21,9 @@ public:
 	virtual ~Model();
 
 	bool setup();
+    //TODO remove, outdated
     bool addPlane( std::string name, int arrivalTime );
+    bool addPlane( Plane *p );
 
     void begin();
 

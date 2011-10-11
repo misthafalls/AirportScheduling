@@ -29,6 +29,11 @@ bool Model::addPlane( std::string name, int arrivalTime ) {
     return true;
 }
 
+bool Model::addPlane( Plane *p ) {
+    planes[ p->getName( ) ] = p;
+    return true;
+}
+
 void Model::begin() {
 	std::vector<Plane*> planesToSchedule;
 
