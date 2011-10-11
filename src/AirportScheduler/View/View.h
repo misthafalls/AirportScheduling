@@ -25,6 +25,7 @@ public:
 
 protected:
 	Model * model;
+
 };
 
 #endif /* VIEW_H_ */

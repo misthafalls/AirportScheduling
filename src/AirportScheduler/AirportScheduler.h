@@ -21,12 +21,15 @@ public:
 	void cleanup();
 
 	void start();
+
     bool readFile( const char* file ) const;
     bool addPlane( std::string, int ) const;
+
 protected:
 	Model * model;
 	View * view;
 	Controller * controller;
+
 };
 
 #endif /* AIRPORTSCHEDULER_H_ */

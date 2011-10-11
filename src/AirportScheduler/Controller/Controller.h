@@ -24,6 +24,7 @@ public:
 protected:
 	Model * model;
 	View * view;
+
 };
 
 #endif /* CONTROLLER_H_ */

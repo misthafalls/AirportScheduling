@@ -49,6 +49,8 @@ public:
 	 */
 	std::string getFormattedTime();
 
+	//TODO Operator Overloading ++ > < etc
+
 private:
 	unsigned int minute;
 	unsigned int second;
