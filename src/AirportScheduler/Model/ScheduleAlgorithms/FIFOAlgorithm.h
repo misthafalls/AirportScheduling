@@ -11,12 +11,12 @@
 #include "../Algorithm.h"
 #include <vector>
 
-class FIFOAlgorithm: public Algorithm {
+class FIFOAlgorithm : public Algorithm {
 public:
-	FIFOAlgorithm( );
-	virtual ~FIFOAlgorithm( );
+	FIFOAlgorithm();
+	virtual ~FIFOAlgorithm();
 
-	std::vector<Plane*>& schedule( std::vector<Plane*>& planes );
+	std::vector<Plane*> & schedule( std::vector<Plane*> & planes );
 };
 
 #endif /* FIFOALGORITHM_H_ */
