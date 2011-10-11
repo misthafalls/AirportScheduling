@@ -9,17 +9,19 @@
 #define CONTROLLER_H_
 
 #include "../Model/Model.h"
+#include "../View/View.h"
 
 class Controller
 {
 public:
-	Controller(Model * model);
+	Controller(Model * model, View * view);
 	virtual ~Controller();
 
 	bool setup();
 
 protected:
 	Model * model;
+	View * view;
 };
 
 #endif /* CONTROLLER_H_ */

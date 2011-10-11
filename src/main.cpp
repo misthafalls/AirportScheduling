@@ -9,7 +9,7 @@
 #include "string.h"
 #include <iostream>
 #include <stdlib.h>
-bool startDataEntry( AirportScheduler& as ) {
+void startDataEntry( AirportScheduler& as ) {
     std::cout << "Starting manual plane entry.." << std::endl << std::endl;
     bool addMore = true;
     char name[ 256 ]; char time[ 256 ];
@@ -42,7 +42,7 @@ int main( int argc, char* argv[ ] )
     }
     else
     {
-        for( size_t t = 1; t < argc; ++t )
+        for( int t = 1; t < argc; ++t )
         {
             if( !strcmp( argv[ t ], "-f" ) && t + 1 <= argc )
             {
@@ -60,7 +60,7 @@ int main( int argc, char* argv[ ] )
     }
     else 
     {
-        for( size_t t = 1; t < argc; ++t )
+        for( int t = 1; t < argc; ++t )
         {
             if( !strcmp( argv[ t ], "-f" ) && t + 1 <= argc )
             {

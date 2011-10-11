@@ -13,7 +13,7 @@
 AirportScheduler::AirportScheduler() {
 	model = new Model();
 	view = new View(model);
-	controller = new Controller(model);
+	controller = new Controller(model, view);
 }
 
 AirportScheduler::~AirportScheduler() {
@@ -33,7 +33,7 @@ bool AirportScheduler::readFile( const char* file ) const {
 }
 
 bool AirportScheduler::addPlane( std::string name, int time ) const {
-    return model->addPlane( name, time, 0 );
+    return model->addPlane( name, time );
 }
 
 void AirportScheduler::cleanup() {

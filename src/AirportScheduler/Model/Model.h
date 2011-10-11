@@ -21,7 +21,7 @@ public:
 	virtual ~Model();
 
 	bool setup();
-    bool addPlane( std::string name, int arrivalTime, int scheduledTime );
+    bool addPlane( std::string name, int arrivalTime );
 
     void begin();
 

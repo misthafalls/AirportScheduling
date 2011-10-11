@@ -22,8 +22,8 @@ bool Model::setup() {
 	return true;
 }
 
-bool Model::addPlane( std::string name, int arrivalTime, int scheduledTime ) {
-    std::auto_ptr< Plane > newPlane ( new Plane( name, arrivalTime, scheduledTime ) );
+bool Model::addPlane( std::string name, int arrivalTime ) {
+    std::auto_ptr< Plane > newPlane ( new Plane( name, arrivalTime, Plane::CARGO, 0, 0 ) );
     if( !newPlane.get( ) ) return false;// No plane created.. error!
     planes[ name ] = newPlane.release( );
     return true;

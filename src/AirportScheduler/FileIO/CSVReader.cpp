@@ -39,9 +39,8 @@ CSVReader::processLine( const std::string& line ){
 #endif
     size_t cpos = 0;
     std::string name;
-    int arrivalTime;
-    int scheduledTime;
-    for( int t = 0; t < ARGUMENT_COUNT; t++ ) {
+    int arrivalTime = 0;
+    for( unsigned int t = 0; t < ARGUMENT_COUNT; t++ ) {
         int npos = line.find( ',', cpos );
         int size = npos - cpos;
         std::string s;
@@ -57,7 +56,6 @@ CSVReader::processLine( const std::string& line ){
                 arrivalTime = atoi( line.substr( cpos, size ).c_str( ) );
                 break;
             case 2:
-            	scheduledTime = atoi( line.substr( cpos, size ).c_str() );
                 break;
             case 3:
 /*                s = line.substr( cpos, size );
@@ -81,6 +79,6 @@ CSVReader::processLine( const std::string& line ){
         }
         cpos = npos + 1;
     }
-    mModel->addPlane( name, arrivalTime, scheduledTime );
+    mModel->addPlane( name, arrivalTime );
     return true;
 }

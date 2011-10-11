@@ -7,8 +7,9 @@
 
 #include "Controller.h"
 
-Controller::Controller(Model * model) {
+Controller::Controller(Model * model, View * view) {
 	this->model = model;
+	this->view = view;
 }
 
 Controller::~Controller() {
