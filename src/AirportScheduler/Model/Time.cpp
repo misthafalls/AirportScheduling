@@ -12,18 +12,18 @@
 using namespace std;
 
 Time::Time() {
+	this->hour = 0;
 	this->minute = 0;
-	this->second = 0;
 }
 
 Time::Time(const Time & c) {
+	this->hour = c.hour;
 	this->minute = c.minute;
-	this->second = c.second;
 }
 
 Time::Time(std::string timeFormatted) {
+	string hourString = "";
 	string minuteString = "";
-	string secondString = "";
 
 	bool bFoundSeperator = false;
 	for(unsigned int i = 0; i < timeFormatted.length(); i++) {
@@ -35,25 +35,25 @@ Time::Time(std::string timeFormatted) {
 		}
 
 		if(bFoundSeperator) {
-			secondString.append(1, c);
-		} else {
 			minuteString.append(1, c);
+		} else {
+			hourString.append(1, c);
 		}
 	}
 
+	this->hour = atoi(hourString.c_str());
 	this->minute = atoi(minuteString.c_str());
-	this->second = atoi(secondString.c_str());
 }
 
-Time::Time(unsigned int minute, unsigned int second) {
+Time::Time(unsigned int hour, unsigned int minute) {
+	this->hour = hour;
 	this->minute = minute;
-	this->second = second;
 }
 
 string Time::getFormattedTime() {
 	string formattedTime;
 
-	formattedTime = minute + second;
+	formattedTime = hour + ":" + minute;
 
 	return formattedTime;
 }

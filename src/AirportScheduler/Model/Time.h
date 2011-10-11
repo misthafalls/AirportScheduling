@@ -23,28 +23,28 @@ public:
 	Time(const Time & c);
 	/**
 	 * Constructor with Formatted Time
-	 * @param timeFormatted a formatted time in format: MM:SS
+	 * @param timeFormatted a formatted time in format: HH:MM
 	 */
 	Time(std::string timeFormatted);
 	/**
 	 * Constructor with Time
+	 * @param hour the hour
 	 * @param minute the minute
-	 * @param second the second
 	 */
-	Time(unsigned int minute, unsigned int second);
+	Time(unsigned int hour, unsigned int minute);
 
+	/**
+	 * Gets the Hour
+	 */
+	unsigned int getHour() { return hour; }
 	/**
 	 * Gets the Minute
 	 */
 	unsigned int getMinute() { return minute; }
-	/**
-	 * Gets the Second
-	 */
-	unsigned int getSecond() { return second; }
 
 	/**
 	 * Returns a Time Formatted String
-	 * Format: MM:SS
+	 * Format: HH:MM
 	 * @return a string with the formatted time
 	 */
 	std::string getFormattedTime();
@@ -52,8 +52,8 @@ public:
 	//TODO Operator Overloading ++ > < etc
 
 private:
+	unsigned int hour;
 	unsigned int minute;
-	unsigned int second;
 
 };
 
