@@ -23,16 +23,23 @@ public:
 	Time(const Time & c);
 	/**
 	 * Constructor with Formatted Time
-	 * @param timeFormatted a formatted time in format: HH:MM
+	 * @param timeFormatted a formatted time in format: HH:MM, or [DD]HH:MM
 	 */
 	Time(std::string timeFormatted);
 	/**
 	 * Constructor with Time
+	 * @param day the day
 	 * @param hour the hour
 	 * @param minute the minute
 	 */
-	Time(unsigned int hour, unsigned int minute);
+	Time(unsigned int day, unsigned int hour, unsigned int minute);
 
+	/**
+	 * Adds days to the Time
+	 * @param days the amount of days to ad
+	 * @return the new day of the Time
+	 */
+	unsigned int addDay(unsigned int days);
 	/**
 	 * Adds hours to the Time
 	 * @param hours the amount of hours to ad
@@ -48,6 +55,10 @@ public:
 	unsigned int addMinute(unsigned int minutes);
 
 	/**
+	 * Gets the Day
+	 */
+	unsigned int getDay() { return day; }
+	/**
 	 * Gets the Hour
 	 */
 	unsigned int getHour() { return hour; }
@@ -58,7 +69,7 @@ public:
 
 	/**
 	 * Returns a Time Formatted String
-	 * Format: HH:MM
+	 * Format: [DD]HH:MM
 	 * @return a string with the formatted time
 	 */
 	std::string getFormattedTime();
@@ -103,6 +114,7 @@ public:
 	bool operator<=(Time & other);
 
 private:
+	unsigned int day;
 	unsigned int hour;
 	unsigned int minute;
 
