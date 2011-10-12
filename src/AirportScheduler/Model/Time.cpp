@@ -50,10 +50,117 @@ Time::Time(unsigned int hour, unsigned int minute) {
 	this->minute = minute;
 }
 
+unsigned int Time::addHour(unsigned int hours) {
+	hour += hours;
+
+	while(hour >= 24) {
+		hour -= 24;
+	}
+
+	return hour;
+}
+
+unsigned int Time::addMinute(unsigned int minutes) {
+	minute += minutes;
+
+	while(minute >= 60) {
+		addHour(1);
+
+		minute -= 60;
+	}
+
+	return minute;
+}
+
 string Time::getFormattedTime() {
 	string formattedTime;
 
 	formattedTime = hour + ":" + minute;
 
 	return formattedTime;
+}
+
+Time Time::operator+(Time & other) {
+	Time t(*this);
+
+	t.addHour(other.getHour());
+	t.addMinute(other.getMinute());
+
+	return t;
+}
+
+bool Time::operator==(Time & other) {
+	if(this->hour != other.hour) {
+		return false;
+	}
+
+	if(this->minute != other.minute) {
+		return false;
+	}
+
+	return true;
+}
+
+bool Time::operator>(Time & other) {
+	if(this->hour < other.hour) {
+		return false;
+	}
+
+	if(this->hour == other.hour) {
+		if(this->minute > other.minute) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool Time::operator<(Time & other) {
+	if(this->hour > other.hour) {
+		return false;
+	}
+
+	if(this->hour == other.hour) {
+		if(this->minute < other.minute) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool Time::operator>=(Time & other) {
+	if(this->hour < other.hour) {
+		return false;
+	}
+
+	if(this->hour == other.hour) {
+		if(this->minute >= other.minute) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool Time::operator<=(Time & other) {
+	if(this->hour > other.hour) {
+		return false;
+	}
+
+	if(this->hour == other.hour) {
+		if(this->minute <= other.minute) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	return true;
 }

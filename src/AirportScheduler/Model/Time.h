@@ -34,6 +34,20 @@ public:
 	Time(unsigned int hour, unsigned int minute);
 
 	/**
+	 * Adds hours to the Time
+	 * @param hours the amount of hours to ad
+	 * @return the new hour of the Time
+	 */
+	unsigned int addHour(unsigned int hours);
+	/**
+	 * Adds minutes to the Time
+	 * Adds hours if the minute passes the hour
+	 * @param minutes the amount of minutes to add
+	 * @return the new minute of the Time
+	 */
+	unsigned int addMinute(unsigned int minutes);
+
+	/**
 	 * Gets the Hour
 	 */
 	unsigned int getHour() { return hour; }
@@ -49,7 +63,44 @@ public:
 	 */
 	std::string getFormattedTime();
 
-	//TODO Operator Overloading ++ > < etc
+	/**
+	 * Operator +
+	 * Adds two times (this and other) and put it in a new one
+	 * @param other a reference to another Time object
+	 * @return a Time object with the two times added with eachother
+	 */
+	Time operator+(Time & other);
+
+	/**
+	 * Compares if two Times are equal by their times
+	 * @param other a reference to another Time object
+	 * @return true if equals
+	 */
+	bool operator==(Time & other);
+	/**
+	 * Compares if this Time is later than other Time
+	 * @param other a reference to another Time object
+	 * @return true if later
+	 */
+	bool operator>(Time & other);
+	/**
+	 * Compares if this Time is earlier than other Time
+	 * @param other a reference to another Time object
+	 * @return true if earlier
+	 */
+	bool operator<(Time & other);
+	/**
+	 * Compares if this Time is later than or equal to other Time
+	 * @param other a reference to another Time object
+	 * @return true if later
+	 */
+	bool operator>=(Time & other);
+	/**
+	 * Compares if this Time is earlier than or equal to other Time
+	 * @param other a reference to another Time object
+	 * @return true if earlier
+	 */
+	bool operator<=(Time & other);
 
 private:
 	unsigned int hour;
