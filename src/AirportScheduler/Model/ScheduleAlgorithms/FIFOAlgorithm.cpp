@@ -16,13 +16,15 @@ std::vector<Plane*>& FIFOAlgorithm::schedule( std::vector<Plane*> &planes ) {
 
 	planes = arrivalTimeSort->schedule( planes );
 
-	int time = 0;
+	Time time( "00:00");
 
 	for( unsigned int i = 0; i < planes.size( ); i++ ) {
-		int arrTime = planes[i]->getArrivalTime( );
+		Time arrTime = planes[i]->getArrivalTime( );
 
 		//5 is a relative safety time differences between planes
-		int safetyTime = time + 5;
+//		Time safetyTime = time + 5;
+        Time safetyTime;
+        safetyTime.addMinute( ( time.getMinute( ) + 5 ) );
 
 		if( arrTime >= time && arrTime <= ( safetyTime ) ) {
 			planes[i]->setScheduledTime( safetyTime );

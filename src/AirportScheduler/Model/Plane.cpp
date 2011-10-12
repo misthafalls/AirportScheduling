@@ -8,7 +8,7 @@
 #include "Plane.h"
 
 using namespace std;
-
+/*
 Plane::Plane(std::string n, int aTime, PlaneType pType, int f, int fuelUsage )
     :
     name( n ),
@@ -18,10 +18,7 @@ Plane::Plane(std::string n, int aTime, PlaneType pType, int f, int fuelUsage )
     fuelUsagePerMin( fuelUsage )
 {
 }
-
+*/
 Plane::~Plane() {
 }
 
-void Plane::setScheduledTime( int &time ) {
-	scheduledTime = time;
-}

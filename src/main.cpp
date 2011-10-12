@@ -21,7 +21,7 @@ void startDataEntry( AirportScheduler& as ) {
         std::cin.getline( time, 256 );
         int itime = atoi( time );
         std::string sname( name );
-        as.addPlane( sname, itime );
+//        as.addPlane( sname, itime );
         std::cout << "Plane added, would you like to add more? (y/n)";
         t++;
         char c;

@@ -42,7 +42,7 @@ CSVReader::processLine( const std::string& line ){
     size_t cpos = 0;
     std::string name;
     int fooInt;
-    
+    Time time;    
     for( unsigned int t = 0; t < ARGUMENT_COUNT; t++ ) {
         int npos = line.find( ',', cpos );
         int size = npos - cpos;
@@ -58,12 +58,13 @@ CSVReader::processLine( const std::string& line ){
                 p->setName( name );
                 break;
             case 1: 
-                fooInt = atoi( line.substr( cpos, size ).c_str( ) );
-                p->setArrivalTime( fooInt );
+                s = line.substr( cpos, size );
+                time = Time( s );
+                p->setArrivalTime( time );
                 break;
             case 2:
-                fooInt = atoi( line.substr( cpos, size ).c_str( ) );
-                p->setScheduledTime( fooInt );
+                time = Time( line.substr( cpos, size ) );
+                p->setScheduledTime( time );
                 break;
             case 3:
                 s = line.substr( cpos, size );

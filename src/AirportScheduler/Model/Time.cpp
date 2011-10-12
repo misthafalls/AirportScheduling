@@ -8,6 +8,7 @@
 #include "Time.h"
 
 #include <stdlib.h>
+#include <sstream>
 
 using namespace std;
 
@@ -73,11 +74,11 @@ unsigned int Time::addMinute(unsigned int minutes) {
 }
 
 string Time::getFormattedTime() {
-	string formattedTime;
+	stringstream formattedTime;
 
-	formattedTime = hour + ":" + minute;
+	formattedTime << hour << ":" << minute;
 
-	return formattedTime;
+	return formattedTime.str( );
 }
 
 Time Time::operator+(Time & other) {

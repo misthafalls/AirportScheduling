@@ -34,6 +34,9 @@ void View::printPlaneList(std::vector<Plane*> & list) {
 
 		Plane * plane = *it;
 
-		Logger::getInstance()->logex( "Plane %02d: %s arriving at %d", i, plane->getName().c_str(), plane->getScheduledTime() );
+		Logger::getInstance()->logex( "Plane %02d: %s arriving at %s", 
+                                        i, 
+                                        plane->getName().c_str(), 
+                                        plane->getScheduledTime( ).getFormattedTime( ).c_str( ) );
 	}
 }

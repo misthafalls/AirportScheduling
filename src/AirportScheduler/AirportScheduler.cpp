@@ -32,7 +32,7 @@ bool AirportScheduler::readFile( const char* file ) const {
 }
 
 bool AirportScheduler::addPlane( std::string name, int time ) const {
-    return model->addPlane( name, time );
+//    return model->addPlane( name, time );
 }
 
 void AirportScheduler::cleanup() {

@@ -21,25 +21,26 @@ public:
 
 public:
     Plane( ) { };
+    /*TODO: remove?
 	Plane(  std::string name, 
-            int arrivalTime, 
+            Time arrivalTime, 
             PlaneType planeType, 
             int fuel, 
             int fuelUsagePerSec );
-
+*/
 	virtual ~Plane();
 
 	std::string getName() { return name; }
     void setName( std::string &s ) { name = s; }
 
-	int getArrivalTime() { return arrivalTime; }
-	void setArrivalTime( int &time ) { arrivalTime = time; }
+	Time getArrivalTime() { return arrivalTime; }
+	void setArrivalTime( Time &time ) { arrivalTime = time; }
 
-	int getScheduledTime() { return scheduledTime; }
-	void setScheduledTime( int &time );
+	Time getScheduledTime() { return scheduledTime; }
+	void setScheduledTime( Time &time ) { scheduledTime = time; }
 
-	int getFinalLandingTime() { return finalLandingTime; }
-	void setFinalLandingTime( int &time ){ finalLandingTime = time; }
+	Time getFinalLandingTime() { return finalLandingTime; }
+	void setFinalLandingTime( Time &time ){ finalLandingTime = time; }
 
 	PlaneType getPlaneType() { return planeType; }
 	void setPlaneType( PlaneType &type ){ planeType = type; }
@@ -53,10 +54,10 @@ public:
 private:
     //TODO: change times to new Time class
 	std::string name;
-	int arrivalTime;
-	int scheduledTime;
+	Time arrivalTime;
+	Time scheduledTime;
     // Time that the scheduler sets
-    int finalLandingTime;
+    Time finalLandingTime;
 	PlaneType planeType;
 	int fuel;
 	int fuelUsagePerMin;

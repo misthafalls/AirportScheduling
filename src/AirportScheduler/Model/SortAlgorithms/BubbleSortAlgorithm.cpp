@@ -20,7 +20,10 @@ std::vector<Plane*>& BubbleSortAlgorithm::schedule( std::vector<Plane*> &planes 
 		swapped = false;
 		j++;
 		for ( int i = 0; i < n - j; i++ ) {
-			if ( planes.at( i )->getArrivalTime( ) > planes.at( i + 1 )->getArrivalTime( ) ) {
+            Time a; Time b;
+            a = planes.at( i )->getArrivalTime( );
+            b = planes.at( i + 1 )->getArrivalTime( ); 
+			if ( a > b ) {
 				Plane* tmp = planes.at( i );
 				planes.at( i ) = planes.at( i+1 );
 				planes.at( i+1 ) = tmp;
