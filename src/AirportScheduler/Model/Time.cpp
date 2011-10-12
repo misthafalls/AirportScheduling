@@ -111,6 +111,36 @@ unsigned int Time::addMinute(unsigned int minutes) {
 	return minute;
 }
 
+unsigned int Time::subDay(unsigned int days) {
+	day -= days;
+
+	return day;
+}
+
+unsigned int Time::subHour(unsigned int hours) {
+	hour -= hours;
+
+	while(hour < 0) {
+		subDay(1);
+
+		hour += 24;
+	}
+
+	return hour;
+}
+
+unsigned int Time::subMinute(unsigned int minutes) {
+	minute -= minutes;
+
+	while(minute < 0) {
+		subHour(1);
+
+		minute += 60;
+	}
+
+	return minute;
+}
+
 string Time::getFormattedTime() {
 	stringstream formattedTime;
 
@@ -124,6 +154,15 @@ Time Time::operator+(Time & other) {
 
 	t.addHour(other.getHour());
 	t.addMinute(other.getMinute());
+
+	return t;
+}
+
+Time Time::operator-(Time & other) {
+	Time t(*this);
+
+	t.subHour(other.getHour());
+	t.subMinute(other.getMinute());
 
 	return t;
 }
