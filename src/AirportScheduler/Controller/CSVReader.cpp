@@ -38,6 +38,8 @@ CSVReader::processLine( const std::string& line ){
 #if PRINT_DEBUG
     std::cout << line << std::endl;
 #endif
+    if( !line.compare( 0, 1, "#" ) ) return true;
+
     std::auto_ptr< Plane > p ( new Plane( ) );
     size_t cpos = 0;
     std::string name;
@@ -45,6 +47,7 @@ CSVReader::processLine( const std::string& line ){
     Time time;    
     for( unsigned int t = 0; t < ARGUMENT_COUNT; t++ ) {
         int npos = line.find( ',', cpos );
+        if( npos == -1 ) return true;
         int size = npos - cpos;
         std::string s;
         Plane::PlaneType planeType;
@@ -68,8 +71,10 @@ CSVReader::processLine( const std::string& line ){
                 break;
             case 3:
                 s = line.substr( cpos, size );
-                if ( !s.compare( "CARGO" ) ) planeType = Plane::CARGO;
-                else if ( !s.compare( "PASSENGER" ) )  planeType = Plane::PASSENGER;
+                if ( !s.compare( "CARGO" ) ) 
+                        planeType = Plane::CARGO;
+                else if ( !s.compare( "PASSENGER" ) )  
+                        planeType = Plane::PASSENGER;
                 else std::cout << "ERROR: type not found in: " << 
                         s << std::endl;
                 p->setPlaneType( planeType );
@@ -82,6 +87,9 @@ CSVReader::processLine( const std::string& line ){
                 fooInt = atoi( line.substr( cpos, size ).c_str( ) );
                 p->setFuelUsage( fooInt );
                 break;
+            case 6:
+                fooInt = atoi( line.substr( cpos, size ).c_str( ) );
+                p->setLandingDuration( fooInt );
             default:
 #if PRINT_DEBUG
                 std::cout << "Argument count out of bounds" << std::endl;

@@ -51,6 +51,9 @@ public:
     int getFuelUsage( ) { return fuelUsagePerMin; }
     void setFuelUsage( int &usage ) { fuelUsagePerMin = usage; }
 
+    int getLandingDuration( ) { return landingDuration; }
+    void setLandingDuration( int &duration ) { landingDuration = duration; }
+
 private:
     //TODO: change times to new Time class
 	std::string name;
@@ -61,6 +64,7 @@ private:
 	PlaneType planeType;
 	int fuel;
 	int fuelUsagePerMin;
+    int landingDuration;
 };
 
 #endif /* PLANE_H_ */
