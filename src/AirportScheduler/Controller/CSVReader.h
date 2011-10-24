@@ -12,7 +12,7 @@
 class CSVReader {
 
 const static size_t BUFFERSIZE = 1024;
-const static size_t ARGUMENT_COUNT = 6;
+const static size_t ARGUMENT_COUNT = 7;
 
 //Temporary test structures : move to correct place in source
 

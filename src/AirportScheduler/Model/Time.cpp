@@ -242,3 +242,9 @@ bool Time::operator<=(Time & other) {
 
 	return true;
 }
+
+/*void Time::operator=( Time& other ) {
+    day = other.getDay( );
+    hour = other.getHour( );
+    minute = other.getMinute( );
+}*/

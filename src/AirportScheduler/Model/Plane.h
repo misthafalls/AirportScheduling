@@ -54,6 +54,8 @@ public:
     int getLandingDuration( ) { return landingDuration; }
     void setLandingDuration( int &duration ) { landingDuration = duration; }
 
+    Time getDeadlineTime( ) const;
+
 private:
     //TODO: change times to new Time class
 	std::string name;
