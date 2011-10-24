@@ -98,6 +98,9 @@ CSVReader::processLine( const std::string& line ){
         }
         cpos = npos + 1;
     }
+    Time newTime = p->getDeadlineTime( );
+    std::cout << p->getName( ) << " : " << 
+        newTime.getFormattedTime( ) << std::endl;
     mModel->addPlane( p.release( ) );
     return true;
 }

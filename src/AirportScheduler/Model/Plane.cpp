@@ -22,3 +22,11 @@ Plane::Plane(std::string n, int aTime, PlaneType pType, int f, int fuelUsage )
 Plane::~Plane() {
 }
 
+Time
+Plane::getDeadlineTime( ) const {
+    unsigned int minLeft = fuel / fuelUsagePerMin;
+    Time ret = arrivalTime;
+    ret.addMinute( minLeft );
+    return ret;
+}
+
