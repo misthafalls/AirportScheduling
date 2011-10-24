@@ -36,23 +36,41 @@ public:
 
 	/**
 	 * Adds days to the Time
-	 * @param days the amount of days to ad
+	 * @param days the amount of days to add
 	 * @return the new day of the Time
 	 */
 	unsigned int addDay(unsigned int days);
 	/**
 	 * Adds hours to the Time
-	 * @param hours the amount of hours to ad
+	 * @param hours the amount of hours to add
 	 * @return the new hour of the Time
 	 */
 	unsigned int addHour(unsigned int hours);
 	/**
 	 * Adds minutes to the Time
-	 * Adds hours if the minute passes the hour
 	 * @param minutes the amount of minutes to add
 	 * @return the new minute of the Time
 	 */
 	unsigned int addMinute(unsigned int minutes);
+
+	/**
+	 * Subtracts days of the Time
+	 * @param days the amount of days to subtract
+	 * @return the new day of the Time
+	 */
+	unsigned int subDay(unsigned int days);
+	/**
+	 * Subtracts hours of the Time
+	 * @param hours the amount of hours to subtract
+	 * @return the new hour of the Time
+	 */
+	unsigned int subHour(unsigned int hours);
+	/**
+	 * Subtracts minutes of the Time
+	 * @param minutes the amount of minutes to subtract
+	 * @return the new minute of the Time
+	 */
+	unsigned int subMinute(unsigned int minutes);
 
 	/**
 	 * Gets the Day
@@ -81,32 +99,44 @@ public:
 	 * @return a Time object with the two times added with eachother
 	 */
 	Time operator+(Time & other);
+	/**
+	 * Operator -
+	 * Subtracts two times (this and other) and put it in a new one
+	 * @param other a reference to another Time object
+	 * @return a Time object with the two times subtracted with eachother
+	 */
+	Time operator-(Time & other);
 
 	/**
+	 * Operator ==
 	 * Compares if two Times are equal by their times
 	 * @param other a reference to another Time object
 	 * @return true if equals
 	 */
 	bool operator==(Time & other);
 	/**
+	 * Operator >
 	 * Compares if this Time is later than other Time
 	 * @param other a reference to another Time object
 	 * @return true if later
 	 */
 	bool operator>(Time & other);
 	/**
+	 * Operator <
 	 * Compares if this Time is earlier than other Time
 	 * @param other a reference to another Time object
 	 * @return true if earlier
 	 */
 	bool operator<(Time & other);
 	/**
+	 * Operator >=
 	 * Compares if this Time is later than or equal to other Time
 	 * @param other a reference to another Time object
 	 * @return true if later
 	 */
 	bool operator>=(Time & other);
 	/**
+	 * Operator <=
 	 * Compares if this Time is earlier than or equal to other Time
 	 * @param other a reference to another Time object
 	 * @return true if earlier
