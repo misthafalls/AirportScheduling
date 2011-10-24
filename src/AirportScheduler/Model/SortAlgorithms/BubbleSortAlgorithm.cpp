@@ -23,12 +23,19 @@ std::vector<Plane*>& BubbleSortAlgorithm::schedule( std::vector<Plane*> &planes 
             Time a; Time b;
             a = planes.at( i )->getArrivalTime( );
             b = planes.at( i + 1 )->getArrivalTime( ); 
+            if ( a == b ) {
+                a = planes.at( i )->getScheduledTime( );
+                b = planes.at( i + 1 )->getScheduledTime( ); 
+            }
 			if ( a > b ) {
 				Plane* tmp = planes.at( i );
 				planes.at( i ) = planes.at( i+1 );
 				planes.at( i+1 ) = tmp;
 				swapped = true;
-				Logger::getInstance( )->log( tmp->getName( ) + " swap with " + planes.at( i )->getName( ) );
+				Logger::getInstance( )->log( 
+                    tmp->getName( ) + 
+                        " swap with " + 
+                        planes.at( i )->getName( ) );
 			}
 		}
 	}

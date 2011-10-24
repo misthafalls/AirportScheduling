@@ -5,10 +5,11 @@
  *      Author: christian
  */
 
-#define PRINT_DEBUG 1
+#define PRINT_DEBUG 0
 
 #include "FIFOAlgorithm.h"
 #include "../SortAlgorithms/BubbleSortAlgorithm.h"
+
 #if PRINT_DEBUG
 #include <iostream>
 #endif
