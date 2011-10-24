@@ -22,7 +22,6 @@ AirportScheduler::~AirportScheduler() {
 }
 
 bool AirportScheduler::setup() {
-	Logger::getInstance()->log("AirportScheduler::setup()");
 	return true;
 }
 
