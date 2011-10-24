@@ -5,8 +5,13 @@
  *      Author: christian
  */
 
+#define PRINT_DEBUG 1
+
 #include "FIFOAlgorithm.h"
 #include "../SortAlgorithms/BubbleSortAlgorithm.h"
+#if PRINT_DEBUG
+#include <iostream>
+#endif
 
 FIFOAlgorithm::FIFOAlgorithm( ) : Algorithm( ) { }
 FIFOAlgorithm::~FIFOAlgorithm( ) { }
@@ -16,22 +21,50 @@ std::vector<Plane*>& FIFOAlgorithm::schedule( std::vector<Plane*> &planes ) {
 
 	planes = arrivalTimeSort->schedule( planes );
 
-	Time time( "00:00");
 
-	for( unsigned int i = 0; i < planes.size( ); i++ ) {
-		Time arrTime = planes[i]->getArrivalTime( );
+    //First plane can land at it's earliest convience
+	Time lastPlane = planes[ 0 ]->getArrivalTime( );
+    planes[ 0 ]->setFinalLandingTime( lastPlane );
 
-		//5 is a relative safety time differences between planes
-//		Time safetyTime = time + 5;
-        Time safetyTime;
-        safetyTime.addMinute( ( time.getMinute( ) + 5 ) );
+    lastPlane = planes[ 0 ]->getFinalLandingTime( );
+    unsigned int lastDuration = planes[ 0 ]->getLandingDuration( );
 
-		if( arrTime >= time && arrTime <= ( safetyTime ) ) {
-			planes[i]->setScheduledTime( safetyTime );
-			time = safetyTime;
-		} else {
-			time = arrTime;
-		}
+#if PRINT_DEBUG
+    std::cout << "First Plane scheduled to: " << lastPlane.getFormattedTime( )
+        << std::endl << "Starting loop with: "
+        << std::endl << "  lastPlane (Time): " << lastPlane.getFormattedTime( )
+        << std::endl << "  lastDuration (int): " << lastDuration << std::endl;
+#endif
+
+	for( unsigned int i = 1; i < planes.size( ); i++ ) {
+        Time earliestLandingTime = lastPlane;
+        earliestLandingTime.addMinute( lastDuration );
+
+        Time currentPlaneArrival = planes[ i ]->getArrivalTime( );
+        if( earliestLandingTime < currentPlaneArrival ) {
+            planes[ i ]->setFinalLandingTime( currentPlaneArrival );
+        } else {
+            planes[ i ]->setFinalLandingTime( earliestLandingTime );
+        }
+#if PRINT_DEBUG
+        std::cout << "Plane nr: " << i << " set to: " << 
+            planes[ i ]->getFinalLandingTime( ).getFormattedTime( ) 
+                << std::endl;
+#endif
+
+        if( planes[ i ]->getDeadlineTime( ) < earliestLandingTime ) {
+#if PRINT_DEBUG
+            std::cout << "Plane: " << planes[ i ]->getName( ) << " has crashed"
+                << std::endl;
+#endif
+        }
+        lastPlane = planes[ i ]->getFinalLandingTime( );
+        lastDuration = planes[ i ]->getLandingDuration( );
+#if PRINT_DEBUG
+    std::cout << "Going to: " << i+1 << " with following values: " <<
+        std::endl << "  lastPlane (Time) " << lastPlane.getFormattedTime( ) <<
+        std::endl << "  lastDuration (int) " << lastDuration << std::endl;
+#endif
 	}
 
 	return planes;

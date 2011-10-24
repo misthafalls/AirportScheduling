@@ -7,7 +7,7 @@
 #include <string>
 #include <memory>
 
-#define PRINT_DEBUG 0
+#define PRINT_DEBUG 1
 
 
 // -----------------------------------------------------------------------------
@@ -47,7 +47,8 @@ CSVReader::processLine( const std::string& line ){
     Time time;    
     for( unsigned int t = 0; t < ARGUMENT_COUNT; t++ ) {
         int npos = line.find( ',', cpos );
-        if( npos == -1 ) return true;
+        if( npos == -1 && t == 6 ) npos = line.size( );
+        else if( npos == -1 ) return true;
         int size = npos - cpos;
         std::string s;
         Plane::PlaneType planeType;
@@ -90,6 +91,7 @@ CSVReader::processLine( const std::string& line ){
             case 6:
                 fooInt = atoi( line.substr( cpos, size ).c_str( ) );
                 p->setLandingDuration( fooInt );
+                break;
             default:
 #if PRINT_DEBUG
                 std::cout << "Argument count out of bounds" << std::endl;
@@ -98,9 +100,7 @@ CSVReader::processLine( const std::string& line ){
         }
         cpos = npos + 1;
     }
-    Time newTime = p->getDeadlineTime( );
-    std::cout << p->getName( ) << " : " << 
-        newTime.getFormattedTime( ) << std::endl;
+    std::cout << p->getLandingDuration( ) << std::endl;
     mModel->addPlane( p.release( ) );
     return true;
 }
