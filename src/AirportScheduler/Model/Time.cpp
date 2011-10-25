@@ -144,7 +144,9 @@ unsigned int Time::subMinute(unsigned int minutes) {
 string Time::getFormattedTime() {
 	stringstream formattedTime;
 
-	formattedTime << "[" << day << "]" << hour << ":" << minute;
+	formattedTime << "[" << day << "]";
+	formattedTime << ((hour < 10) ? "0" : "") << hour << ":";
+	formattedTime << ((minute < 10) ? "0" : "") << minute;
 
 	return formattedTime.str( );
 }
