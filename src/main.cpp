@@ -73,6 +73,9 @@ int main( int argc, char* argv[ ] )
     }
 	AirportScheduler airportScheduler;
 
+    //Added for testing purposes; als je dit ziet: Sorry!
+    file_set = true;
+    strcpy( filelocation, "testfile" );
 	//Setup
 	if (airportScheduler.setup()) {
 		//Start

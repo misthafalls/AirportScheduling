@@ -9,6 +9,7 @@
 
 #include "FIFOAlgorithm.h"
 #include "../SortAlgorithms/BubbleSortAlgorithm.h"
+#include "../Logger.h"
 
 #if PRINT_DEBUG
 #include <iostream>
@@ -37,36 +38,76 @@ std::vector<Plane*>& FIFOAlgorithm::schedule( std::vector<Plane*> &planes ) {
         << std::endl << "  lastDuration (int): " << lastDuration << std::endl;
 #endif
 
-	for( unsigned int i = 1; i < planes.size( ); i++ ) {
+    std::vector< Plane* >::iterator plane = planes.begin( ) + 1;
+    while( plane != planes.end( ) ) {
         Time earliestLandingTime = lastPlane;
         earliestLandingTime.addMinute( lastDuration );
 
-        Time currentPlaneArrival = planes[ i ]->getArrivalTime( );
+        Time currentPlaneArrival = (*plane)->getArrivalTime( );
+
+        if( (*plane)->getDeadlineTime( ) < earliestLandingTime ) {
+            if( plane != planes.begin( ) ) {
+                std::vector< Plane* >::iterator new_spot = 
+                    findSafeTime( planes, plane );
+                if( new_spot == planes.end( ) ) {
+                    Logger::getInstance( )->log( 
+                        "Couldn't find safe landing time for " + 
+                        ( *plane )->getName( ) + ". Plane is going down." );
+                } else {
+                    plane = new_spot;
+                }
+                // set correct variables
+                Plane* foo = *(plane--);
+                lastPlane = foo->getFinalLandingTime( );
+                lastDuration = foo->getLandingDuration( );
+                continue;
+            } else {
+                Logger::getInstance( )->log (
+                    "First plane: " + ( *plane )->getName( ) + 
+                    " can not make deadline. Plane is going to crash" );
+            } 
+        } 
+
         if( earliestLandingTime < currentPlaneArrival ) {
-            planes[ i ]->setFinalLandingTime( currentPlaneArrival );
+            (*plane)->setFinalLandingTime( currentPlaneArrival );
         } else {
-            planes[ i ]->setFinalLandingTime( earliestLandingTime );
+            (*plane)->setFinalLandingTime( earliestLandingTime );
         }
+
 #if PRINT_DEBUG
         std::cout << "Plane nr: " << i << " set to: " << 
-            planes[ i ]->getFinalLandingTime( ).getFormattedTime( ) 
+            (*plane)->getFinalLandingTime( ).getFormattedTime( ) 
                 << std::endl;
 #endif
 
-        if( planes[ i ]->getDeadlineTime( ) < earliestLandingTime ) {
+        lastPlane = (*plane)->getFinalLandingTime( );
+        lastDuration = (*plane)->getLandingDuration( );
 #if PRINT_DEBUG
-            std::cout << "Plane: " << planes[ i ]->getName( ) << " has crashed"
-                << std::endl;
-#endif
-        }
-        lastPlane = planes[ i ]->getFinalLandingTime( );
-        lastDuration = planes[ i ]->getLandingDuration( );
-#if PRINT_DEBUG
-    std::cout << "Going to: " << i+1 << " with following values: " <<
+        std::cout << "Going to next loop with following values: " <<
         std::endl << "  lastPlane (Time) " << lastPlane.getFormattedTime( ) <<
         std::endl << "  lastDuration (int) " << lastDuration << std::endl;
 #endif
+        plane++;
 	}
-
 	return planes;
 }
+
+std::vector< Plane* >::iterator 
+FIFOAlgorithm::findSafeTime( std::vector<Plane*> &planes, 
+                             std::vector<Plane*>::iterator plane ) const{
+    Time deadline = (*plane)->getDeadlineTime( );
+    std::vector<Plane*>::iterator possibleSpace = plane - 1;
+    while( possibleSpace != planes.begin( ) ) {
+        Time nice_time = ( *possibleSpace )->getFinalLandingTime( ); 
+        if( nice_time < deadline ) {
+            Plane* foo = *plane;
+            planes.erase( plane );
+            planes.insert( possibleSpace, foo );
+            return possibleSpace;
+        } else {
+            --possibleSpace;
+        }
+    }
+    return planes.end( );
+}
+

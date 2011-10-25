@@ -17,6 +17,8 @@ public:
 	virtual ~FIFOAlgorithm();
 
 	std::vector<Plane*> & schedule( std::vector<Plane*> & planes );
+    std::vector<Plane*>::iterator findSafeTime( std::vector<Plane*> & planes, 
+                            std::vector< Plane* >::iterator plane ) const;
 };
 
 #endif /* FIFOALGORITHM_H_ */
