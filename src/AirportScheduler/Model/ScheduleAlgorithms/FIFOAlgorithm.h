@@ -19,6 +19,7 @@ public:
 	std::vector<Plane*> & schedule( std::vector<Plane*> & planes );
     std::vector<Plane*>::iterator findSafeTime( std::vector<Plane*> & planes, 
                             std::vector< Plane* >::iterator plane ) const;
+    size_t rescheduleEqualArrivals( std::vector< Plane* >& planes ) const;
 };
 
 #endif /* FIFOALGORITHM_H_ */

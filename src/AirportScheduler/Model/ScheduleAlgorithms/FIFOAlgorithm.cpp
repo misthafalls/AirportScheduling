@@ -23,6 +23,7 @@ std::vector<Plane*>& FIFOAlgorithm::schedule( std::vector<Plane*> &planes ) {
 
 	planes = arrivalTimeSort->schedule( planes );
 
+    rescheduleEqualArrivals( planes );
 
     //First plane can land at it's earliest convience
 	Time lastPlane = planes[ 0 ]->getArrivalTime( );
@@ -109,5 +110,32 @@ FIFOAlgorithm::findSafeTime( std::vector<Plane*> &planes,
         }
     }
     return planes.end( );
+}
+
+size_t
+FIFOAlgorithm::rescheduleEqualArrivals( std::vector< Plane* >& planes ) const {
+    size_t swapped = 0;
+    std::vector< Plane* >::iterator foo = planes.begin( );
+    std::vector< Plane* >::iterator bar = foo + 1;
+    Time fooTime; Time barTime;
+    while( bar != planes.end( ) ) {
+        fooTime = ( *foo )->getArrivalTime( );
+        barTime = ( *bar )->getArrivalTime( ); 
+        if( fooTime == barTime ) {
+            fooTime = ( *foo )->getScheduledTime( );
+            barTime = ( *bar )->getScheduledTime( ); 
+            if( fooTime > barTime ){
+                Plane* p = *bar;
+                planes.erase( bar );
+                planes.insert( foo, p );
+                foo = planes.begin( );
+                bar = foo + 1;
+                swapped++;
+                continue;
+            }
+        }
+        foo++;
+        bar++;
+    }
 }
 
