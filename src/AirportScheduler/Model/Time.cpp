@@ -151,9 +151,14 @@ string Time::getFormattedTime() {
 	return formattedTime.str( );
 }
 
+int Time::getTimeInMinutes() {
+	return minute + (hour + day * 24) * 60;
+}
+
 Time Time::operator+(Time & other) {
 	Time t(*this);
 
+	t.addDay(other.getDay());
 	t.addHour(other.getHour());
 	t.addMinute(other.getMinute());
 
@@ -163,6 +168,7 @@ Time Time::operator+(Time & other) {
 Time Time::operator-(Time & other) {
 	Time t(*this);
 
+	t.subDay(other.getDay());
 	t.subHour(other.getHour());
 	t.subMinute(other.getMinute());
 
@@ -170,79 +176,23 @@ Time Time::operator-(Time & other) {
 }
 
 bool Time::operator==(Time & other) {
-	if(this->hour != other.hour) {
-		return false;
-	}
-
-	if(this->minute != other.minute) {
-		return false;
-	}
-
-	return true;
+	return this->getTimeInMinutes() == other.getTimeInMinutes();
 }
 
 bool Time::operator>(Time & other) {
-	if(this->hour < other.hour) {
-		return false;
-	}
-
-	if(this->hour == other.hour) {
-		if(this->minute > other.minute) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	return true;
+	return this->getTimeInMinutes() > other.getTimeInMinutes();
 }
 
 bool Time::operator<(Time & other) {
-	if(this->hour > other.hour) {
-		return false;
-	}
-
-	if(this->hour == other.hour) {
-		if(this->minute < other.minute) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	return true;
+	return this->getTimeInMinutes() < other.getTimeInMinutes();
 }
 
 bool Time::operator>=(Time & other) {
-	if(this->hour < other.hour) {
-		return false;
-	}
-
-	if(this->hour == other.hour) {
-		if(this->minute >= other.minute) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	return true;
+	return this->getTimeInMinutes() >= other.getTimeInMinutes();
 }
 
 bool Time::operator<=(Time & other) {
-	if(this->hour > other.hour) {
-		return false;
-	}
-
-	if(this->hour == other.hour) {
-		if(this->minute <= other.minute) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	return true;
+	return this->getTimeInMinutes() <= other.getTimeInMinutes();
 }
 
 /*void Time::operator=( Time& other ) {

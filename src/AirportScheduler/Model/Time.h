@@ -93,6 +93,13 @@ public:
 	std::string getFormattedTime();
 
 	/**
+	 * Returns a int in minutes
+	 * Format: int
+	 * @return a int in minutes
+	 */
+	int getTimeInMinutes();
+
+	/**
 	 * Operator +
 	 * Adds two times (this and other) and put it in a new one
 	 * @param other a reference to another Time object

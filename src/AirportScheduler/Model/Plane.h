@@ -43,16 +43,16 @@ public:
 	void setFinalLandingTime( Time &time ){ finalLandingTime = time; }
 
 	PlaneType getPlaneType() { return planeType; }
-	void setPlaneType( PlaneType &type ){ planeType = type; }
+	void setPlaneType( PlaneType type ){ planeType = type; }
 
     int getFuel( ) { return fuel; }
-    void setFuel( int &i ) { fuel = i; }
+    void setFuel( int i ) { fuel = i; }
 
     int getFuelUsage( ) { return fuelUsagePerMin; }
-    void setFuelUsage( int &usage ) { fuelUsagePerMin = usage; }
+    void setFuelUsage( int usage ) { fuelUsagePerMin = usage; }
 
     int getLandingDuration( ) { return landingDuration; }
-    void setLandingDuration( int &duration ) { landingDuration = duration; }
+    void setLandingDuration( int duration ) { landingDuration = duration; }
 
     Time getDeadlineTime( ) const;
 
