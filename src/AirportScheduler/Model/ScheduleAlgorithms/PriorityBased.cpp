@@ -76,11 +76,11 @@ std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes ) {
 				//Crashed
 				highestPriorityPlane->setCrashed(true);
 			} else {
+				//Final Scheduled Time of Plane will be the current Global Time
+				highestPriorityPlane->setFinalLandingTime(globalTime);
+
 				//Add Landing Duration of the Plane to the Global Time
 				globalTime.addMinute(highestPriorityPlane->getLandingDuration());
-
-				//Final Scheduled Time of Plane will be the same of the Global Time we just set
-				highestPriorityPlane->setFinalLandingTime(globalTime);
 			}
 
 			//Add Plane to Scheduled List

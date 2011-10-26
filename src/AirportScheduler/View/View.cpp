@@ -34,16 +34,22 @@ void View::printPlaneList(std::vector<Plane*> & list) {
 
 		Plane * plane = *it;
 
+		//Compute Landing Time based on Final Landing Time
+		Time landingTime = plane->getFinalLandingTime();
+		landingTime.addMinute(plane->getLandingDuration());
+
 		if(plane->hasCrashed()) {
-			Logger::getInstance()->logex( "Plane %02d: %s crashed (Priority: %d)", i,
+			Logger::getInstance()->logex( "Plane %02d: %s crashed (Priority: %d) [Deadline: %s]", i,
 											plane->getName().c_str(),
-											plane->getPriority());
+											plane->getPriority(),
+											plane->getDeadlineTime().getFormattedTime().c_str() );
 		} else {
-			Logger::getInstance()->logex( "Plane %02d: %s arriving at %s (Priority: %d)",
+			Logger::getInstance()->logex( "Plane %02d: %s lands at %s (Priority: %d) [Deadline: %s]",
 											i,
 											plane->getName().c_str(),
-											plane->getFinalLandingTime( ).getFormattedTime( ).c_str( ),
-											plane->getPriority() );
+											landingTime.getFormattedTime().c_str(),
+											plane->getPriority(),
+											plane->getDeadlineTime().getFormattedTime().c_str() );
 		}
 	}
 }
