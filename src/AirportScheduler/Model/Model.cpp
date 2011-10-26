@@ -9,14 +9,14 @@
 #include <memory>
 
 #include "ScheduleAlgorithms/Bruteforce.h"
-#include "ScheduleAlgorithms/FIFOAlgorithm.h"
+#include "ScheduleAlgorithms/PriorityBased.h"
 
 Model::Model() {
 	schedulers = new Scheduler();
 
-	schedulers->setAlgorithm(new FIFOAlgorithm());
+	schedulers->setAlgorithm(new Bruteforce());
 
-	//schedulers->setAlgorithm(new Bruteforce());
+	//schedulers->setAlgorithm(new PriorityBased());
 }
 
 Model::~Model() {
