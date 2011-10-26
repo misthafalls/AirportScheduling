@@ -19,7 +19,7 @@ void startDataEntry( AirportScheduler& as ) {
         std::cin.getline( name, 256 );
         std::cout << "Please enter the flight arrival time:";
         std::cin.getline( time, 256 );
-        int itime = atoi( time );
+        //int itime = atoi( time );
         std::string sname( name );
 //TODO re-create this to add planes with all variables
 //        as.addPlane( sname, itime );
