@@ -8,7 +8,8 @@
 #define PRINT_DEBUG 0
 
 #include "FIFOAlgorithm.h"
-#include "../SortAlgorithms/BubbleSortAlgorithm.h"
+
+#include "../SortAlgorithms/BubbleSort.h"
 #include "../Logger.h"
 
 #if PRINT_DEBUG
@@ -19,9 +20,9 @@ FIFOAlgorithm::FIFOAlgorithm( ) : Algorithm( ) { }
 FIFOAlgorithm::~FIFOAlgorithm( ) { }
 
 std::vector<Plane*>& FIFOAlgorithm::schedule( std::vector<Plane*> &planes ) {
-	Algorithm* arrivalTimeSort = new BubbleSortAlgorithm( );
+	BubbleSort * arrivalTimeSort = new BubbleSort();
 
-	planes = arrivalTimeSort->schedule( planes );
+	planes = arrivalTimeSort->scheduleByArrivalTimeAscending( planes );
 
     rescheduleEqualArrivals( planes );
 

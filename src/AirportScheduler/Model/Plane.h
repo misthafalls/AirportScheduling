@@ -56,6 +56,9 @@ public:
 
     Time getDeadlineTime( ) const;
 
+    void setPriority(int p) { priority = p; }
+    int getPriority() { return priority; }
+
 private:
     //TODO: change times to new Time class
 	std::string name;
@@ -67,6 +70,8 @@ private:
 	int fuel;
 	int fuelUsagePerMin;
     int landingDuration;
+
+    int priority;
 };
 
 #endif /* PLANE_H_ */
