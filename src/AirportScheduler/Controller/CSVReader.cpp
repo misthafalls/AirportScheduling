@@ -100,7 +100,6 @@ CSVReader::processLine( const std::string& line ){
         }
         cpos = npos + 1;
     }
-    std::cout << p->getLandingDuration( ) << std::endl;
     mModel->addPlane( p.release( ) );
     return true;
 }

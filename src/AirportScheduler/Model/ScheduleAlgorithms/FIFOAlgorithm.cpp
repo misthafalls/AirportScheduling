@@ -34,7 +34,8 @@ std::vector<Plane*>& FIFOAlgorithm::schedule( std::vector<Plane*> &planes ) {
     unsigned int lastDuration = planes[ 0 ]->getLandingDuration( );
 
 #if PRINT_DEBUG
-    std::cout << "First Plane scheduled to: " << lastPlane.getFormattedTime( )
+    std::cout << "First Plane: " << planes[ 0 ]->getName( ) 
+        << " scheduled to: " << lastPlane.getFormattedTime( )
         << std::endl << "Starting loop with: "
         << std::endl << "  lastPlane (Time): " << lastPlane.getFormattedTime( )
         << std::endl << "  lastDuration (int): " << lastDuration << std::endl;
@@ -55,6 +56,7 @@ std::vector<Plane*>& FIFOAlgorithm::schedule( std::vector<Plane*> &planes ) {
                     Logger::getInstance( )->log( 
                         "Couldn't find safe landing time for " + 
                         ( *plane )->getName( ) + ". Plane is going down." );
+
                 } else {
                     plane = new_spot;
                 }
@@ -77,7 +79,7 @@ std::vector<Plane*>& FIFOAlgorithm::schedule( std::vector<Plane*> &planes ) {
         }
 
 #if PRINT_DEBUG
-        std::cout << "Plane nr: " << i << " set to: " << 
+        std::cout << "Plane: " << (*plane)->getName( ) << " set to: " << 
             (*plane)->getFinalLandingTime( ).getFormattedTime( ) 
                 << std::endl;
 #endif
@@ -99,8 +101,16 @@ FIFOAlgorithm::findSafeTime( std::vector<Plane*> &planes,
                              std::vector<Plane*>::iterator plane ) const{
     Time deadline = (*plane)->getDeadlineTime( );
     std::vector<Plane*>::iterator possibleSpace = plane - 1;
+#if PRINT_DEBUG
+        std::cout << "Deadline problem for: " << (*plane)->getName( ) <<
+        ". Deadline is: " <<
+            deadline.getFormattedTime( ) << std::endl;
+#endif
     while( possibleSpace != planes.begin( ) ) {
         Time nice_time = ( *possibleSpace )->getFinalLandingTime( ); 
+#if PRINT_DEBUG
+        std::cout << "Trying: " << nice_time.getFormattedTime( ) << std::endl;
+#endif
         if( nice_time < deadline ) {
             Plane* foo = *plane;
             planes.erase( plane );
