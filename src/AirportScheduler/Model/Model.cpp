@@ -14,9 +14,9 @@
 Model::Model() {
 	schedulers = new Scheduler();
 
-	//schedulers->setAlgorithm(new FIFOAlgorithm());
+	schedulers->setAlgorithm(new FIFOAlgorithm());
 
-	schedulers->setAlgorithm(new Bruteforce());
+	//schedulers->setAlgorithm(new Bruteforce());
 }
 
 Model::~Model() {

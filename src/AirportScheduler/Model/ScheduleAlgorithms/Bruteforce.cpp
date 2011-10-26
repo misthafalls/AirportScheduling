@@ -25,7 +25,7 @@ Bruteforce::~Bruteforce() {
 
 std::vector<Plane*>& Bruteforce::schedule( vector<Plane*> &planes ) {
 	BubbleSort * sorter = new BubbleSort();
-	Priority * priority = new Priority();
+	Priority * priorityCalculator = new Priority();
 
 	//Sort planes by Arrival Time
 	planes = sorter->scheduleByArrivalTimeAscending(planes);
@@ -38,6 +38,7 @@ std::vector<Plane*>& Bruteforce::schedule( vector<Plane*> &planes ) {
 	Time globalTime;
 
 	while( (!planes.empty()) || (!arrivedPlanes.empty()) ) {
+		//Copy Planes to the Arrived Planes List if they've arrived at the Airport
 		for(vector<Plane*>::iterator it = planes.begin(); it != planes.end(); ) {
 			Plane * plane = *it;
 
@@ -55,7 +56,11 @@ std::vector<Plane*>& Bruteforce::schedule( vector<Plane*> &planes ) {
 			for(vector<Plane*>::iterator it = arrivedPlanes.begin(); it != arrivedPlanes.end(); it++) {
 				Plane * plane = *it;
 
-				plane->setPriority( priority->getPriority(plane, globalTime) );
+				int priority = priorityCalculator->getPriority(plane, globalTime);
+
+				Logger::getInstance()->logex("Priority %s -> %d", plane->getName().c_str(), priority );
+
+				plane->setPriority(priority);
 			}
 
 			//Sort arrived Planes based on priority, smallest first
@@ -65,11 +70,21 @@ std::vector<Plane*>& Bruteforce::schedule( vector<Plane*> &planes ) {
 			vector<Plane*>::iterator highestPriorityPlaneIterator = arrivedPlanes.begin();
 			Plane * highestPriorityPlane = *highestPriorityPlaneIterator;
 
-			//Add Landing Duration of the Plane to the Global Time
-			globalTime.addMinute(highestPriorityPlane->getLandingDuration());
+			//Compute Final Landing Time
+			Time finalLandingTime;
+			finalLandingTime.addMinute(globalTime.getTimeInMinutes() + highestPriorityPlane->getLandingDuration());
 
-			//Final Scheduled Time of Plane will be the same of the Global Time we just set
-			highestPriorityPlane->setFinalLandingTime(globalTime);
+			//Priority is lower than 0?
+			if(finalLandingTime > highestPriorityPlane->getDeadlineTime()) {
+				//Crashed
+				highestPriorityPlane->setCrashed(true);
+			} else {
+				//Add Landing Duration of the Plane to the Global Time
+				globalTime.addMinute(highestPriorityPlane->getLandingDuration());
+
+				//Final Scheduled Time of Plane will be the same of the Global Time we just set
+				highestPriorityPlane->setFinalLandingTime(globalTime);
+			}
 
 			//Add Plane to Scheduled List
 			scheduledPlanes.push_back(highestPriorityPlane);
@@ -82,7 +97,7 @@ std::vector<Plane*>& Bruteforce::schedule( vector<Plane*> &planes ) {
 		}
 	}
 
-	delete priority;
+	delete priorityCalculator;
 	delete sorter;
 
 	planes = scheduledPlanes;

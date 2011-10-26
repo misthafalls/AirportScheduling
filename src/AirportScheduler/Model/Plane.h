@@ -20,14 +20,7 @@ public:
     };
 
 public:
-    Plane( ) { };
-    /*TODO: remove?
-	Plane(  std::string name, 
-            Time arrivalTime, 
-            PlaneType planeType, 
-            int fuel, 
-            int fuelUsagePerSec );
-*/
+    Plane( ) { crashed = false; };
 	virtual ~Plane();
 
 	std::string getName() { return name; }
@@ -54,10 +47,13 @@ public:
     int getLandingDuration( ) { return landingDuration; }
     void setLandingDuration( int duration ) { landingDuration = duration; }
 
-    Time getDeadlineTime( ) const;
+    Time getDeadlineTime( );
 
     void setPriority(int p) { priority = p; }
     int getPriority() { return priority; }
+
+    void setCrashed(bool b) { crashed = b; }
+    bool hasCrashed() { return crashed; }
 
 private:
     //TODO: change times to new Time class
@@ -72,6 +68,7 @@ private:
     int landingDuration;
 
     int priority;
+    bool crashed;
 };
 
 #endif /* PLANE_H_ */

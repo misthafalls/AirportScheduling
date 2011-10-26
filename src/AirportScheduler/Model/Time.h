@@ -105,14 +105,14 @@ public:
 	 * @param other a reference to another Time object
 	 * @return a Time object with the two times added with eachother
 	 */
-	Time operator+(Time & other);
+	Time operator+(Time other);
 	/**
 	 * Operator -
 	 * Subtracts two times (this and other) and put it in a new one
 	 * @param other a reference to another Time object
 	 * @return a Time object with the two times subtracted with eachother
 	 */
-	Time operator-(Time & other);
+	Time operator-(Time other);
 
 	/**
 	 * Operator ==
@@ -120,35 +120,35 @@ public:
 	 * @param other a reference to another Time object
 	 * @return true if equals
 	 */
-	bool operator==(Time & other);
+	bool operator==(Time other);
 	/**
 	 * Operator >
 	 * Compares if this Time is later than other Time
 	 * @param other a reference to another Time object
 	 * @return true if later
 	 */
-	bool operator>(Time & other);
+	bool operator>(Time other);
 	/**
 	 * Operator <
 	 * Compares if this Time is earlier than other Time
 	 * @param other a reference to another Time object
 	 * @return true if earlier
 	 */
-	bool operator<(Time & other);
+	bool operator<(Time other);
 	/**
 	 * Operator >=
 	 * Compares if this Time is later than or equal to other Time
 	 * @param other a reference to another Time object
 	 * @return true if later
 	 */
-	bool operator>=(Time & other);
+	bool operator>=(Time other);
 	/**
 	 * Operator <=
 	 * Compares if this Time is earlier than or equal to other Time
 	 * @param other a reference to another Time object
 	 * @return true if earlier
 	 */
-	bool operator<=(Time & other);
+	bool operator<=(Time other);
 
 private:
 	unsigned int day;

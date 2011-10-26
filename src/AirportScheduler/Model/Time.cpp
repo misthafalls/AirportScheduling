@@ -155,7 +155,7 @@ int Time::getTimeInMinutes() {
 	return minute + (hour + day * 24) * 60;
 }
 
-Time Time::operator+(Time & other) {
+Time Time::operator+(Time other) {
 	Time t(*this);
 
 	t.addDay(other.getDay());
@@ -165,7 +165,7 @@ Time Time::operator+(Time & other) {
 	return t;
 }
 
-Time Time::operator-(Time & other) {
+Time Time::operator-(Time other) {
 	Time t(*this);
 
 	t.subDay(other.getDay());
@@ -175,23 +175,23 @@ Time Time::operator-(Time & other) {
 	return t;
 }
 
-bool Time::operator==(Time & other) {
+bool Time::operator==(Time other) {
 	return this->getTimeInMinutes() == other.getTimeInMinutes();
 }
 
-bool Time::operator>(Time & other) {
+bool Time::operator>(Time other) {
 	return this->getTimeInMinutes() > other.getTimeInMinutes();
 }
 
-bool Time::operator<(Time & other) {
+bool Time::operator<(Time other) {
 	return this->getTimeInMinutes() < other.getTimeInMinutes();
 }
 
-bool Time::operator>=(Time & other) {
+bool Time::operator>=(Time other) {
 	return this->getTimeInMinutes() >= other.getTimeInMinutes();
 }
 
-bool Time::operator<=(Time & other) {
+bool Time::operator<=(Time other) {
 	return this->getTimeInMinutes() <= other.getTimeInMinutes();
 }
 

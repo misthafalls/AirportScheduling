@@ -16,7 +16,7 @@ public:
 	Priority();
 	virtual ~Priority();
 
-	int getPriority(Plane* plane, Time globalTime);
+	int getPriority(Plane * plane, Time globalTime);
 };
 
 #endif /* PRIORITY_H_ */

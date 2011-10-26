@@ -29,14 +29,21 @@ void View::printPlaneList(std::vector<Plane*> & list) {
 	Logger::getInstance()->log( "Printing Plane List.." );
 
 	int i = 0;
-	for (std::vector<Plane*>::iterator it = list.begin(); it != list.end(); it++) {
+	for(std::vector<Plane*>::iterator it = list.begin(); it != list.end(); it++) {
 		i++;
 
 		Plane * plane = *it;
 
-		Logger::getInstance()->logex( "Plane %02d: %s arriving at %s", 
-                                        i, 
-                                        plane->getName().c_str(), 
-                                        plane->getFinalLandingTime( ).getFormattedTime( ).c_str( ) );
+		if(plane->hasCrashed()) {
+			Logger::getInstance()->logex( "Plane %02d: %s crashed (Priority: %d)", i,
+											plane->getName().c_str(),
+											plane->getPriority());
+		} else {
+			Logger::getInstance()->logex( "Plane %02d: %s arriving at %s (Priority: %d)",
+											i,
+											plane->getName().c_str(),
+											plane->getFinalLandingTime( ).getFormattedTime( ).c_str( ),
+											plane->getPriority() );
+		}
 	}
 }
