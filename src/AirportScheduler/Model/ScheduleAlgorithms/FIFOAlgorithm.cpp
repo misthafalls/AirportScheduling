@@ -147,5 +147,6 @@ FIFOAlgorithm::rescheduleEqualArrivals( std::vector< Plane* >& planes ) const {
         foo++;
         bar++;
     }
+    return swapped;
 }
 
