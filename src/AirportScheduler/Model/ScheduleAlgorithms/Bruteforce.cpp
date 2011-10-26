@@ -6,11 +6,13 @@
  */
 
 #include "Bruteforce.h"
-#include "../SortAlgorithms/BubbleSortAlgorithm.h"
 
-#if PRINT_DEBUG
-#include <iostream>
-#endif
+#include "../SortAlgorithms/BubbleSort.h"
+#include "../Priority.h"
+
+#include "../Logger.h"
+
+using namespace std;
 
 Bruteforce::Bruteforce() {
 	// TODO Auto-generated constructor stub
@@ -21,56 +23,69 @@ Bruteforce::~Bruteforce() {
 	// TODO Auto-generated destructor stub
 }
 
-std::vector<Plane*>& Bruteforce::schedule( std::vector<Plane*> &planes ) {
-	Algorithm* arrivalTimeSort = new BubbleSortAlgorithm( );
+std::vector<Plane*>& Bruteforce::schedule( vector<Plane*> &planes ) {
+	BubbleSort * sorter = new BubbleSort();
+	Priority * priority = new Priority();
 
-	planes = arrivalTimeSort->schedule( planes );
+	//Sort planes by Arrival Time
+	planes = sorter->scheduleByArrivalTimeAscending(planes);
 
+	//Lists used for Scheduling
+	vector<Plane*> arrivedPlanes;
+	vector<Plane*> scheduledPlanes;
 
-    //First plane can land at it's earliest convience
-	Time lastPlane = planes[ 0 ]->getArrivalTime( );
-    planes[ 0 ]->setFinalLandingTime( lastPlane );
+	//Global Time of System
+	Time globalTime;
 
-    lastPlane = planes[ 0 ]->getFinalLandingTime( );
-    unsigned int lastDuration = planes[ 0 ]->getLandingDuration( );
+	while( (!planes.empty()) || (!arrivedPlanes.empty()) ) {
+		for(vector<Plane*>::iterator it = planes.begin(); it != planes.end(); ) {
+			Plane * plane = *it;
 
-#if PRINT_DEBUG
-    std::cout << "First Plane scheduled to: " << lastPlane.getFormattedTime( )
-        << std::endl << "Starting loop with: "
-        << std::endl << "  lastPlane (Time): " << lastPlane.getFormattedTime( )
-        << std::endl << "  lastDuration (int): " << lastDuration << std::endl;
-#endif
+			if(plane->getArrivalTime() <= globalTime) {
+				arrivedPlanes.push_back(plane);
 
-	for( unsigned int i = 1; i < planes.size( ); i++ ) {
-        Time earliestLandingTime = lastPlane;
-        earliestLandingTime.addMinute( lastDuration );
+				it = planes.erase(it);
+			} else {
+				it++;
+			}
+		}
 
-        Time currentPlaneArrival = planes[ i ]->getArrivalTime( );
-        if( earliestLandingTime < currentPlaneArrival ) {
-            planes[ i ]->setFinalLandingTime( currentPlaneArrival );
-        } else {
-            planes[ i ]->setFinalLandingTime( earliestLandingTime );
-        }
-#if PRINT_DEBUG
-        std::cout << "Plane nr: " << i << " set to: " <<
-            planes[ i ]->getFinalLandingTime( ).getFormattedTime( )
-                << std::endl;
-#endif
+		if(!arrivedPlanes.empty()) {
+			//Calculate Priority for each arrived Plane
+			for(vector<Plane*>::iterator it = arrivedPlanes.begin(); it != arrivedPlanes.end(); it++) {
+				Plane * plane = *it;
 
-        if( planes[ i ]->getDeadlineTime( ) < earliestLandingTime ) {
-#if PRINT_DEBUG
-            std::cout << "Plane: " << planes[ i ]->getName( ) << " has crashed"
-                << std::endl;
-#endif
-        }
-        lastPlane = planes[ i ]->getFinalLandingTime( );
-        lastDuration = planes[ i ]->getLandingDuration( );
-#if PRINT_DEBUG
-    std::cout << "Going to: " << i+1 << " with following values: " <<
-        std::endl << "  lastPlane (Time) " << lastPlane.getFormattedTime( ) <<
-        std::endl << "  lastDuration (int) " << lastDuration << std::endl;
-#endif
+				plane->setPriority( priority->getPriority(plane, globalTime) );
+			}
+
+			//Sort arrived Planes based on priority, smallest first
+			sorter->scheduleByPriorityAscending(arrivedPlanes);
+
+			//Get First Plane from sorted Arrived Plane List
+			vector<Plane*>::iterator highestPriorityPlaneIterator = arrivedPlanes.begin();
+			Plane * highestPriorityPlane = *highestPriorityPlaneIterator;
+
+			//Add Landing Duration of the Plane to the Global Time
+			globalTime.addMinute(highestPriorityPlane->getLandingDuration());
+
+			//Final Scheduled Time of Plane will be the same of the Global Time we just set
+			highestPriorityPlane->setFinalLandingTime(globalTime);
+
+			//Add Plane to Scheduled List
+			scheduledPlanes.push_back(highestPriorityPlane);
+
+			//Remove Plane from Arrived Plane List
+			arrivedPlanes.erase(highestPriorityPlaneIterator);
+		} else {
+			//Set Global Time to earliest Arrival Time
+			globalTime = planes[0]->getArrivalTime();
+		}
 	}
+
+	delete priority;
+	delete sorter;
+
+	planes = scheduledPlanes;
 
 	return planes;
 }

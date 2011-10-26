@@ -7,11 +7,16 @@
 
 #include "Model.h"
 #include <memory>
+
+#include "ScheduleAlgorithms/Bruteforce.h"
 #include "ScheduleAlgorithms/FIFOAlgorithm.h"
 
 Model::Model() {
 	schedulers = new Scheduler();
-	schedulers->setAlgorithm(new FIFOAlgorithm());
+
+	//schedulers->setAlgorithm(new FIFOAlgorithm());
+
+	schedulers->setAlgorithm(new Bruteforce());
 }
 
 Model::~Model() {
