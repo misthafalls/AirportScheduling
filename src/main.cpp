@@ -74,8 +74,8 @@ int main( int argc, char* argv[ ] )
 	AirportScheduler airportScheduler;
 
     //Added for debug purposes; 
-//    file_set = true;
-//    strcpy( filelocation, "testfile" );
+    file_set = true;
+    strcpy( filelocation, "testfile_big" );
 	//Setup
 	if (airportScheduler.setup()) {
 		//Start
