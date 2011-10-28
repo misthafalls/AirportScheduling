@@ -55,7 +55,7 @@ std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes ) {
 
 				int priority = priorityCalculator->getPriority(plane, globalTime);
 
-				Logger::getInstance()->logex("Priority %s -> %d", plane->getName().c_str(), priority );
+				Logger::getInstance()->logex("Priority %s -> %d", plane->getName().c_str(), priority);
 
 				plane->setPriority(priority);
 			}
