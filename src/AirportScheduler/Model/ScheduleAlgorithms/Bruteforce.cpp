@@ -5,7 +5,7 @@
  *      Author: Teun
  */
 
-#define PRINT_DEBUG 1
+#define PRINT_DEBUG 0
 
 #include "Bruteforce.h"
 
