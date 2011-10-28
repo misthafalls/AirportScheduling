@@ -76,6 +76,10 @@ CSVReader::processLine( const std::string& line ){
                         planeType = Plane::CARGO;
                 else if ( !s.compare( "PASSENGER" ) )  
                         planeType = Plane::PASSENGER;
+                else if ( !s.compare( "EMERGENCY" ) )  
+                        planeType = Plane::EMERGENCY;
+                else if ( !s.compare( "MILITARY" ) )  
+                        planeType = Plane::MILITARY;
                 else std::cout << "ERROR: type not found in: " << 
                         s << std::endl;
                 p->setPlaneType( planeType );

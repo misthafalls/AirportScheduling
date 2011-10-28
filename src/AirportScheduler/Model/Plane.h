@@ -15,8 +15,10 @@
 class Plane {
 public:
     enum PlaneType {
-        CARGO,
-        PASSENGER
+        EMERGENCY,
+        MILITARY,
+        PASSENGER,
+        CARGO
     };
 
 public:
