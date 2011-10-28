@@ -26,7 +26,7 @@ bool CSVReader::readFile( const char* file ){
     while( !inFile.eof( ) ) {
         inFile.getline( buffer, BUFFERSIZE ); 
         std::string s ( buffer );
-        if( !processLine( s ) ) return false;;
+        if( !processLine( s ) ) return false;
     }
     return true;
 }
