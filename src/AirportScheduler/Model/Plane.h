@@ -20,7 +20,7 @@ public:
     };
 
 public:
-    Plane( ) { crashed = false; };
+    Plane( ) { priority = -1; crashed = false; };
 	virtual ~Plane();
 
 	std::string getName() { return name; }

@@ -1,7 +1,7 @@
 /*
- * Bruteforce.h
+ * FIFOAlgorithm.h
  *
- *  Created on: Oct 25, 2011
+ *  Created on: Oct 4, 2011
  *      Author: christian
  */
 
@@ -17,6 +17,9 @@ public:
 	virtual ~Bruteforce();
 
 	std::vector<Plane*> & schedule( std::vector<Plane*> & planes );
+    std::vector<Plane*>::iterator findSafeTime( std::vector<Plane*> & planes, 
+                            std::vector< Plane* >::iterator plane ) const;
+    size_t rescheduleEqualArrivals( std::vector< Plane* >& planes ) const;
 };
 
 #endif /* BRUTEFORCE_H_ */
