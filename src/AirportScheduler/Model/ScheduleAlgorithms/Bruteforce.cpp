@@ -2,7 +2,7 @@
  * FIFOAlgorithm.cpp
  *
  *  Created on: Oct 4, 2011
- *      Author: christian
+ *      Author: Teun
  */
 
 #define PRINT_DEBUG 0
@@ -71,7 +71,18 @@ std::vector<Plane*>& Bruteforce::schedule( std::vector<Plane*> &planes ) {
                     " can not make deadline. Plane is going to crash" );
             } 
         } 
-
+        if( plane != planes.begin( ) ) {
+            std::vector< Plane* >::iterator new_spot = 
+                    rescheduleForPlaneType( planes, plane );
+            if( new_spot != planes.end( ) &&
+                    new_spot != plane ) {
+                plane = new_spot;
+                Plane* foo = *(plane--);
+                lastPlane = foo->getFinalLandingTime( );
+                lastDuration = foo->getLandingDuration( );
+                continue;
+            }
+        }
         if( earliestLandingTime < currentPlaneArrival ) {
             (*plane)->setFinalLandingTime( currentPlaneArrival );
         } else {
@@ -106,7 +117,7 @@ Bruteforce::findSafeTime( std::vector<Plane*> &planes,
         ". Deadline is: " <<
             deadline.getFormattedTime( ) << std::endl;
 #endif
-    while( possibleSpace != planes.begin( ) ) {
+    while( possibleSpace > planes.begin( )-- ) {
         Time nice_time = ( *possibleSpace )->getFinalLandingTime( ); 
 #if PRINT_DEBUG
         std::cout << "Trying: " << nice_time.getFormattedTime( ) << std::endl;
@@ -151,3 +162,26 @@ Bruteforce::rescheduleEqualArrivals( std::vector< Plane* >& planes ) const {
     return swapped;
 }
 
+std::vector<Plane*>::iterator
+Bruteforce::rescheduleForPlaneType( std::vector<Plane*>& planes,
+                                std::vector< Plane* >::iterator plane ) const {
+    std::vector< Plane* >::iterator possibleSpace = plane - 1;
+    std::vector< Plane* >::iterator goodSpace = plane;
+    while( possibleSpace > planes.begin( ) ) {
+        if( ( *possibleSpace )->getPlaneType( ) > 
+                    ( *plane )->getPlaneType( ) &&
+            ( *possibleSpace )->getFinalLandingTime( ) >
+                    ( *plane )->getArrivalTime( ) ) {
+            goodSpace = possibleSpace;
+            possibleSpace--;
+        } else if ( goodSpace != plane ) {
+            Plane* foo = *plane;
+            planes.erase( plane );
+            planes.insert( goodSpace, foo );
+            return goodSpace;
+        } else {
+            return planes.end( );
+        }
+    }
+    return planes.end( );
+}
