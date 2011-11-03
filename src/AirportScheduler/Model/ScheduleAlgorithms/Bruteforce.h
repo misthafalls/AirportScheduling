@@ -12,6 +12,9 @@
 #include <vector>
 
 class Bruteforce : public Algorithm {
+
+typedef std::vector< Plane* >::iterator plane_iterator;
+
 public:
 	Bruteforce();
 	virtual ~Bruteforce();
