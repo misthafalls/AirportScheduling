@@ -21,7 +21,7 @@ Bruteforce::~Bruteforce( ) { }
 
 #if PRINT_DEBUG
 void inline print_order( std::vector< Plane* > planes ) {
-    std::vector< Plane* >::iterator it;
+    plane_iterator it;
     for( it = planes.begin( ); it != planes.end( ); it++ ) {
         std::cout << (*it)->getName( ) << ": " << 
             (*it)->getArrivalTime( ).getFormattedTime( ) << std::endl;
@@ -56,7 +56,7 @@ std::vector<Plane*>& Bruteforce::schedule( std::vector<Plane*> &planes ) {
         << std::endl << "  lastDuration (int): " << lastDuration << std::endl;
 #endif
 
-    std::vector< Plane* >::iterator plane = planes.begin( ) + 1;
+    plane_iterator plane = planes.begin( ) + 1;
     while( plane != planes.end( ) ) {
         Time earliestLandingTime = lastPlane;
         earliestLandingTime.addMinute( lastDuration );
@@ -69,24 +69,29 @@ std::vector<Plane*>& Bruteforce::schedule( std::vector<Plane*> &planes ) {
 
         if( (*plane)->getDeadlineTime( ) < earliestLandingTime ) {
             if( plane != planes.begin( ) ) {
-                std::vector< Plane* >::iterator new_spot = 
+                plane_iterator new_spot = 
                     findSafeTime( planes, plane );
                 if( (*plane)->hasCrashed( ) || new_spot == planes.end( ) ) {
                     Logger::getInstance( )->log( 
                         "Couldn't find safe landing time for " + 
                         ( *plane )->getName( ) + ". Plane is going down." );
                     ( *plane )->setCrashed( true );
-                    std::vector< Plane* >::iterator foo = plane;
+                    plane_iterator foo = plane;
                     foo--;
                     lastPlane = (*foo)->getFinalLandingTime( );
                     lastDuration = (*foo)->getLandingDuration( );
                     plane++; 
                 } else {
                     plane = new_spot;
-                    std::vector< Plane* >::iterator foo = plane;
-                    foo--;
-                    lastPlane = (*foo)->getFinalLandingTime( );
-                    lastDuration = (*foo)->getLandingDuration( );
+                    if( plane != planes.begin( ) ) {
+                        plane_iterator foo = plane;
+                        foo--;
+                        lastPlane = (*foo)->getFinalLandingTime( );
+                        lastDuration = (*foo)->getLandingDuration( );
+                    } else {
+                        lastPlane = (*plane)->getFinalLandingTime( );
+                        lastDuration = (*plane)->getLandingDuration( );
+                    }
                 }
 #if PRINT_DEBUG
             std::cout << "Plane list after deadline search" << std::endl;
@@ -100,12 +105,12 @@ std::vector<Plane*>& Bruteforce::schedule( std::vector<Plane*> &planes ) {
             } 
         } 
         if( plane != planes.begin( ) ) {
-            std::vector< Plane* >::iterator new_spot = 
+            plane_iterator new_spot = 
                     rescheduleForPlaneType( planes, plane, earliestLandingTime);
             if( new_spot != planes.end( ) &&
                     new_spot != plane ) {
                 plane = new_spot;
-                std::vector< Plane* >::iterator foo = plane;
+                plane_iterator foo = plane;
                 foo--;
                 lastPlane = (*foo)->getFinalLandingTime( );
                 lastDuration = (*foo)->getLandingDuration( );
@@ -144,9 +149,9 @@ std::vector<Plane*>& Bruteforce::schedule( std::vector<Plane*> &planes ) {
 
 std::vector< Plane* >::iterator 
 Bruteforce::findSafeTime( std::vector<Plane*> &planes,
-                             const std::vector<Plane*>::iterator plane ) const{
+                             const plane_iterator plane ) const{
     Time deadline = (*plane)->getDeadlineTime( );
-    std::vector<Plane*>::iterator possibleSpace = plane - 1;
+    plane_iterator possibleSpace = plane - 1;
 #if PRINT_DEBUG
         std::cout << "Deadline problem for: " << (*plane)->getName( ) <<
         ". Deadline is: " <<
@@ -154,6 +159,11 @@ Bruteforce::findSafeTime( std::vector<Plane*> &planes,
 #endif
     while( possibleSpace >= planes.begin( ) ) {
         Time nice_time = ( *possibleSpace )->getFinalLandingTime( ); 
+        plane_iterator planeBeforePossibleSpace = possibleSpace-1;
+        if( possibleSpace != planes.begin( ) ) {
+            nice_time.addMinute( 
+                (*planeBeforePossibleSpace)->getLandingDuration( ) );
+        }
         if( nice_time < deadline ) {
 #if PRINT_DEBUG
         std::cout << nice_time.getFormattedTime( ) << 
@@ -199,8 +209,8 @@ Bruteforce::findSafeTime( std::vector<Plane*> &planes,
 size_t
 Bruteforce::rescheduleEqualArrivals( std::vector< Plane* >& planes ) const {
     size_t swapped = 0;
-    std::vector< Plane* >::iterator foo = planes.begin( );
-    std::vector< Plane* >::iterator bar = foo + 1;
+    plane_iterator foo = planes.begin( );
+    plane_iterator bar = foo + 1;
     Time fooTime; Time barTime;
     while( bar != planes.end( ) ) {
         fooTime = ( *foo )->getArrivalTime( );
@@ -224,12 +234,12 @@ Bruteforce::rescheduleEqualArrivals( std::vector< Plane* >& planes ) const {
     return swapped;
 }
 
-std::vector<Plane*>::iterator
+std::vector< Plane* >::iterator 
 Bruteforce::rescheduleForPlaneType( std::vector<Plane*>& planes,
-                    const std::vector< Plane* >::iterator plane,
+                    const plane_iterator plane,
                     const Time expectedLandingTime ) const {
-    std::vector< Plane* >::iterator possibleSpace = plane - 1;
-    std::vector< Plane* >::iterator goodSpace = plane;
+    plane_iterator possibleSpace = plane - 1;
+    plane_iterator goodSpace = plane;
     Time realLandingTime = expectedLandingTime;
     realLandingTime.addMinute( (*plane)->getLandingDuration( ) );
     while( possibleSpace > planes.begin( ) ) {
