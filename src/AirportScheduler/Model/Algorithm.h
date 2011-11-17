@@ -26,12 +26,16 @@ public:
 	virtual ~Algorithm() {}
 
 	virtual void clean();
-	virtual void schedule(std::vector<Plane*> & planes, Runway * runway) = 0;
+	virtual void schedule(std::vector<Plane*> & planes) = 0;
+
+	void addRunway(Runway * runway) { this->runway = runway; }
 
 	const AlgorithmInfo & getInfo() { return info; }
 
 protected:
 	AlgorithmInfo info;
+
+	Runway * runway;
 
 };
 

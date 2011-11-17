@@ -41,5 +41,6 @@ void Model::begin() {
 		planesToSchedule.push_back(plane);
 	}
 
-	algorithm->schedule(planesToSchedule, runway);
+	algorithm->addRunway(runway);
+	algorithm->schedule(planesToSchedule);
 }

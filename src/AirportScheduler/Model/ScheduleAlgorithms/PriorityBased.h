@@ -19,15 +19,13 @@ public:
 	virtual ~PriorityBased();
 
 	virtual void clean();
-	virtual void schedule(std::vector<Plane*> & planes, Runway * runway);
+	virtual void schedule(std::vector<Plane*> & planes);
 	Plane* landPlane(std::vector<Plane*>::iterator & highestPriorityPlaneIterator, Time & timeToLand);
 
 protected:
 	Time timeHorizon;
 
 	Time globalTime;
-
-	Runway * runway;
 
 	std::vector<Plane*> arrivedPlanes;
 

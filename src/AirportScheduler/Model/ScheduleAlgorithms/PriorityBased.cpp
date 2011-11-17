@@ -27,10 +27,8 @@ void PriorityBased::clean() {
 	globalTime = Time(0, 0, 0); //Reset Global Time
 }
 
-void PriorityBased::schedule(vector<Plane*> & planes, Runway * runway) {
+void PriorityBased::schedule(vector<Plane*> & planes) {
 	clean();
-
-	this->runway = runway;
 
 	BubbleSort * sorter = new BubbleSort();
 	Priority * priorityCalculator = new Priority();
