@@ -12,29 +12,21 @@
 #include "ScheduleAlgorithms/PriorityBased.h"
 
 Model::Model() {
-	schedulers = new Scheduler();
+	//algorithm = new Bruteforce();
+	algorithm = new PriorityBased();
 
-	schedulers->setAlgorithm(new Bruteforce());
-
-	//schedulers->setAlgorithm(new PriorityBased());
+	runway = new Runway("Runway 1");
 }
 
 Model::~Model() {
-	delete schedulers;
+	delete runway;
+	delete algorithm;
 }
 
 bool Model::setup() {
 	return true;
 }
 
-/*
-bool Model::addPlane( std::string name, int arrivalTime ) {
-    std::auto_ptr< Plane > newPlane ( new Plane( name, arrivalTime, Plane::CARGO, 0, 0 ) );
-    if( !newPlane.get( ) ) return false;// No plane created.. error!
-    planes[ name ] = newPlane.release( );
-    return true;
-}
-*/
 bool Model::addPlane( Plane *p ) {
     planes[ p->getName( ) ] = p;
     return true;
@@ -43,11 +35,11 @@ bool Model::addPlane( Plane *p ) {
 void Model::begin() {
 	std::vector<Plane*> planesToSchedule;
 
-	for (std::map<std::string, Plane*>::iterator it = planes.begin(); it != planes.end(); it++ ) {
+	for(std::map<std::string, Plane*>::iterator it = planes.begin(); it != planes.end(); it++) {
 		Plane * plane = (*it).second;
 
 		planesToSchedule.push_back(plane);
 	}
 
-	schedule = schedulers->makeSchedule(planesToSchedule);
+	algorithm->schedule(planesToSchedule, runway);
 }
