@@ -8,8 +8,9 @@
 #ifndef MODEL_H_
 #define MODEL_H_
 
-#include "Scheduler.h"
 #include "../../Values.h"
+#include "Algorithm.h"
+#include "Runway.h"
 
 #include <map>
 #include <string>
@@ -23,22 +24,21 @@ public:
 	virtual ~Model();
 
 	bool setup();
-    //TODO remove, outdated
-//    bool addPlane( std::string name, int arrivalTime );
-    bool addPlane( Plane *p );
+    bool addPlane(Plane * p);
 
     void begin();
 
-    std::vector<Plane*> & getSchedule() { return schedule; }
+    Algorithm * getAlgorithm() { return algorithm; }
+    Runway * getRunway() { return runway; }
 
     bool setAlgorithm( AlgorithmType type );
 
 private:
-	Scheduler * schedulers;
+	Algorithm * algorithm;
 
 	std::map<std::string, Plane*> planes;
 
-	std::vector<Plane*> schedule;
+	Runway * runway;
 
 };
 

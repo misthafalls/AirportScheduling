@@ -11,6 +11,7 @@
 
 #include "../SortAlgorithms/BubbleSort.h"
 #include "../Logger.h"
+#include "../Runway.h"
 
 #if PRINT_DEBUG
 #include <iostream>
@@ -29,7 +30,9 @@ void inline print_order( std::vector< Plane* > planes ) {
 }
 #endif
 
-std::vector<Plane*>& Bruteforce::schedule( std::vector<Plane*> &planes ) {
+void Bruteforce::schedule(std::vector<Plane*> &planes) {
+	clean();
+
 	BubbleSort * arrivalTimeSort = new BubbleSort();
 
 	planes = arrivalTimeSort->scheduleByArrivalTimeAscending( planes );
@@ -144,7 +147,17 @@ std::vector<Plane*>& Bruteforce::schedule( std::vector<Plane*> &planes ) {
 #endif
         plane++;
 	}
-	return planes;
+	//return planes;
+    plane_iterator it;
+    for( it = planes.begin( ); it != planes.end( ); it++ ) {
+        Time otherTime = (*it)->getFinalLandingTime( );
+        otherTime.addMinute( (*it)->getLandingDuration( ) );
+        Time moreTimes = (*it)->getFinalLandingTime( );
+
+        SchedulePlane * schedulePlane =
+            new SchedulePlane(  moreTimes, otherTime, (*it) );
+        runway->add( schedulePlane );
+    }
 }
 
 std::vector< Plane* >::iterator 

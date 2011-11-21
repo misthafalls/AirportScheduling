@@ -6,7 +6,6 @@
  */
 
 #include "View.h"
-#include "../Model/Logger.h"
 
 #include "../Model/Logger.h"
 
@@ -22,28 +21,21 @@ bool View::setup() {
 }
 
 void View::print() {
-	printPlaneList(model->getSchedule());
+	//Print Runway
+	printRunway(model->getRunway());
+
+	//Print Algorithm Info
+	const AlgorithmInfo & algoInfo = model->getAlgorithm()->getInfo();
+
+	Logger::getInstance()->logex("Number of crashes: %d", algoInfo.numCrashes);
 }
 
-void View::printPlaneList(std::vector<Plane*> & list) {
-	Logger::getInstance()->log( "Printing Plane List.." );
+void View::printRunway(Runway * runway) {
+	Logger::getInstance()->logex("Printing %s..", runway->getName().c_str());
 
-	int i = 0;
-	for(std::vector<Plane*>::iterator it = list.begin(); it != list.end(); it++) {
-		i++;
+	for(std::vector<ScheduleItem*>::const_iterator it = runway->getSchedule().begin(); it != runway->getSchedule().end(); it++) {
+		ScheduleItem * scheduledItem = *it;
 
-		Plane * plane = *it;
-
-		if(plane->hasCrashed()) {
-			Logger::getInstance()->logex( "Plane %02d: %s crashed (Priority: %d)", i,
-											plane->getName().c_str(),
-											plane->getPriority());
-		} else {
-			Logger::getInstance()->logex( "Plane %02d: %s arriving at %s (Priority: %d)",
-											i,
-											plane->getName().c_str(),
-											plane->getFinalLandingTime( ).getFormattedTime( ).c_str( ),
-											plane->getPriority() );
-		}
+		Logger::getInstance()->logex(scheduledItem->toString().c_str());
 	}
 }

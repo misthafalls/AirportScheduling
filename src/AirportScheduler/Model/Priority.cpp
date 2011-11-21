@@ -7,8 +7,6 @@
 
 #include "Priority.h"
 
-//Prioriteit = deadline - verstreken tijd - landingduration
-
 Priority::Priority() {
 }
 
@@ -18,11 +16,11 @@ Priority::~Priority() {
 int Priority::getPriority(Plane* plane, Time globalTime) {
 	Time deadline = plane->getDeadlineTime();
 
-	Time arrivalTime = plane->getArrivalTime();
-	Time scheduledTime = plane->getScheduledTime();
-	Time diff = scheduledTime - arrivalTime;
+	//Time arrivalTime = plane->getArrivalTime();
+	//Time scheduledTime = plane->getScheduledTime();
+	//Time diff = scheduledTime - arrivalTime;
 
-	deadline = deadline + diff;
+	//deadline = deadline + diff;
 	deadline = deadline - globalTime;
 
 	return deadline.getTimeInMinutes() - plane->getLandingDuration();

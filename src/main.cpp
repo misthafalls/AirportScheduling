@@ -92,6 +92,7 @@ int main( int argc, char* argv[ ] )
     int horizon = 0; int lanes = 0;
     size_t fuelImportance = 0; size_t delayImportance = 0;
     bool isTypeSet = false;
+
     if( argc == 1 )
     {
         printHelp( );
@@ -109,7 +110,6 @@ int main( int argc, char* argv[ ] )
             }
             else if( !strcmp( argv[ t ], "-Ab" ) )
             {
-                std::cout << "type bruteforce set" << std::endl;
                 type = BRUTEFORCE;
                 isTypeSet = true;
             }
@@ -156,12 +156,12 @@ int main( int argc, char* argv[ ] )
             std::cout << "Warning: Bruteforce algorithm does not support " <<
                 "criteria based scheduling" << std::endl;
         }
-        else if( lanes != 0 )
+        if( lanes != 0 )
         {
             std::cout << "Warning: Bruteforce algorithm does not support " <<
                 "multiple Lanes" << std::endl;
         }
-        else if( horizon != 0 )
+        if( horizon != 0 )
         {
             std::cout << "Warning: Bruteforce algorithm does not support " <<
                 "horizon input; Horizon is always maximum" << std::endl;
@@ -227,6 +227,10 @@ int main( int argc, char* argv[ ] )
     }
 	//Cleanup
 	airportScheduler.cleanup();
+
+	//Exit
+	std::cout << "Press enter to exit..." << std::endl;
+	std::cin.get();
 
 	return 0;
 }

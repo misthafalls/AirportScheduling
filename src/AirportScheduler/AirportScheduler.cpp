@@ -6,6 +6,7 @@
  */
 
 #include "AirportScheduler.h"
+
 #include "Model/Logger.h"
 
 AirportScheduler::AirportScheduler() {
@@ -27,12 +28,6 @@ bool AirportScheduler::setup( AlgorithmType type ) {
 bool AirportScheduler::readFile( const char* file ) const {
     CSVReader reader( model );
     return reader.readFile( file );
-}
-
-bool AirportScheduler::addPlane( std::string name, int time ) const {
-//    return model->addPlane( name, time );
-
-	return true;
 }
 
 void AirportScheduler::cleanup() {

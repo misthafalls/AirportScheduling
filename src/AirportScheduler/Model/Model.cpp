@@ -12,12 +12,12 @@
 #include "ScheduleAlgorithms/PriorityBased.h"
 
 Model::Model() {
-	schedulers = new Scheduler();
-
+	runway = new Runway("Runway 1");
 }
 
 Model::~Model() {
-	delete schedulers;
+	delete runway;
+	delete algorithm;
 }
 
 bool Model::setup() {
@@ -37,15 +37,16 @@ void Model::begin() {
 		Plane * plane = (*it).second;
 		planesToSchedule.push_back(plane);
 	}
-	schedule = schedulers->makeSchedule(planesToSchedule);
+	algorithm->addRunway(runway);
+	algorithm->schedule(planesToSchedule);
 }
 
 bool Model::setAlgorithm( AlgorithmType type ) {
     if( type == BRUTEFORCE ) {
-        schedulers->setAlgorithm(new Bruteforce());
+        algorithm = new Bruteforce();
         return true;
     } else if ( type == PRIORITY ) {
-        schedulers->setAlgorithm(new PriorityBased());
+        algorithm  = new PriorityBased();
         return true;
     }
     return false;
