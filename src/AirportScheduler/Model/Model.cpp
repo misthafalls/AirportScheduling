@@ -14,9 +14,6 @@
 Model::Model() {
 	schedulers = new Scheduler();
 
-	schedulers->setAlgorithm(new Bruteforce());
-
-	//schedulers->setAlgorithm(new PriorityBased());
 }
 
 Model::~Model() {
@@ -27,14 +24,6 @@ bool Model::setup() {
 	return true;
 }
 
-/*
-bool Model::addPlane( std::string name, int arrivalTime ) {
-    std::auto_ptr< Plane > newPlane ( new Plane( name, arrivalTime, Plane::CARGO, 0, 0 ) );
-    if( !newPlane.get( ) ) return false;// No plane created.. error!
-    planes[ name ] = newPlane.release( );
-    return true;
-}
-*/
 bool Model::addPlane( Plane *p ) {
     planes[ p->getName( ) ] = p;
     return true;
@@ -43,11 +32,21 @@ bool Model::addPlane( Plane *p ) {
 void Model::begin() {
 	std::vector<Plane*> planesToSchedule;
 
-	for (std::map<std::string, Plane*>::iterator it = planes.begin(); it != planes.end(); it++ ) {
+	for (std::map<std::string, Plane*>::iterator it = planes.begin(); 
+            it != planes.end(); it++ ) {
 		Plane * plane = (*it).second;
-
 		planesToSchedule.push_back(plane);
 	}
-
 	schedule = schedulers->makeSchedule(planesToSchedule);
+}
+
+bool Model::setAlgorithm( AlgorithmType type ) {
+    if( type == BRUTEFORCE ) {
+        schedulers->setAlgorithm(new Bruteforce());
+        return true;
+    } else if ( type == PRIORITY ) {
+        schedulers->setAlgorithm(new PriorityBased());
+        return true;
+    }
+    return false;
 }

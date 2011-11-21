@@ -9,27 +9,78 @@
 #include "string.h"
 #include <iostream>
 #include <stdlib.h>
-void startDataEntry( AirportScheduler& as ) {
-    std::cout << "Starting manual plane entry.." << std::endl << std::endl;
-    bool addMore = true;
-    char name[ 256 ]; char time[ 256 ];
-    size_t t = 0;
-    while ( addMore ) {
-        std::cout << "Please enter the flight number:";
-        std::cin.getline( name, 256 );
-        std::cout << "Please enter the flight arrival time:";
-        std::cin.getline( time, 256 );
-        //int itime = atoi( time );
-        std::string sname( name );
-//TODO re-create this to add planes with all variables
-//        as.addPlane( sname, itime );
-        std::cout << "Plane added, would you like to add more? (y/n)";
-        t++;
-        char c;
-        std::cin >> c;
-        if( c != 'y' ) addMore = false;
+
+inline void printNewLineAndIndent( int indent ) {
+    std::cout << std::endl;
+    for( int i = 0; i < indent; i++ ) {
+        std::cout << " ";
     }
-    std::cout << std::endl << "Added " << t << " planes." << std::endl;
+}
+
+void printHelp( ) {
+    std::cout << "Usage: ";
+    printNewLineAndIndent( 4 );
+    std::cout << "AirportScheduler [-Ap] [-Ab] [-h] [-Cd <importance>] \\";
+    printNewLineAndIndent( 8 );
+    std::cout << "[-Cf <importance>] [-H <minutes>] [-L <number>] \\";
+    printNewLineAndIndent( 8 );
+    std::cout << "[<file name>]";
+    printNewLineAndIndent( 0 );
+    std::cout << "Where:";
+    printNewLineAndIndent( 4 );
+    std::cout << "-Ap     use the Priority-based algorithm";
+    printNewLineAndIndent( 4 );
+    std::cout << "-Ab     use the BruteForce algorithm";
+    printNewLineAndIndent( 4 );
+    std::cout << "-h      print this help text";
+    printNewLineAndIndent( 0 );
+    printNewLineAndIndent( 0 );
+    std::cout <<"Priority-Based specific commands"; 
+    printNewLineAndIndent( 4 );
+    std::cout << "-H <minutes>        Set the horizon of in minutes"
+        << " (default 0)";
+    printNewLineAndIndent( 4 );
+    std::cout << "-L <number>         Set the number of Airport Lanes " <<
+        "(default 1, Max 10)";
+    printNewLineAndIndent( 4 );
+    std::cout << "-Cd <importance>    Modify the importance of delay-time";
+    printNewLineAndIndent( 4 );
+    std::cout << 
+        "-Cf <importance>    Modify the importance of fuel consumption";
+    printNewLineAndIndent( 4 );
+    printNewLineAndIndent( 0 );
+    std::cout << "Note that the usage of the -Cd,-Cf and -H parameters only ";
+    printNewLineAndIndent( 4 );
+    std::cout << "have effect on the Priority-based algorithm." ;
+    printNewLineAndIndent( 4 );
+    std::cout << "The imput of <importance> must be an integer between";
+    printNewLineAndIndent( 4 );
+    std::cout << "0 and 100, default is 1. Please note that these values";
+    printNewLineAndIndent( 4 );
+    std::cout << "are relative to each other. This means the following";
+    printNewLineAndIndent( 4 );
+    std::cout << "inputs are the same:";
+    printNewLineAndIndent( 8 );
+    std::cout << "AirportScheduler -Ap -Cf 1 -Cd 1 <filename>";
+    printNewLineAndIndent( 8 );
+    std::cout << "AirportScheduler -Ap -Cf 29 -Cd 29 <filename>";
+    printNewLineAndIndent( 0 );
+    printNewLineAndIndent( 0 );
+    std::cout << "Examples:";
+    printNewLineAndIndent( 4 );
+    std::cout << "Use the Priority based algorithm with a horizon of 15 ";
+    printNewLineAndIndent( 4 );
+    std::cout << "minutes. The fuel / delay ratio is 2/10, and the" <<
+        "inputfile is: testFile.";
+    printNewLineAndIndent( 8 );
+    std::cout << "AirportScheduler -Ap -H 15 -Cf 20 -Cd 100 testfiles/testFile";
+    printNewLineAndIndent( 0 );
+    printNewLineAndIndent( 4 );
+    std::cout << "Use the Bruteforce algorithm with inputfile: bigTestfile:";
+    printNewLineAndIndent( 8 );
+    std::cout << "AirportScheduler -Ab testfiles/bigTestfile";
+    printNewLineAndIndent( 0 );
+    exit( 0 );
 }
 
 int main( int argc, char* argv[ ] )
@@ -37,60 +88,143 @@ int main( int argc, char* argv[ ] )
 	//Initialize Thread
 	//TODO
     char filelocation[ 256 ];
+    AlgorithmType type;
+    int horizon = 0; int lanes = 0;
+    size_t fuelImportance = 0; size_t delayImportance = 0;
+    bool isTypeSet = false;
     if( argc == 1 )
     {
-        std::cout << "Usage: -f [testfile]" << std::endl;    
+        printHelp( );
     }
-    else
+    else // Get input parameters
     {
-        for( int t = 1; t < argc; ++t )
+        //get File
+        strcpy( filelocation, argv[ argc-1 ] );
+        for( int t = 1; t < argc-1; ++t )
         {
-            if( !strcmp( argv[ t ], "-f" ) && t + 1 <= argc )
+            if( !strcmp( argv[ t ], "-Ap" ) )
             {
+                type = PRIORITY;
+                isTypeSet = true;
+            }
+            else if( !strcmp( argv[ t ], "-Ab" ) )
+            {
+                std::cout << "type bruteforce set" << std::endl;
+                type = BRUTEFORCE;
+                isTypeSet = true;
+            }
+            else if( !strcmp( argv[ t ], "-H" ) )
+            {
+                if( t+1 >= argc ) printHelp( );
                 t++;
-                strcpy( filelocation, argv[ t ] );
+                horizon = atoi( argv[ t ] );
+            }
+            else if( !strcmp( argv[ t ], "-Cd" ) )
+            {
+                if( t+1 >= argc ) printHelp( );
+                t++;
+                delayImportance = atoi( argv[ t ] );
+            }
+            else if( !strcmp( argv[ t ], "-Cf" ) )
+            {
+                if( t+1 >= argc ) printHelp( );
+                t++;
+                fuelImportance = atoi( argv[ t ] );
+            }
+            else if( !strcmp( argv[ t ], "-L" ) )
+            {
+                if( t+1 >= argc ) printHelp( );
+                t++;
+                lanes = atoi( argv[ t ] );
+            }
+            else if( !strcmp( argv[ t ], "-h" ) )
+            {
+                printHelp( );
             }
         }
     }
-
-    bool file_set = false;
-    if( argc == 2 && !strcmp( argv[ 1 ], "-h" ) )
+    //Check input
+    if( !isTypeSet )
     {
-        // TODO: add more help text
-        std::cout << "Usage: -f [testfile]" << std::endl;    
+        std::cout << "No Algorithm selected" << std::endl;
+        printHelp( );
     }
-    else 
+    else if( type == BRUTEFORCE )
     {
-        for( int t = 1; t < argc; ++t )
+        if( fuelImportance != 0 || delayImportance != 0 )
         {
-            if( !strcmp( argv[ t ], "-f" ) && t + 1 <= argc )
-            {
-                t++;
-                strcpy( filelocation, argv[ t ] );
-                file_set = true;
-            }
+            std::cout << "Warning: Bruteforce algorithm does not support " <<
+                "criteria based scheduling" << std::endl;
+        }
+        else if( lanes != 0 )
+        {
+            std::cout << "Warning: Bruteforce algorithm does not support " <<
+                "multiple Lanes" << std::endl;
+        }
+        else if( horizon != 0 )
+        {
+            std::cout << "Warning: Bruteforce algorithm does not support " <<
+                "horizon input; Horizon is always maximum" << std::endl;
         }
     }
-	AirportScheduler airportScheduler;
-
-    //Added for debug purposes; 
-//    file_set = true;
-//    strcpy( filelocation, "testfile" );
-	//Setup
-	if (airportScheduler.setup()) {
-		//Start
-        if( file_set ) {
-            airportScheduler.readFile( filelocation );
-            std::cout << "File read, would you like to add more planes? (y/n)";
-            char c;
-            std::cin >> c;
-            if( c == 'y' ) { startDataEntry( airportScheduler ); }
+    else if ( type == PRIORITY )
+    {
+        if( fuelImportance == 0  )
+        {
+            std::cout << "Warning: No value for fuel importance found." <<
+                std::endl << " Using value 1." << std::endl;
+            fuelImportance = 1;
         } else {
-            startDataEntry( airportScheduler );
+            if( fuelImportance < 0 || fuelImportance > 100 ) {
+                std::cout << "ERROR: Fuel Importance level invalid" << 
+                    std::endl;
+                exit( 0 );
+            }
         }
-		airportScheduler.start( );
-	}
+        if ( delayImportance == 0 )
+        {
+            std::cout << "Warning: No value for delay importance found." <<
+                std::endl << " Using value 1." << std::endl;
+            delayImportance = 1;
+        } else {
+            if( delayImportance < 0 || delayImportance > 100 ) {
+                std::cout << "ERROR: Delay Importance level invalid" << 
+                    std::endl;
+                exit( 0 );
+            }
+        }
+        if( lanes == 0 )
+        {
+            std::cout << "Warning: No value for lane count found." <<
+                std::endl << " Using value 1." << std::endl;
+            lanes = 1;
+        } else {
+            if( lanes > 10 ) {
+                std::cout << "ERROR too many lanes" << std::endl;
+            }
+        }
+        if( horizon == 0 )
+        {
+            std::cout << "Warning: No value for horizon found." <<
+                std::endl << " Using value 0." << std::endl;
+        }
+    }
 
+	AirportScheduler airportScheduler;
+    //Setup
+	if ( airportScheduler.setup( type ) ) {
+        if( airportScheduler.readFile( filelocation ) )
+        {
+		    //Start
+            airportScheduler.start( );
+        }
+        else
+        {
+            std::cout << "Unable to open input file" << std::endl;
+        }
+	} else {
+        std::cout << "Failed to setup scheduler" << std::endl;
+    }
 	//Cleanup
 	airportScheduler.cleanup();
 

@@ -9,6 +9,7 @@
 #define MODEL_H_
 
 #include "Scheduler.h"
+#include "../../Values.h"
 
 #include <map>
 #include <string>
@@ -16,6 +17,7 @@
 
 class Model
 {
+
 public:
 	Model();
 	virtual ~Model();
@@ -28,6 +30,8 @@ public:
     void begin();
 
     std::vector<Plane*> & getSchedule() { return schedule; }
+
+    bool setAlgorithm( AlgorithmType type );
 
 private:
 	Scheduler * schedulers;

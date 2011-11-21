@@ -6,7 +6,6 @@
  */
 
 #include "AirportScheduler.h"
-
 #include "Model/Logger.h"
 
 AirportScheduler::AirportScheduler() {
@@ -21,8 +20,8 @@ AirportScheduler::~AirportScheduler() {
 	delete model;
 }
 
-bool AirportScheduler::setup() {
-	return true;
+bool AirportScheduler::setup( AlgorithmType type ) {
+    return model->setAlgorithm( type );
 }
 
 bool AirportScheduler::readFile( const char* file ) const {

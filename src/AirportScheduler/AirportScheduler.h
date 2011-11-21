@@ -17,7 +17,7 @@ public:
 	AirportScheduler();
 	virtual ~AirportScheduler();
 
-	bool setup();
+	bool setup( AlgorithmType type );
 	void cleanup();
 
 	void start();
