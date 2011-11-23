@@ -21,8 +21,8 @@ AirportScheduler::~AirportScheduler() {
 	delete model;
 }
 
-bool AirportScheduler::setup( AlgorithmType type ) {
-    return model->setAlgorithm( type );
+bool AirportScheduler::setup() {
+	return true;
 }
 
 bool AirportScheduler::readFile( const char* file ) const {

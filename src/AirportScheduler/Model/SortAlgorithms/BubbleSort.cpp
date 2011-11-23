@@ -29,7 +29,10 @@ std::vector<Plane*>& BubbleSort::scheduleByArrivalTimeAscending( std::vector<Pla
 				planes.at( i ) = planes.at( i+1 );
 				planes.at( i+1 ) = tmp;
 				swapped = true;
-				//Logger::getInstance( )->log( tmp->getName( ) + " swap with " + planes.at( i )->getName( ) );
+				Logger::getInstance( )->log( 
+                    tmp->getName( ) + 
+                        " swap with " + 
+                        planes.at( i )->getName( ) );
 			}
 		}
 	}
@@ -53,6 +56,10 @@ std::vector<Plane*>& BubbleSort::scheduleByPriorityAscending( std::vector<Plane*
 				planes.at( i ) = planes.at( i+1 );
 				planes.at( i+1 ) = tmp;
 				swapped = true;
+				Logger::getInstance( )->log(
+                    tmp->getName( ) +
+                        " swap with " +
+                        planes.at( i )->getName( ) );
 			}
 		}
 	}

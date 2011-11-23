@@ -21,7 +21,7 @@ public:
 	bool setup();
 
 	void print();
-	void printRunway(Runway * runway);
+	void printPlaneList(std::vector<Plane*> & list);
 
 protected:
 	Model * model;

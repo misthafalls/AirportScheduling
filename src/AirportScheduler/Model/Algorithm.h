@@ -9,34 +9,15 @@
 #define ALGORITHM_H_
 
 #include "Plane.h"
-#include "Runway.h"
-
 #include <vector>
-
-struct AlgorithmInfo
-{
-public:
-	int numCrashes;
-};
 
 class Algorithm
 {
 public:
-	Algorithm() {}
-	virtual ~Algorithm() {}
+	Algorithm() { };
+	virtual ~Algorithm() { };
 
-	virtual void clean();
-	virtual void schedule(std::vector<Plane*> & planes) = 0;
-
-	void addRunway(Runway * runway) { this->runway = runway; }
-
-	const AlgorithmInfo & getInfo() { return info; }
-
-protected:
-	AlgorithmInfo info;
-
-	Runway * runway;
-
+	virtual std::vector<Plane*> & schedule(std::vector<Plane*> & planes) = 0;
 };
 
 #endif /* ALGORITHM_H_ */
