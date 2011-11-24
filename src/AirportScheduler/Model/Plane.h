@@ -49,6 +49,9 @@ public:
     int getLandingDuration( ) { return landingDuration; }
     void setLandingDuration( int duration ) { landingDuration = duration; }
 
+    int getRunway( ) { return runway; }
+    void setRunway( int r ) { runway = r; }
+
     Time getDeadlineTime( );
 
     void setPriority(int p) { priority = p; }
@@ -65,6 +68,8 @@ private:
     // Time that the scheduler sets
     Time finalLandingTime;
 	PlaneType planeType;
+
+	int runway;
 	int fuel;
 	int fuelUsagePerMin;
     int landingDuration;

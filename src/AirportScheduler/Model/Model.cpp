@@ -14,9 +14,9 @@
 Model::Model() {
 	schedulers = new Scheduler();
 
-	schedulers->setAlgorithm(new Bruteforce());
+	//schedulers->setAlgorithm(new Bruteforce());
 
-	//schedulers->setAlgorithm(new PriorityBased());
+	schedulers->setAlgorithm(new PriorityBased());
 }
 
 Model::~Model() {

@@ -10,6 +10,7 @@
 #include "../SortAlgorithms/BubbleSort.h"
 #include "../Priority.h"
 
+#include "../Airport.h"
 #include "../Logger.h"
 
 using namespace std;
@@ -31,7 +32,11 @@ std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes ) {
 	vector<Plane*> arrivedPlanes;
 	vector<Plane*> scheduledPlanes;
 
+	Airport * airport = new Airport(2);
+
 	//Global Time of System
+	Time schedulingTime;
+	Time searchTime;
 	Time globalTime;
 
 	while( (!planes.empty()) || (!arrivedPlanes.empty()) ) {
@@ -39,7 +44,7 @@ std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes ) {
 		for(vector<Plane*>::iterator it = planes.begin(); it != planes.end(); ) {
 			Plane * plane = *it;
 
-			if(plane->getArrivalTime() <= globalTime) {
+			if(plane->getArrivalTime() <= searchTime) {
 				arrivedPlanes.push_back(plane);
 
 				it = planes.erase(it);
@@ -67,21 +72,31 @@ std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes ) {
 			vector<Plane*>::iterator highestPriorityPlaneIterator = arrivedPlanes.begin();
 			Plane * highestPriorityPlane = *highestPriorityPlaneIterator;
 
-			//Compute Final Landing Time
-			Time finalLandingTime;
-			finalLandingTime.addMinute(globalTime.getTimeInMinutes() + highestPriorityPlane->getLandingDuration());
+			if( airport->landPlane(highestPriorityPlane) ) {
+				globalTime = airport->getLastLandingTime();
 
-			//Priority is lower than 0?
-			if(finalLandingTime > highestPriorityPlane->getDeadlineTime()) {
-				//Crashed
-				highestPriorityPlane->setCrashed(true);
-			} else {
-				//Final Scheduled Time of Plane will be the current Global Time
-				highestPriorityPlane->setFinalLandingTime(globalTime);
-
-				//Add Landing Duration of the Plane to the Global Time
-				globalTime.addMinute(highestPriorityPlane->getLandingDuration());
+				//TODO: What if plane has more then 10 minutes landingTime?
+				if(globalTime > schedulingTime) {
+					schedulingTime.addMinute(10);
+					searchTime.addMinute(10);
+				}
 			}
+
+//			//Compute Final Landing Time
+//			Time finalLandingTime;
+//			finalLandingTime.addMinute(globalTime.getTimeInMinutes() + highestPriorityPlane->getLandingDuration());
+//
+//			//Priority is lower than 0?
+//			if(finalLandingTime > highestPriorityPlane->getDeadlineTime()) {
+//				//Crashed
+//				highestPriorityPlane->setCrashed(true);
+//			} else {
+//				//Final Scheduled Time of Plane will be the current Global Time
+//				highestPriorityPlane->setFinalLandingTime(globalTime);
+//
+//				//Add Landing Duration of the Plane to the Global Time
+//				globalTime.addMinute(highestPriorityPlane->getLandingDuration());
+//			}
 
 			//Add Plane to Scheduled List
 			scheduledPlanes.push_back(highestPriorityPlane);
@@ -91,6 +106,11 @@ std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes ) {
 		} else {
 			//Set Global Time to earliest Arrival Time
 			globalTime = planes[0]->getArrivalTime();
+			schedulingTime = globalTime;
+			searchTime = globalTime;
+
+			schedulingTime.addMinute(10);
+			searchTime.addMinute(30);
 		}
 	}
 

@@ -18,11 +18,11 @@ Priority::~Priority() {
 int Priority::getPriority(Plane* plane, Time globalTime) {
 	Time deadline = plane->getDeadlineTime();
 
-	Time arrivalTime = plane->getArrivalTime();
-	Time scheduledTime = plane->getScheduledTime();
-	Time diff = scheduledTime - arrivalTime;
-
-	deadline = deadline + diff;
+//	Time arrivalTime = plane->getArrivalTime();
+//	Time scheduledTime = plane->getScheduledTime();
+//	Time diff = scheduledTime - arrivalTime;
+//
+//	deadline = deadline + diff;
 	deadline = deadline - globalTime;
 
 	return deadline.getTimeInMinutes() - plane->getLandingDuration();
