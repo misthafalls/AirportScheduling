@@ -31,6 +31,10 @@ Time Airport::getLastLandingTime() {
 	return lastLandingTime;
 }
 
+vector<vector<Plane *> *> * Airport::getRunways() {
+	return runways;
+}
+
 bool Airport::landPlane(Plane * p) {
 	vector<Plane *> * runway = 0;
 	int runwayNumber = 0;

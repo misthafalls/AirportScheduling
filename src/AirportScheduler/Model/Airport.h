@@ -19,6 +19,8 @@ public:
 
 	bool landPlane(Plane * p);
 
+	std::vector<std::vector<Plane *> *> * getRunways();
+
 	Time getLastLandingTime();
 private:
 	//void landPlane(Plane * p);
