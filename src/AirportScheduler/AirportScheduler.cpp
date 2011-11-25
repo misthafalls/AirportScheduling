@@ -7,6 +7,7 @@
 
 #include "AirportScheduler.h"
 #include "Model/Logger.h"
+#include <ctime>
 
 AirportScheduler::AirportScheduler() {
 	model = new Model();
@@ -34,8 +35,6 @@ void AirportScheduler::cleanup() {
 
 void AirportScheduler::start() {
 	model->begin();
-
 	view->print();
-
-	Logger::getInstance()->wait();
+	//Logger::getInstance()->wait();
 }
