@@ -39,5 +39,4 @@ void Logger::logex(const char * fmt, ...) {
 
 void Logger::wait() {
 	cin.get();
-	//cin.get();
 }

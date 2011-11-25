@@ -72,26 +72,15 @@ std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes ) {
 			vector<Plane*>::iterator highestPriorityPlaneIterator = arrivedPlanes.begin();
 			Plane * highestPriorityPlane = *highestPriorityPlaneIterator;
 
-			while(globalTime < schedulingTime && !arrivedPlanes.empty()) {
-				airport->landPlane(highestPriorityPlane);
+			if( airport->landPlane(highestPriorityPlane) ) {
 				globalTime = airport->getLastLandingTime();
 
-				//Add Plane to Scheduled List
-				scheduledPlanes.push_back(highestPriorityPlane);
-
-				//Remove Plane from Arrived Plane List
-				arrivedPlanes.erase(highestPriorityPlaneIterator);
-			}
-
-//			if( airport->landPlane(highestPriorityPlane) ) {
-//				globalTime = airport->getLastLandingTime();
-//
-//				//TODO: What if plane has more then 10 minutes landingTime?
-//				if(globalTime > schedulingTime) {
+				//TODO: What if plane has more then 10 minutes landingTime?
+				if(globalTime > schedulingTime) {
 					schedulingTime.addMinute(10);
 					searchTime.addMinute(10);
-//				}
-//			}
+				}
+			}
 
 //			//Compute Final Landing Time
 //			Time finalLandingTime;
@@ -109,7 +98,11 @@ std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes ) {
 //				globalTime.addMinute(highestPriorityPlane->getLandingDuration());
 //			}
 
+			//Add Plane to Scheduled List
+			scheduledPlanes.push_back(highestPriorityPlane);
 
+			//Remove Plane from Arrived Plane List
+			arrivedPlanes.erase(highestPriorityPlaneIterator);
 		} else {
 			//Set Global Time to earliest Arrival Time
 			globalTime = planes[0]->getArrivalTime();
