@@ -10,7 +10,7 @@
 
 #include "Scheduler.h"
 
-#include <map>
+#include "../Values.h"
 #include <string>
 #include <vector>
 
@@ -21,21 +21,18 @@ public:
 	virtual ~Model();
 
 	bool setup();
-    //TODO remove, outdated
-//    bool addPlane( std::string name, int arrivalTime );
-    bool addPlane( Plane *p );
+    
+    bool setAlgorithm( AlgorithmType type );
 
+    bool addPlane( Plane* plane );
     void begin();
 
-    std::vector<Plane*> & getSchedule() { return schedule; }
+    std::vector<Plane*>& getSchedule() { return schedule; }
 
 private:
 	Scheduler * schedulers;
-
-	std::map<std::string, Plane*> planes;
-
+	std::vector<Plane*> unorderd_planes;
 	std::vector<Plane*> schedule;
-
 };
 
 #endif /* MODEL_H_ */

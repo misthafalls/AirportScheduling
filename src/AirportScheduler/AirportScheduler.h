@@ -17,14 +17,14 @@ public:
 	AirportScheduler();
 	virtual ~AirportScheduler();
 
-	bool setup();
+	bool setup( AlgorithmType type );
 	void cleanup();
 
 	void start();
 
     bool readFile( const char* file ) const;
 
-protected:
+private:
 	Model * model;
 	View * view;
 	Controller * controller;

@@ -20,13 +20,11 @@ public:
 	virtual ~Scheduler() {};
 
 	void setAlgorithm(Algorithm * algorithm);
-	//void setTime(unsigned int time);
 
 	std::vector<Plane*> makeSchedule(std::vector<Plane*> list);
 
-protected:
+private:
 	unsigned int time;
-
 	Algorithm * algorithm;
 };
 
