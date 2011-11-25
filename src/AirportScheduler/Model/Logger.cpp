@@ -7,16 +7,24 @@
 
 #include "Logger.h"
 
+#define PRINT_DEBUG 0
+
 #include <time.h>
 #include <stdarg.h>
-#include <stdio.h>
 #include <iostream>
+#if PRINT_DEBUG
+#include <stdio.h>
+#endif
+using namespace std;
 
-void Logger::log( std::string txt ) {
-	std::cout << txt << std::endl;
+void Logger::log(string txt) {
+#if PRINT_DEBUG
+	cout << txt << endl;
+#endif
 }
 
 void Logger::logex(const char * fmt, ...) {
+#if PRINT_DEBUG
 	va_list vl;
 
 	char msg[2048];
@@ -26,8 +34,9 @@ void Logger::logex(const char * fmt, ...) {
 	va_end(vl);
 
 	log(msg);
+#endif
 }
 
 void Logger::wait() {
-	std::cin.get();
+	cin.get();
 }

@@ -120,5 +120,7 @@ std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes, int lanes,
 	planes = scheduledPlanes;
 
 	return planes;
+	//TODO: Maybe we want to return the planes in runways and let crashed planes be abandoned!
+	//return airport->getRunways();
 }
 
