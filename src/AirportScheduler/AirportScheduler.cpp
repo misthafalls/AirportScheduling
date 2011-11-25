@@ -7,6 +7,7 @@
 
 #include "AirportScheduler.h"
 #include "Model/Logger.h"
+#include <ctime>
 
 AirportScheduler::AirportScheduler() {
 	model = new Model();
@@ -32,10 +33,8 @@ bool AirportScheduler::readFile( const char* file ) const {
 void AirportScheduler::cleanup() {
 }
 
-void AirportScheduler::start(int lanes) {
-	model->begin(lanes);
-
+void AirportScheduler::start(int lanes, int horizon, int schedulingMinutes) {
+	model->begin(lanes, horizon, schedulingMinutes);
 	view->print();
-
-	Logger::getInstance()->wait();
+	//Logger::getInstance()->wait();
 }

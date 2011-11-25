@@ -22,7 +22,7 @@ void printHelp( ) {
     printNewLineAndIndent( 4 );
     std::cout << "AirportScheduler [-Ap] [-Ab] [-h] [-Cd <importance>] \\";
     printNewLineAndIndent( 8 );
-    std::cout << "[-Cf <importance>] [-H <minutes>] [-L <number>] \\";
+    std::cout << "[-Cf <importance>] [-H <minutes>] [-L <number>] [-Sm <minutes>] \\";
     printNewLineAndIndent( 8 );
     std::cout << "[<file name>]";
     printNewLineAndIndent( 0 );
@@ -43,13 +43,16 @@ void printHelp( ) {
     std::cout << "-L <number> Set the number of Airport Lanes " <<
         "(default 1, Max 10)";
     printNewLineAndIndent( 4 );
+    std::cout << "-Sm <minutes> Set the schedulingMinutes in minutes"
+		<< " (default 0)";
+	printNewLineAndIndent( 4 );
     std::cout << "-Cd <importance> Modify the importance of delay-time";
     printNewLineAndIndent( 4 );
     std::cout <<
         "-Cf <importance> Modify the importance of fuel consumption";
     printNewLineAndIndent( 4 );
     printNewLineAndIndent( 0 );
-    std::cout << "Note that the usage of the -Cd,-Cf and -H parameters only ";
+    std::cout << "Note that the usage of the -Cd,-Cf -Sm and -H parameters only ";
     printNewLineAndIndent( 4 );
     std::cout << "have effect on the Priority-based algorithm." ;
     printNewLineAndIndent( 4 );
@@ -89,7 +92,7 @@ int main( int argc, char* argv[ ] )
 //TODO
     char filelocation[ 256 ];
     AlgorithmType type;
-    int horizon = 0; int lanes = 0;
+    int horizon = 0; int lanes = 0; int schedulingMinutes = 0;
     size_t fuelImportance = 0; size_t delayImportance = 0;
     bool isTypeSet = false;
     if( argc == 1 )
@@ -119,6 +122,12 @@ int main( int argc, char* argv[ ] )
                 t++;
                 horizon = atoi( argv[ t ] );
             }
+            else if( !strcmp( argv[ t ], "-Sm" ) )
+			{
+				if( t+1 >= argc ) printHelp( );
+				t++;
+				schedulingMinutes = atoi( argv[ t ] );
+			}
             else if( !strcmp( argv[ t ], "-Cd" ) )
             {
                 if( t+1 >= argc ) printHelp( );
@@ -166,6 +175,11 @@ int main( int argc, char* argv[ ] )
             std::cout << "Warning: Bruteforce algorithm does not support " <<
                 "horizon input; Horizon is always maximum" << std::endl;
         }
+        else if( schedulingMinutes != 0 )
+		{
+			std::cout << "Warning: Bruteforce algorithm does not support " <<
+				"scheduling minutes input" << std::endl;
+		}
     }
     else if ( type == PRIORITY )
     {
@@ -208,6 +222,11 @@ int main( int argc, char* argv[ ] )
             std::cout << "Warning: No value for horizon found." <<
                 std::endl << " Using value 0." << std::endl;
         }
+        if( schedulingMinutes == 0 )
+		{
+			std::cout << "Warning: No value for scheduling minutes found." <<
+				std::endl << " Using value 0." << std::endl;
+		}
     }
 
 AirportScheduler airportScheduler;
@@ -216,7 +235,7 @@ if ( airportScheduler.setup( type ) ) {
         if( airportScheduler.readFile( filelocation ) )
         {
 //Start
-            airportScheduler.start(lanes);
+            airportScheduler.start(lanes, horizon, schedulingMinutes);
         }
         else
         {

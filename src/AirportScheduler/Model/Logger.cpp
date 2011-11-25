@@ -11,10 +11,9 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <iostream>
-using namespace std;
 
-void Logger::log(string txt) {
-	cout << txt << endl;
+void Logger::log( std::string txt ) {
+	std::cout << txt << std::endl;
 }
 
 void Logger::logex(const char * fmt, ...) {
@@ -30,6 +29,5 @@ void Logger::logex(const char * fmt, ...) {
 }
 
 void Logger::wait() {
-	cin.get();
-	cin.get();
+	std::cin.get();
 }

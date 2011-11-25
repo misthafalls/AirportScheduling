@@ -21,7 +21,7 @@ PriorityBased::PriorityBased() {
 PriorityBased::~PriorityBased() {
 }
 
-std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes, int lanes ) {
+std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes, int lanes, int horizon, int schedulingMinutes) {
 	BubbleSort * sorter = new BubbleSort();
 	Priority * priorityCalculator = new Priority();
 
@@ -77,8 +77,8 @@ std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes, int lanes 
 
 				//TODO: What if plane has more then 10 minutes landingTime?
 				if(globalTime > schedulingTime) {
-					schedulingTime.addMinute(10);
-					searchTime.addMinute(10);
+					schedulingTime.addMinute(schedulingMinutes);
+					searchTime.addMinute(schedulingMinutes);
 				}
 			}
 
@@ -109,8 +109,8 @@ std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes, int lanes 
 			schedulingTime = globalTime;
 			searchTime = globalTime;
 
-			schedulingTime.addMinute(10);
-			searchTime.addMinute(30);
+			schedulingTime.addMinute(schedulingMinutes);
+			searchTime.addMinute(horizon);
 		}
 	}
 

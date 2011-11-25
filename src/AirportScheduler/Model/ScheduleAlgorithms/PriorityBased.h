@@ -16,7 +16,7 @@ public:
 	PriorityBased();
 	virtual ~PriorityBased();
 
-	std::vector<Plane*> & schedule( std::vector<Plane*> & planes, int lanes );
+	std::vector<Plane*> & schedule( std::vector<Plane*> & planes, int lanes, int horizon, int schedulingMinutes);
 };
 
 #endif /* PRIORITYBASED_H_ */
