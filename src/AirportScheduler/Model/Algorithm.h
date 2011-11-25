@@ -17,7 +17,7 @@ public:
 	Algorithm() { };
 	virtual ~Algorithm() { };
 
-	virtual std::vector<Plane*> & schedule(std::vector<Plane*> & planes) = 0;
+	virtual std::vector<Plane*> & schedule(std::vector<Plane*> & planes, int lanes) = 0;
 };
 
 #endif /* ALGORITHM_H_ */

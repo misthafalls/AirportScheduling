@@ -7,8 +7,8 @@
 
 #include "Scheduler.h"
 
-std::vector<Plane*> Scheduler::makeSchedule(std::vector<Plane*> list) {
-	list = algorithm->schedule(list);
+std::vector<Plane*> Scheduler::makeSchedule(std::vector<Plane*> list, int lanes) {
+	list = algorithm->schedule(list, lanes);
 	return list;
 }
 

@@ -21,7 +21,7 @@ PriorityBased::PriorityBased() {
 PriorityBased::~PriorityBased() {
 }
 
-std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes ) {
+std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes, int lanes ) {
 	BubbleSort * sorter = new BubbleSort();
 	Priority * priorityCalculator = new Priority();
 
@@ -32,7 +32,7 @@ std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes ) {
 	vector<Plane*> arrivedPlanes;
 	vector<Plane*> scheduledPlanes;
 
-	Airport * airport = new Airport(2);
+	Airport * airport = new Airport(lanes);
 
 	//Global Time of System
 	Time schedulingTime;

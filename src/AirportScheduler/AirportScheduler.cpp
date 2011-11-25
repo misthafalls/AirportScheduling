@@ -20,7 +20,7 @@ AirportScheduler::~AirportScheduler() {
 	delete model;
 }
 
-bool AirportScheduler::setup( AlgorithmType type ) {
+bool AirportScheduler::setup( AlgorithmType type) {
 	return model->setAlgorithm( type );
 }
 
@@ -32,8 +32,8 @@ bool AirportScheduler::readFile( const char* file ) const {
 void AirportScheduler::cleanup() {
 }
 
-void AirportScheduler::start() {
-	model->begin();
+void AirportScheduler::start(int lanes) {
+	model->begin(lanes);
 
 	view->print();
 

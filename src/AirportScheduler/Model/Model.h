@@ -25,7 +25,7 @@ public:
     bool setAlgorithm( AlgorithmType type );
 
     bool addPlane( Plane* plane );
-    void begin();
+    void begin(int lanes);
 
     std::vector<Plane*>& getSchedule() { return schedule; }
 

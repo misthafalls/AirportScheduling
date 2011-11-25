@@ -216,7 +216,7 @@ if ( airportScheduler.setup( type ) ) {
         if( airportScheduler.readFile( filelocation ) )
         {
 //Start
-            airportScheduler.start( );
+            airportScheduler.start(lanes);
         }
         else
         {
