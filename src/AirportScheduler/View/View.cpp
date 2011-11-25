@@ -40,8 +40,9 @@ void View::printPlaneInfo( Plane* p, Stats& stats ) {
     if( p->hasCrashed( ) ) { 
         stats.number_crashes++;
         std::cout << "crashed ";
-    } else std::cout << "landed ";
-
+    } else {
+        std::cout << "landed on runway: " << p->getRunway( ) << " ";
+    }
     std::cout << "at: " << final_landing_time.getFormattedTime( ) << 
         " and was initially scheduled for: " << 
             p->getScheduledTime( ).getFormattedTime( ) << std::endl;
