@@ -98,11 +98,12 @@ std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes, int lanes,
 		}
 	}
 
-	planes = sorter->scheduleByFinalLandingTimeAscending(scheduledPlanes);
-
 	scheduleByFuel(airport);
 
 	delete priorityCalculator;
+
+	planes = sorter->scheduleByFinalLandingTimeAscending(scheduledPlanes);
+
 	delete sorter;
 
 	return planes;
