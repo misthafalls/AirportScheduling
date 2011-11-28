@@ -99,7 +99,7 @@ std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes, int lanes,
 	}
 
 	scheduleByFuel(airport);
-
+//	scheduleByScheduledTime(airport);
 	delete priorityCalculator;
 
 	planes = sorter->scheduleByFinalLandingTimeAscending(scheduledPlanes);
@@ -111,6 +111,8 @@ std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes, int lanes,
 	//return airport->getRunways();
 }
 
+//TODO: Very dirty and definitely needs to reworked!!!!
+//      You will want to use the sorter as scheduler and not rework after everything!
 Airport * PriorityBased::scheduleByFuel( Airport * airport ) {
 	vector<vector<Plane*>*> * runways = airport->getRunways();
 	BubbleSort * sorter = new BubbleSort();
@@ -170,3 +172,61 @@ Airport * PriorityBased::scheduleByFuel( Airport * airport ) {
 	return airport;
 }
 
+//TODO: Very dirty and definitely needs to reworked!!!!
+Airport * PriorityBased::scheduleByScheduledTime( Airport * airport ) {
+	vector<vector<Plane*>*> * runways = airport->getRunways();
+	BubbleSort * sorter = new BubbleSort();
+
+	for(vector<vector<Plane*>*>::iterator runway_it = runways->begin(); runway_it != runways->end(); runway_it++) {
+		//TODO: Does copy constructor work with pointers???
+		vector<Plane*> reschedule;
+		Logger::getInstance()->log("\n");
+		Logger::getInstance()->log("Planes in the list");
+
+		for(vector<Plane*>::iterator plane_it = (*runway_it)->begin(); plane_it != (*runway_it)->end(); plane_it++) {
+			Logger::getInstance()->logex("  Plane: %s", (*plane_it)->getName().c_str());
+			reschedule.push_back((*plane_it));
+		}
+
+		reschedule = sorter->scheduleByFinalLandingTimeAscending(reschedule);
+
+		plane_iterator plane_it = reschedule.begin()+1;
+
+		for(plane_iterator plane_it = reschedule.begin()+1; plane_it != reschedule.end(); plane_it++) {
+			Logger::getInstance()->logex("Check if Plane %s can be swapped", (*plane_it)->getName().c_str());
+			for(plane_iterator p = plane_it-1; p >= reschedule.begin(); p--) {
+				//When plane_it reaches a level where finalLandingTime is smaller then arrivalTime break!
+
+				Logger::getInstance()->logex("Plane %s has arrival time %s and wants to land before %s <-> Plane %s has arrival time %s and wants to land before %s",
+											(*plane_it)->getName().c_str(),
+											(*plane_it)->getArrivalTime().getFormattedTime().c_str(),
+											(*plane_it)->getScheduledTime().getFormattedTime().c_str(),
+											(*p)->getName().c_str(),
+											(*p)->getArrivalTime().getFormattedTime().c_str(),
+											(*p)->getScheduledTime().getFormattedTime().c_str());
+
+				//TODO: Does not work as expected!!
+				if((*plane_it)->getArrivalTime() > (*p)->getArrivalTime()) {
+					break;
+				} else {
+					//Logger::getInstance()->log("WTF IMPOSSIBLE!");
+					Time curLandingTime = (*p)->getFinalLandingTime();
+					curLandingTime.subMinute((*p)->getLandingDuration());
+					curLandingTime.addMinute((*plane_it)->getLandingDuration());
+
+					Time pLandingTime = curLandingTime;
+					pLandingTime.addMinute((*p)->getLandingDuration());
+
+					if((*plane_it)->getScheduledTime() > (*p)->getScheduledTime() &&
+					   pLandingTime <= (*p)->getDeadlineTime()) {
+						Logger::getInstance()->logex("Swapping with %s", (*p)->getName().c_str());
+						(*plane_it)->setFinalLandingTime(curLandingTime);
+						(*p)->setFinalLandingTime(pLandingTime);
+					}
+				}
+			}
+		}
+	}
+
+	return airport;
+}

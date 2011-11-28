@@ -21,6 +21,7 @@ public:
 	virtual ~PriorityBased();
 
 	Airport * scheduleByFuel( Airport * airport );
+	Airport * scheduleByScheduledTime( Airport * airport );
 	std::vector<Plane*> & schedule( std::vector<Plane*> & planes, int lanes, int horizon, int schedulingMinutes);
 };
 
