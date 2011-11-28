@@ -82,22 +82,6 @@ std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes, int lanes,
 				}
 			}
 
-//			//Compute Final Landing Time
-//			Time finalLandingTime;
-//			finalLandingTime.addMinute(globalTime.getTimeInMinutes() + highestPriorityPlane->getLandingDuration());
-//
-//			//Priority is lower than 0?
-//			if(finalLandingTime > highestPriorityPlane->getDeadlineTime()) {
-//				//Crashed
-//				highestPriorityPlane->setCrashed(true);
-//			} else {
-//				//Final Scheduled Time of Plane will be the current Global Time
-//				highestPriorityPlane->setFinalLandingTime(globalTime);
-//
-//				//Add Landing Duration of the Plane to the Global Time
-//				globalTime.addMinute(highestPriorityPlane->getLandingDuration());
-//			}
-
 			//Add Plane to Scheduled List
 			scheduledPlanes.push_back(highestPriorityPlane);
 
@@ -114,13 +98,74 @@ std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes, int lanes,
 		}
 	}
 
+	planes = sorter->scheduleByFinalLandingTimeAscending(scheduledPlanes);
+
+	scheduleByFuel(airport);
+
 	delete priorityCalculator;
 	delete sorter;
-
-	planes = scheduledPlanes;
 
 	return planes;
 	//TODO: Maybe we want to return the planes in runways and let crashed planes be abandoned!
 	//return airport->getRunways();
+}
+
+Airport * PriorityBased::scheduleByFuel( Airport * airport ) {
+	vector<vector<Plane*>*> * runways = airport->getRunways();
+	BubbleSort * sorter = new BubbleSort();
+
+	for(vector<vector<Plane*>*>::iterator runway_it = runways->begin(); runway_it != runways->end(); runway_it++) {
+		//TODO: Does copy constructor work with pointers???
+		vector<Plane*> reschedule;
+		Logger::getInstance()->log("\n");
+		Logger::getInstance()->log("Planes in the list");
+
+		for(vector<Plane*>::iterator plane_it = (*runway_it)->begin(); plane_it != (*runway_it)->end(); plane_it++) {
+			Logger::getInstance()->logex("  Plane: %s", (*plane_it)->getName().c_str());
+			reschedule.push_back((*plane_it));
+		}
+
+		reschedule = sorter->scheduleByFinalLandingTimeAscending(reschedule);
+
+		plane_iterator plane_it = reschedule.begin()+1;
+
+		for(plane_iterator plane_it = reschedule.begin()+1; plane_it != reschedule.end(); plane_it++) {
+			Logger::getInstance()->logex("Check if Plane %s can be swapped", (*plane_it)->getName().c_str());
+			for(plane_iterator p = plane_it-1; p >= reschedule.begin(); p--) {
+				//When plane_it reaches a level where finalLandingTime is smaller then arrivalTime break!
+
+				Logger::getInstance()->logex("Plane %s has arrival time %s and uses %d fuel <-> Plane %s has arrival time %s and uses %d fuel",
+											(*plane_it)->getName().c_str(),
+											(*plane_it)->getArrivalTime().getFormattedTime().c_str(),
+											(*plane_it)->getFuelUsage(),
+											(*p)->getName().c_str(),
+											(*p)->getArrivalTime().getFormattedTime().c_str(),
+											(*p)->getFuelUsage());
+
+				//TODO: Not efficient enough, we have to check for fuel usage between arrivaltime and
+				//      possible landingtime for the *plane_it!
+				if((*plane_it)->getArrivalTime() > (*p)->getArrivalTime()) {
+					break;
+				} else {
+					//Logger::getInstance()->log("WTF IMPOSSIBLE!");
+					Time curLandingTime = (*p)->getFinalLandingTime();
+					curLandingTime.subMinute((*p)->getLandingDuration());
+					curLandingTime.addMinute((*plane_it)->getLandingDuration());
+
+					Time pLandingTime = curLandingTime;
+					pLandingTime.addMinute((*p)->getLandingDuration());
+
+					if((*plane_it)->getFuelUsage() > (*p)->getFuelUsage() &&
+					   pLandingTime <= (*p)->getDeadlineTime()) {
+						Logger::getInstance()->logex("Swapping with %s", (*p)->getName().c_str());
+						(*plane_it)->setFinalLandingTime(curLandingTime);
+						(*p)->setFinalLandingTime(pLandingTime);
+					}
+				}
+			}
+		}
+	}
+
+	return airport;
 }
 

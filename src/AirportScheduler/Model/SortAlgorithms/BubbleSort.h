@@ -17,6 +17,7 @@ public:
 	virtual ~BubbleSort();
 
 	std::vector<Plane*> & scheduleByArrivalTimeAscending(std::vector<Plane*> & planes);
+	std::vector<Plane*> & scheduleByFinalLandingTimeAscending(std::vector<Plane*> & planes);
 	std::vector<Plane*> & scheduleByPriorityAscending(std::vector<Plane*> & planes);
 };
 
