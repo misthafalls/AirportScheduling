@@ -64,13 +64,14 @@ bool Airport::landPlane(Plane * p) {
 //	Logger::getInstance()->logex("before LandingOpportunity: %s",
 //										 landingOpportunity.getFormattedTime().c_str());
 //
-	landingOpportunity.addMinute(p->getLandingDuration());
 //
 //	Logger::getInstance()->logex("after runway: %d",runwayNumber);
 
 	if(landingOpportunity < p->getArrivalTime()) {
 		landingOpportunity = p->getArrivalTime();
 	}
+
+	landingOpportunity.addMinute(p->getLandingDuration());
 
 	if(landingOpportunity > p->getDeadlineTime()) {
 		p->setCrashed(true);
