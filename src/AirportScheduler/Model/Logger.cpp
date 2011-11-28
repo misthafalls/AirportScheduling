@@ -7,7 +7,7 @@
 
 #include "Logger.h"
 
-#define PRINT_DEBUG 0
+#define PRINT_DEBUG 1
 
 #include <time.h>
 #include <stdarg.h>

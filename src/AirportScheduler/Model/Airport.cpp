@@ -44,6 +44,7 @@ bool Airport::landPlane(Plane * p) {
 	for(vector<vector<Plane *> *>::iterator rIt = runways->begin(); rIt != runways->end(); rIt++) {
 		Time temp = ( (*rIt)->size() == 0 ) ? p->getArrivalTime() : (*rIt)->back()->getFinalLandingTime();
 
+		Logger::getInstance()->logex("Runway %d, has lastLandingTime: %s", runwayNumberTemp, lastLandingTime.getFormattedTime().c_str());
 		if(lastLandingTime > temp) {
 			lastLandingTime = temp;
 		}
@@ -76,6 +77,10 @@ bool Airport::landPlane(Plane * p) {
 	if(landingOpportunity > p->getDeadlineTime()) {
 		p->setCrashed(true);
 		return false;
+	}
+
+	if(lastLandingTime < landingOpportunity) {
+		lastLandingTime = landingOpportunity;
 	}
 
 	p->setFinalLandingTime(landingOpportunity);

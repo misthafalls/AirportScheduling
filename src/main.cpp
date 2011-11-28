@@ -38,13 +38,13 @@ void printHelp( ) {
     std::cout <<"Priority-Based specific commands";
     printNewLineAndIndent( 4 );
     std::cout << "-H <minutes> Set the horizon of in minutes"
-        << " (default 0)";
+        << " (default 30)";
     printNewLineAndIndent( 4 );
     std::cout << "-L <number> Set the number of Airport Lanes " <<
         "(default 1, Max 10)";
     printNewLineAndIndent( 4 );
     std::cout << "-Sm <minutes> Set the schedulingMinutes in minutes"
-		<< " (default 0)";
+		<< " (default 10)";
 	printNewLineAndIndent( 4 );
     //std::cout << "-Cd <importance> Modify the importance of delay-time";
 	std::cout << "-Cd Activate delay-time scheduling, cannot work with -Cf";
@@ -93,7 +93,7 @@ int main( int argc, char* argv[ ] )
 //TODO
     char filelocation[ 256 ];
     AlgorithmType type;
-    int horizon = 0; int lanes = 0; int schedulingMinutes = 0;
+    int horizon = 30; int lanes = 0; int schedulingMinutes = 10;
     int schedulingOption = 0;
     size_t fuelImportance = 0; size_t delayImportance = 0;
     bool isTypeSet = false;

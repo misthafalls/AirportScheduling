@@ -60,7 +60,7 @@ std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes, int lanes,
 
 				int priority = priorityCalculator->getPriority(plane, globalTime);
 
-				Logger::getInstance()->logex("Priority %s -> %d", plane->getName().c_str(), priority);
+				Logger::getInstance()->logex("Priority %s on time %s -> %d", plane->getName().c_str(), globalTime.getFormattedTime().c_str(),priority);
 
 				plane->setPriority(priority);
 			}
@@ -74,6 +74,8 @@ std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes, int lanes,
 
 			if( airport->landPlane(highestPriorityPlane) ) {
 				globalTime = airport->getLastLandingTime();
+
+				Logger::getInstance()->logex("Is this empty? %s", globalTime.getFormattedTime().c_str());
 
 				//TODO: What if plane has more then 10 minutes landingTime?
 				if(globalTime > schedulingTime) {
@@ -214,6 +216,8 @@ Airport * PriorityBased::scheduleByScheduledTime( Airport * airport ) {
 											(*p)->getName().c_str(),
 											(*p)->getArrivalTime().getFormattedTime().c_str(),
 											(*p)->getScheduledTime().getFormattedTime().c_str());
+
+//				Time landingtime = (*plane_it)->getScheduledTime() - (*plane_it)->getFinalLandingTime()
 
 				//TODO: Does not work as expected!!
 				if((*plane_it)->getArrivalTime() > (*p)->getArrivalTime()) {
