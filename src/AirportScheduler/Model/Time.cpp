@@ -75,19 +75,19 @@ Time::Time(std::string timeFormatted) {
 	this->minute = atoi(minuteString.c_str());
 }
 
-Time::Time(unsigned int day, unsigned int hour, unsigned int minute) {
+Time::Time( int day,  int hour,  int minute) {
 	this->day = day;
 	this->hour = hour;
 	this->minute = minute;
 }
 
-unsigned int Time::addDay(unsigned int days) {
+ int Time::addDay( int days) {
 	day += days;
 
 	return day;
 }
 
-unsigned int Time::addHour(unsigned int hours) {
+ int Time::addHour( int hours) {
 	hour += hours;
 
 	while(hour >= 24) {
@@ -99,7 +99,7 @@ unsigned int Time::addHour(unsigned int hours) {
 	return hour;
 }
 
-unsigned int Time::addMinute(unsigned int minutes) {
+ int Time::addMinute( int minutes) {
 	minute += minutes;
 
 	while(minute >= 60) {
@@ -111,13 +111,13 @@ unsigned int Time::addMinute(unsigned int minutes) {
 	return minute;
 }
 
-unsigned int Time::subDay(unsigned int days) {
+ int Time::subDay( int days) {
 	day -= days;
 
 	return day;
 }
 
-unsigned int Time::subHour(unsigned int hours) {
+ int Time::subHour( int hours) {
 	hour -= hours;
 
 	while(hour < 0) {
@@ -129,7 +129,7 @@ unsigned int Time::subHour(unsigned int hours) {
 	return hour;
 }
 
-unsigned int Time::subMinute(unsigned int minutes) {
+ int Time::subMinute( int minutes) {
 	minute -= minutes;
 
 	while(minute < 0) {

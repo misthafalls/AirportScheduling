@@ -32,58 +32,58 @@ public:
 	 * @param hour the hour
 	 * @param minute the minute
 	 */
-	Time(unsigned int day, unsigned int hour, unsigned int minute);
+	Time(int day, int hour, int minute);
 
 	/**
 	 * Adds days to the Time
 	 * @param days the amount of days to add
 	 * @return the new day of the Time
 	 */
-	unsigned int addDay(unsigned int days);
+	int addDay(int days);
 	/**
 	 * Adds hours to the Time
 	 * @param hours the amount of hours to add
 	 * @return the new hour of the Time
 	 */
-	unsigned int addHour(unsigned int hours);
+	int addHour(int hours);
 	/**
 	 * Adds minutes to the Time
 	 * @param minutes the amount of minutes to add
 	 * @return the new minute of the Time
 	 */
-	unsigned int addMinute(unsigned int minutes);
+	int addMinute(int minutes);
 
 	/**
 	 * Subtracts days of the Time
 	 * @param days the amount of days to subtract
 	 * @return the new day of the Time
 	 */
-	unsigned int subDay(unsigned int days);
+	int subDay(int days);
 	/**
 	 * Subtracts hours of the Time
 	 * @param hours the amount of hours to subtract
 	 * @return the new hour of the Time
 	 */
-	unsigned int subHour(unsigned int hours);
+	int subHour(int hours);
 	/**
 	 * Subtracts minutes of the Time
 	 * @param minutes the amount of minutes to subtract
 	 * @return the new minute of the Time
 	 */
-	unsigned int subMinute(unsigned int minutes);
+	int subMinute(int minutes);
 
 	/**
 	 * Gets the Day
 	 */
-	unsigned int getDay() { return day; }
+	int getDay() { return day; }
 	/**
 	 * Gets the Hour
 	 */
-	unsigned int getHour() { return hour; }
+	int getHour() { return hour; }
 	/**
 	 * Gets the Minute
 	 */
-	unsigned int getMinute() { return minute; }
+	int getMinute() { return minute; }
 
 	/**
 	 * Returns a Time Formatted String
@@ -151,9 +151,9 @@ public:
 	bool operator<=(Time other);
 
 private:
-	unsigned int day;
-	unsigned int hour;
-	unsigned int minute;
+	int day;
+	int hour;
+	int minute;
 
 };
 
