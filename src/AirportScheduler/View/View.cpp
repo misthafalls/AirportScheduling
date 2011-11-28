@@ -41,40 +41,40 @@ void View::printPlaneInfo( Plane* p, Stats& stats ) {
         stats.number_crashes++;
         std::cout << "crashed ";
     } else {
-        std::cout << "landed on runway: " << p->getRunway( ) << " ";
-    }
-    std::cout << "at: " << final_landing_time.getFormattedTime( ) << 
-        " and was initially scheduled for: " << 
-            p->getScheduledTime( ).getFormattedTime( ) << std::endl;
-    
-    size_t fuel_usage = time_in_air.getTimeInMinutes( ) * p->getFuelUsage( );
-    stats.fuel_usage_total += fuel_usage;
+		std::cout << "landed on runway: " << p->getRunway( ) << " ";
+		std::cout << "at: " << final_landing_time.getFormattedTime( ) <<
+		   " and was initially scheduled for: " <<
+			   p->getScheduledTime( ).getFormattedTime( ) << std::endl;
 
-    printIndent( 4 ); 
-    std::cout << "Plane used: " << fuel_usage << " gallons of fuel over a time of: " <<
-        time_in_air.getFormattedTime( ) << " in the air" << std::endl;
+		size_t fuel_usage = time_in_air.getTimeInMinutes( ) * p->getFuelUsage( );
+		stats.fuel_usage_total += fuel_usage;
 
-    printIndent( 4 );
-    Time t;
-    std::cout << "Plane was ";
-    if( p->getScheduledTime( ) < final_landing_time ) {
-        t = final_landing_time - p->getScheduledTime( ); 
-        std::cout << t.getTimeInMinutes( ) << " minutes late" << std::endl;
-        stats.number_planes_delay++;
-        stats.total_minutes_delay += t.getTimeInMinutes( );
-    } else if ( p->getScheduledTime( ) > final_landing_time ){
-        t = p->getScheduledTime( ) - final_landing_time;
-        std::cout << t.getTimeInMinutes( ) << " minutes early" << std::endl;
-        stats.number_planes_early++;
-        stats.total_minutes_early += t.getTimeInMinutes( );
-    } else {
-        std::cout << "exactly on time" << std::endl;
-        stats.number_on_time++;
+		printIndent( 4 );
+		std::cout << "Plane used: " << fuel_usage << " gallons of fuel over a time of: " <<
+		   time_in_air.getFormattedTime( ) << " in the air" << std::endl;
+
+		printIndent( 4 );
+		Time t;
+		std::cout << "Plane was ";
+		if( p->getScheduledTime( ) < final_landing_time ) {
+		   t = final_landing_time - p->getScheduledTime( );
+		   std::cout << t.getTimeInMinutes( ) << " minutes late" << std::endl;
+		   stats.number_planes_delay++;
+		   stats.total_minutes_delay += t.getTimeInMinutes( );
+		} else if ( p->getScheduledTime( ) > final_landing_time ){
+		   t = p->getScheduledTime( ) - final_landing_time;
+		   std::cout << t.getTimeInMinutes( ) << " minutes early" << std::endl;
+		   stats.number_planes_early++;
+		   stats.total_minutes_early += t.getTimeInMinutes( );
+		} else {
+		   std::cout << "exactly on time" << std::endl;
+		   stats.number_on_time++;
+		}
+		printIndent( 4 );
+		std::cout << "The deadline was: " << p->getDeadlineTime( ).getFormattedTime( ) <<
+		   " and the arrival at the airport was at: " << arrival_time.getFormattedTime( );
     }
-    printIndent( 4 );
-    std::cout << "The deadline was: " << p->getDeadlineTime( ).getFormattedTime( ) <<
-        " and the arrival at the airport was at: " << arrival_time.getFormattedTime( )
-            << std::endl << std::endl;
+    std::cout << std::endl << std::endl;
 }
 
 void View::printScheduleStatistics( std::vector<Plane*> & planes ) {
