@@ -21,7 +21,7 @@ public:
 
 	void setAlgorithm(Algorithm * algorithm);
 
-	std::vector<Plane*> makeSchedule(std::vector<Plane*> list, int lanes, int horizon, int schedulingMinutes);
+	std::vector<Plane*> makeSchedule(std::vector<Plane*> list, int lanes, int horizon, int schedulingMinutes, int schedulingOption);
 
 private:
 	unsigned int time;

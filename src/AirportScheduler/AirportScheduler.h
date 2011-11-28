@@ -20,7 +20,7 @@ public:
 	bool setup( AlgorithmType type );
 	void cleanup();
 
-	void start(int lanes, int horizon, int schedulingMinutes);
+	void start(int lanes, int horizon, int schedulingMinutes, int schedulingOption);
 
     bool readFile( const char* file ) const;
 

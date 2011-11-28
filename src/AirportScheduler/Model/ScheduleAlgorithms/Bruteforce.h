@@ -19,7 +19,7 @@ public:
 	Bruteforce();
 	virtual ~Bruteforce();
 
-	std::vector<Plane*> & schedule( std::vector<Plane*> & planes, int lanes, int horizon, int schedulingMinutes);
+	std::vector<Plane*> & schedule( std::vector<Plane*> & planes, int lanes, int horizon, int schedulingMinutes, int SchedulingOption);
     std::vector<Plane*>::iterator findSafeTime( std::vector<Plane*> & planes, 
                             const std::vector< Plane* >::iterator plane ) const;
     std::vector<Plane*>::iterator rescheduleForPlaneType( 

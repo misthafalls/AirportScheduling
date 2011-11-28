@@ -40,6 +40,6 @@ bool Model::addPlane( Plane* plane ) {
 }
 
 
-void Model::begin(int lanes, int horizon, int schedulingMinutes) {
-	schedule = schedulers->makeSchedule( unorderd_planes, lanes, horizon, schedulingMinutes);
+void Model::begin(int lanes, int horizon, int schedulingMinutes, int schedulingOption) {
+	schedule = schedulers->makeSchedule( unorderd_planes, lanes, horizon, schedulingMinutes, schedulingOption);
 }

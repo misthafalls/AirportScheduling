@@ -33,8 +33,8 @@ bool AirportScheduler::readFile( const char* file ) const {
 void AirportScheduler::cleanup() {
 }
 
-void AirportScheduler::start(int lanes, int horizon, int schedulingMinutes) {
-	model->begin(lanes, horizon, schedulingMinutes);
+void AirportScheduler::start(int lanes, int horizon, int schedulingMinutes, int schedulingOption) {
+	model->begin(lanes, horizon, schedulingMinutes, schedulingOption);
 	view->print();
 	//Logger::getInstance()->wait();
 }

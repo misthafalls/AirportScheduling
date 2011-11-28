@@ -21,7 +21,7 @@ PriorityBased::PriorityBased() {
 PriorityBased::~PriorityBased() {
 }
 
-std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes, int lanes, int horizon, int schedulingMinutes) {
+std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes, int lanes, int horizon, int schedulingMinutes, int schedulerOption) {
 	BubbleSort * sorter = new BubbleSort();
 	Priority * priorityCalculator = new Priority();
 
@@ -98,8 +98,13 @@ std::vector<Plane*>& PriorityBased::schedule( vector<Plane*> &planes, int lanes,
 		}
 	}
 
-	scheduleByFuel(airport);
-//	scheduleByScheduledTime(airport);
+	//TODO: What do these ints mean? Fix it!
+	if(schedulerOption == 1) {
+		scheduleByFuel(airport);
+	} else if(schedulerOption == 2) {
+		scheduleByScheduledTime(airport);
+	}
+
 	delete priorityCalculator;
 
 	planes = sorter->scheduleByFinalLandingTimeAscending(scheduledPlanes);

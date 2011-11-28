@@ -46,10 +46,11 @@ void printHelp( ) {
     std::cout << "-Sm <minutes> Set the schedulingMinutes in minutes"
 		<< " (default 0)";
 	printNewLineAndIndent( 4 );
-    std::cout << "-Cd <importance> Modify the importance of delay-time";
+    //std::cout << "-Cd <importance> Modify the importance of delay-time";
+	std::cout << "-Cd Activate delay-time scheduling, cannot work with -Cf";
     printNewLineAndIndent( 4 );
-    std::cout <<
-        "-Cf <importance> Modify the importance of fuel consumption";
+   // std::cout << "-Cf <importance> Modify the importance of fuel consumption";
+    std::cout << "-Cf Activate fuel saving scheduling, cannot work with -Cd";
     printNewLineAndIndent( 4 );
     printNewLineAndIndent( 0 );
     std::cout << "Note that the usage of the -Cd,-Cf -Sm and -H parameters only ";
@@ -93,6 +94,7 @@ int main( int argc, char* argv[ ] )
     char filelocation[ 256 ];
     AlgorithmType type;
     int horizon = 0; int lanes = 0; int schedulingMinutes = 0;
+    int schedulingOption = 0;
     size_t fuelImportance = 0; size_t delayImportance = 0;
     bool isTypeSet = false;
     if( argc == 1 )
@@ -130,15 +132,11 @@ int main( int argc, char* argv[ ] )
 			}
             else if( !strcmp( argv[ t ], "-Cd" ) )
             {
-                if( t+1 >= argc ) printHelp( );
-                t++;
-                delayImportance = atoi( argv[ t ] );
+                schedulingOption = 2;
             }
             else if( !strcmp( argv[ t ], "-Cf" ) )
             {
-                if( t+1 >= argc ) printHelp( );
-                t++;
-                fuelImportance = atoi( argv[ t ] );
+            	schedulingOption = 1;
             }
             else if( !strcmp( argv[ t ], "-L" ) )
             {
@@ -235,7 +233,7 @@ if ( airportScheduler.setup( type ) ) {
         if( airportScheduler.readFile( filelocation ) )
         {
 //Start
-            airportScheduler.start(lanes, horizon, schedulingMinutes);
+            airportScheduler.start(lanes, horizon, schedulingMinutes, schedulingOption);
         }
         else
         {

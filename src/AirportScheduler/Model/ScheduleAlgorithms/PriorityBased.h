@@ -22,7 +22,7 @@ public:
 
 	Airport * scheduleByFuel( Airport * airport );
 	Airport * scheduleByScheduledTime( Airport * airport );
-	std::vector<Plane*> & schedule( std::vector<Plane*> & planes, int lanes, int horizon, int schedulingMinutes);
+	std::vector<Plane*> & schedule( std::vector<Plane*> & planes, int lanes, int horizon, int schedulingMinutes, int SchedulingOption);
 };
 
 #endif /* PRIORITYBASED_H_ */

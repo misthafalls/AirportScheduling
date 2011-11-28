@@ -29,7 +29,7 @@ void inline print_order( std::vector< Plane* > planes ) {
 }
 #endif
 
-std::vector<Plane*>& Bruteforce::schedule( std::vector<Plane*> &planes, int lanes, int horizon, int schedulingMinutes ) {
+std::vector<Plane*>& Bruteforce::schedule( std::vector<Plane*> &planes, int lanes, int horizon, int schedulingMinutes, int schedulingOption ) {
 	BubbleSort * arrivalTimeSort = new BubbleSort();
 
 	planes = arrivalTimeSort->scheduleByArrivalTimeAscending( planes );
