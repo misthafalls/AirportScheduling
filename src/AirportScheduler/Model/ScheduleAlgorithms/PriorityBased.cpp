@@ -131,7 +131,9 @@ Airport * PriorityBased::scheduleByFuel( Airport * airport ) {
 		reschedule = sorter->scheduleByFinalLandingTimeAscending(reschedule);
 
 		plane_iterator plane_it = reschedule.begin()+1;
-
+		if(reschedule.empty()) {
+			break;
+		}
 		for(plane_iterator plane_it = reschedule.begin()+1; plane_it != reschedule.end(); plane_it++) {
 			Logger::getInstance()->logex("Check if Plane %s can be swapped", (*plane_it)->getName().c_str());
 			for(plane_iterator p = plane_it-1; p >= reschedule.begin(); p--) {
@@ -192,6 +194,9 @@ Airport * PriorityBased::scheduleByScheduledTime( Airport * airport ) {
 
 		plane_iterator plane_it = reschedule.begin()+1;
 
+		if(reschedule.empty()) {
+			break;
+		}
 		for(plane_iterator plane_it = reschedule.begin()+1; plane_it != reschedule.end(); plane_it++) {
 			Logger::getInstance()->logex("Check if Plane %s can be swapped", (*plane_it)->getName().c_str());
 			for(plane_iterator p = plane_it-1; p >= reschedule.begin(); p--) {
