@@ -47,11 +47,11 @@ CSVReader::processLine( const std::string& line ){
     Time time;
     for( unsigned int t = 0; t < ARGUMENT_COUNT; t++ ) {
         int npos = line.find( ',', cpos );
-        if( npos == -1 && t == 6 ) npos = line.size( );
+        //TODO investigate "t == 4" case
+        if( npos == -1 && t == 4 ) npos = line.size( );
         else if( npos == -1 ) return true;
         int size = npos - cpos;
         std::string s;
-        Plane::PlaneType planeType;
 #if PRINT_DEBUG
         std::cout << "Substring = " << line.substr( cpos, size ) << std::endl <<
             " Between: " << cpos << " and " << npos << std::endl;
@@ -70,20 +70,6 @@ CSVReader::processLine( const std::string& line ){
                 time = Time( line.substr( cpos, size ) );
                 p->setScheduledTime( time );
                 break;
-            case 3:
-                s = line.substr( cpos, size );
-                if ( !s.compare( "CARGO" ) )
-                        planeType = Plane::CARGO;
-                else if ( !s.compare( "PASSENGER" ) )
-                        planeType = Plane::PASSENGER;
-                else if ( !s.compare( "EMERGENCY" ) )
-                        planeType = Plane::EMERGENCY;
-                else if ( !s.compare( "MILITARY" ) )
-                        planeType = Plane::MILITARY;
-                else std::cout << "ERROR: type not found in: " <<
-                        s << std::endl;
-                p->setPlaneType( planeType );
-                break;
             case 4:
                 fooInt = atoi( line.substr( cpos, size ).c_str( ) );
                 p->setFuel( fooInt );
@@ -91,10 +77,6 @@ CSVReader::processLine( const std::string& line ){
             case 5:
                 fooInt = atoi( line.substr( cpos, size ).c_str( ) );
                 p->setFuelUsage( fooInt );
-                break;
-            case 6:
-                fooInt = atoi( line.substr( cpos, size ).c_str( ) );
-                p->setLandingDuration( fooInt );
                 break;
             default:
 #if PRINT_DEBUG

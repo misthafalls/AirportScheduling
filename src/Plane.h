@@ -12,32 +12,22 @@
 #include <string>
 
 class Plane {
-public:
-    enum PlaneType {
-        EMERGENCY,
-        MILITARY,
-        PASSENGER,
-        CARGO
-    };
 
 public:
     Plane( ) { priority = -1; crashed = false; };
-virtual ~Plane();
+    virtual ~Plane();
 
-std::string getName() { return name; }
+    std::string getName() { return name; }
     void setName( std::string &s ) { name = s; }
 
-Time getArrivalTime() { return arrivalTime; }
-void setArrivalTime( Time &time ) { arrivalTime = time; }
+    Time getArrivalTime() { return arrivalTime; }
+    void setArrivalTime( Time &time ) { arrivalTime = time; }
 
-Time getScheduledTime() { return scheduledTime; }
-void setScheduledTime( Time &time ) { scheduledTime = time; }
+    Time getScheduledTime() { return scheduledTime; }
+    void setScheduledTime( Time &time ) { scheduledTime = time; }
 
-Time getFinalLandingTime() { return finalLandingTime; }
-void setFinalLandingTime( Time &time ){ finalLandingTime = time; }
-
-PlaneType getPlaneType() { return planeType; }
-void setPlaneType( PlaneType type ){ planeType = type; }
+    Time getFinalLandingTime() { return finalLandingTime; }
+    void setFinalLandingTime( Time &time ){ finalLandingTime = time; }
 
     int getFuel( ) { return fuel; }
     void setFuel( int i ) { fuel = i; }
@@ -45,34 +35,19 @@ void setPlaneType( PlaneType type ){ planeType = type; }
     int getFuelUsage( ) { return fuelUsagePerMin; }
     void setFuelUsage( int usage ) { fuelUsagePerMin = usage; }
 
-    int getLandingDuration( ) { return landingDuration; }
-    void setLandingDuration( int duration ) { landingDuration = duration; }
-
-    int getRunway( ) { return runway; }
-    void setRunway( int r ) { runway = r; }
-
     Time getDeadlineTime( );
-
-    void setPriority(int p) { priority = p; }
-    int getPriority() { return priority; }
 
     void setCrashed(bool b) { crashed = b; }
     bool hasCrashed() { return crashed; }
 
 private:
-std::string name;
-Time arrivalTime;
-Time scheduledTime;
+    std::string name;
+    Time arrivalTime;
+    Time scheduledTime;
+    Time finalLandingTime;
+    int fuel;
+    int fuelUsagePerMin;
 
-Time finalLandingTime;
-PlaneType planeType;
-
-int runway;
-int fuel;
-int fuelUsagePerMin;
-    int landingDuration;
-
-    int priority;
     bool crashed;
 };
 

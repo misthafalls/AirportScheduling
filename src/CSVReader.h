@@ -12,18 +12,10 @@
 class CSVReader {
 
 const static size_t BUFFERSIZE = 1024;
-const static size_t ARGUMENT_COUNT = 7;
-
-//Temporary test structures : move to correct place in source
-
-enum PlaneType {
-    CARGO,
-    PASSENGER
-};
+const static size_t ARGUMENT_COUNT = 5;
 
 public:
-// TODO: implement when Plane struct is finished
-// CSVReader( std::map< std::string, Plane > );
+
     CSVReader( ){ };
 
     CSVReader( Model* model )
@@ -32,8 +24,6 @@ public:
     { };
 
     bool readFile( const char* file );
-
-    bool setModel( Model* model ) { mModel = model; return true; };
 
 private:
     bool processLine( const std::string& line );
