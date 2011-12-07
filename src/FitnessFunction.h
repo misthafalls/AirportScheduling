@@ -20,6 +20,11 @@ public:
 	virtual ~FitnessFunction();
 
 	int getFitness(Genome * genome);
+
+	int getTotalFitness();
+	void resetTotalFitness();
+private:
+	int total_fitness;
 };
 
 #endif /* FITNESSFUNCTION_H_ */

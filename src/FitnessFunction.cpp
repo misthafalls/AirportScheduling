@@ -17,5 +17,17 @@ int FitnessFunction::getFitness(Genome * genome) {
 		if (plane.getScheduledTime() < gene->getTime()) ++total_delayed_planes;
 	}
 
-	return total_crashes * CONST_PLANES_CRASHED + total_delayed_planes * CONST_PLANES_DELAYED;
+	int genome_fitness = total_crashes * CONST_PLANES_CRASHED + total_delayed_planes * CONST_PLANES_DELAYED;
+
+	total_fitness += genome_fitness;
+
+	return genome_fitness;
+}
+
+int FitnessFunction::getTotalFitness() {
+	return total_fitness;
+}
+
+void FitnessFunction::resetTotalFitness() {
+	total_fitness = 0;
 }
