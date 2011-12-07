@@ -4,7 +4,8 @@
 #include <stdlib.h>
 #include <sstream>
 #include <string.h>
-#include "../Model/Model.h"
+#include <vector>
+#include "Plane.h"
 
 #ifndef CSVREADER_H_
 #define CSVREADER_H_
@@ -18,18 +19,13 @@ public:
 
     CSVReader( ){ };
 
-    CSVReader( Model* model )
-        :
-        mModel( model )
-    { };
-
-    bool readFile( const char* file );
+    bool readFile( const char* file, std::vector< Plane* >& planes );
 
 private:
-    bool processLine( const std::string& line );
+    bool processLine( const std::string& line, std::vector< Plane* >& planes );
 
 private: //member values
-    Model* mModel;
+
 };
 
 #endif // CSVREADER_H_

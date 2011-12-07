@@ -9,10 +9,9 @@
 
 #define PRINT_DEBUG 0
 
-
 // -----------------------------------------------------------------------------
 
-bool CSVReader::readFile( const char* file ){
+bool CSVReader::readFile( const char* file, std::vector< Plane* >& planes ){
     char buffer[ BUFFERSIZE ];
     std::ifstream inFile;
 
@@ -26,7 +25,7 @@ bool CSVReader::readFile( const char* file ){
     while( !inFile.eof( ) ) {
         inFile.getline( buffer, BUFFERSIZE );
         std::string s ( buffer );
-        if( !processLine( s ) ) return false;
+        if( !processLine( s, planes ) ) return false;
     }
     return true;
 }
@@ -34,7 +33,8 @@ bool CSVReader::readFile( const char* file ){
 // -----------------------------------------------------------------------------
 
 bool
-CSVReader::processLine( const std::string& line ){
+CSVReader::processLine( const std::string& line, 
+        std::vector< Plane* >& planes ) {
 #if PRINT_DEBUG
     std::cout << line << std::endl;
 #endif
@@ -86,6 +86,6 @@ CSVReader::processLine( const std::string& line ){
         }
         cpos = npos + 1;
     }
-    mModel->addPlane( p.release( ) );
+    planes.push_back( p.release( ) );
     return true;
 }

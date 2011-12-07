@@ -14,7 +14,7 @@
 class Plane {
 
 public:
-    Plane( ) { priority = -1; crashed = false; };
+    Plane( ) { crashed = false; };
     virtual ~Plane();
 
     std::string getName() { return name; }
