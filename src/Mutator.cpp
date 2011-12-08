@@ -19,7 +19,7 @@ void Mutator::mutateGenome(Genome *g, double mutationRate) {
 	double mutationStart = 1 - mutationRate;
 
 	for(int i = 0; i < g->get_size(); i++) {
-		mutationRate = ((double)rand())/MAX_RAND * mutationLength + mutationStart;
+		mutationRate = ((double)rand())/RAND_MAX * mutationLength + mutationStart;
 
 		Genome::Gene * gen = g->get_gene(i);
 		Time time = gen->getTime();
