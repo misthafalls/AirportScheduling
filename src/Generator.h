@@ -13,8 +13,9 @@ class Generator {
     public:
         Generator( ) { }
 
-        const bool init( Genome* population, const size_t population_size,
-            const std::vector< Plane* >& planes ) const ;
+        const bool init( std::vector< Genome* > population,
+                            const std::vector< Plane* >& planes,
+                            size_t landingduration ) const ;
     private:
         
 };

@@ -5,6 +5,7 @@
 */
 
 #include "Mutator.h"
+#include <stdlib.h>
 
 void Mutator::mutateGenomes(Genome **genomes, int size, double mutationRate) {
 	for(int i = 0; i < size; i++) {
