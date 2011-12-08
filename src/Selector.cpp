@@ -20,8 +20,8 @@ bool Selector::getSelected(Genome ** genomes, size_t m_size) {
 	while(combine < this->combine) {
 		Genome * genome = genomes[i];
 
-		int chance = fitness.getFitness(genome) / fitness.getTotalFitness();
-		int threshold = ((float)rand())/RAND_MAX;
+		float chance = ((float)fitness.getFitness(genome)) / fitness.getTotalFitness();
+		float threshold = ((float)rand())/RAND_MAX;
 
 		if(combine < this->combine) {
 			if(chance <= threshold) {
