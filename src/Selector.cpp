@@ -37,5 +37,10 @@ bool Selector::getSelected(Genome ** genomes, size_t m_size) {
 			i = combine;
 	}
 
+	//Delete the to be removed Genomes (prevent memory leak)
+	for(int j = m_size - die; j < m_size; j++) {
+		delete genomes[j];
+	}
+
 	return true;
 }
