@@ -24,14 +24,12 @@ Generator::init( std::vector< Genome* > population,
         for( size_t s = 0; s < number_planes; s++ ) {
             const Plane* p = planes[s];
             int random = rand( ); 
-//      Not using min / max, generating complete random
-//            int min = p->get_fpos();
-//            int max = p->get_npos();
-//            if( max > number_planes ) max = number_planes;
+            int min = p->get_fpos();
+            int max = p->get_npos();
+            if( max > number_planes ) max = number_planes;
 
             // 0 =< random < number_planes
-            random = random % number_planes;
-//            size_t tries = 0;
+            random = random % max + min;
             while( taken_positions[random] ) {
                 random++;
                 if( random > number_planes ) random = 0;

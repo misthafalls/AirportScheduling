@@ -22,9 +22,10 @@ class Genome {
         const Plane* getPlane( ) { return m_plane; } const
 
         Time& getTime( ) { return m_time; }
-        bool setTime( Time t ) { m_time = t; return true; }
 
+        bool setTime( Time t ) { m_time = t; return true; }
         private:
+
         const Plane* m_plane;
         Time m_time;
 
