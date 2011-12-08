@@ -1,6 +1,7 @@
 #include "Selector.h"
 #include "Genome.h"
 #include "FitnessFunction.h"
+#include <stdlib.h>
 
 Selector::~Selector() {}
 bool Selector::getSelected(Genome ** genomes, size_t m_size) {

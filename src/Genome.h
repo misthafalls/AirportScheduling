@@ -3,8 +3,7 @@
 
 #include "Plane.h"
 #include "Time.h"
-#include <stdlib.h>
-#include <iostream>
+#include <vector>
 
 #ifndef GENOME_H_
 #define GENOME_H_
@@ -32,31 +31,22 @@ class Genome {
     }; // end Gene
     
     public:
-        Genome( size_t genome_size )
-            :
-            m_size( genome_size )
-            { 
-                m_genome = (Gene*) malloc( genome_size );
-                if (m_genome == NULL ) { 
-                    std::cout << "UNABLE TO ALLOCATE MEM" << std::endl;
-                }
-             }
+       Genome( ){;}
 
         Gene* get_gene( size_t position ) { 
-            if (position>=m_size) return NULL;
-            else return &m_genome[ position ]; 
+            if (position>=m_genome.size( )) return NULL;
+            else return m_genome[ position ]; 
         }
 
-        bool set_gene( size_t position, const Plane* p, Time t ) {
-            m_genome[ position ] = Gene( p, t ); }
+        bool add_gene( const Plane* p, Time t ) {
+            m_genome.push_back( new Gene( p, t ) ); }
 
-        size_t get_size( ) { return m_size; }
+        size_t get_size( ) { return m_genome.size( ); }
    
     // The array is a genome, m_genome[ 0 ] is first landing position
     // m_genome[ i ] is the i landing position
     private:
-    size_t m_size;
-    Gene* m_genome;
+    std::vector <Gene*> m_genome;
 
 }; // end Genome
 
