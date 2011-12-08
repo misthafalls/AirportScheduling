@@ -14,7 +14,8 @@ bool Selector::getSelected(Genome ** genomes, size_t m_size) {
 
 	//The to combining genomes are set in the front of the array.
 	//The genomes that will be deleted are the last ones.
-	int combine = 0, i;
+	int combine = 0;
+	int unsigned i = 0;
 	while(combine < this->combine) {
 		Genome * genome = genomes[i];
 
@@ -38,7 +39,7 @@ bool Selector::getSelected(Genome ** genomes, size_t m_size) {
 	}
 
 	//Delete the to be removed Genomes (prevent memory leak)
-	for(int j = m_size - die; j < m_size; j++) {
+	for(unsigned int j = m_size - die; j < m_size; j++) {
 		delete genomes[j];
 	}
 

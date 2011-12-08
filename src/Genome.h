@@ -4,6 +4,10 @@
 #ifndef GENOME_H_
 #define GENOME_H_
 
+#include <stdlib.h>
+#include "Plane.h"
+#include "Time.h"
+
 // Landing duration is two minutes
 const static size_t LANDING_WIDTH = 2;
 
@@ -11,7 +15,7 @@ class Genome {
     
     public:
     class Gene {
-
+    public:
         Gene( Plane& p, Time t )
             :
             m_plane( p ), m_time( t )
@@ -20,7 +24,7 @@ class Genome {
         const Plane& getPlane( ) { return m_plane; } const
 
         Time& getTime( ) { return m_time; }
-        bool setTime( Time t ) { m_time = t; }
+        bool setTime( Time t ) { m_time = t; return true; }
 
     private:
         const Plane &m_plane;
