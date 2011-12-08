@@ -23,7 +23,7 @@ class Genome {
         const Plane* getPlane( ) { return m_plane; } const
 
         Time& getTime( ) { return m_time; }
-        bool setTime( Time t ) { m_time = t; }
+        bool setTime( Time t ) { m_time = t; return true; }
 
         private:
         const Plane* m_plane;
@@ -49,6 +49,8 @@ class Genome {
 
         bool set_gene( size_t position, const Plane* p, Time t ) {
             m_genome[ position ] = Gene( p, t ); }
+
+        size_t get_size( ) { return m_size; }
    
     // The array is a genome, m_genome[ 0 ] is first landing position
     // m_genome[ i ] is the i landing position

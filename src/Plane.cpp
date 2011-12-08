@@ -12,7 +12,7 @@ Plane::~Plane() {
 }
 
 Time
-Plane::getDeadlineTime( ) {
+Plane::getDeadlineTime( ) const {
     unsigned int minLeft = fuel / fuelUsagePerMin;
     Time ret = arrivalTime;
     ret.addMinute( minLeft );

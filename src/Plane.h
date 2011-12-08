@@ -24,7 +24,7 @@ public:
     Time getArrivalTime() const { return arrivalTime; }
     void setArrivalTime( Time &time ) { arrivalTime = time; }
 
-    const Time getScheduledTime() const { return scheduledTime; }
+    Time getScheduledTime() const { return scheduledTime; }
     void setScheduledTime( Time &time ) { scheduledTime = time; }
 
     const Time getFinalLandingTime() const { return finalLandingTime; }
@@ -36,7 +36,7 @@ public:
     const int getFuelUsage( ) const { return fuelUsagePerMin; }
     void setFuelUsage( int usage ) { fuelUsagePerMin = usage; }
 
-    Time getDeadlineTime( ) ;
+    Time getDeadlineTime( ) const ;
 
     void setCrashed(bool b) { crashed = b; }
     const bool hasCrashed() const { return crashed; }
