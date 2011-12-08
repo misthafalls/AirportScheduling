@@ -1,19 +1,20 @@
 // Teun van Dingenen, 6 December 2011
 //------------------------------------------------------------------------------
 
+#include <vector>
+#include "Genome.h"
+#include "Plane.h"
+
 #ifndef GENERATOR_H_
 #define GENERATOR_H_
-
-const static size_t POPULATION_SIZE = 50;
 
 class Generator {
     
     public:
         Generator( ) { }
 
-        bool init( Genome*& population, size_t population_size,
-            std::vector< Plane* >& planes ){ return true; }
-
+        const bool init( Genome* population, const size_t population_size,
+            const std::vector< Plane* >& planes ) const ;
     private:
         
 };

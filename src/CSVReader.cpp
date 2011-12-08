@@ -70,11 +70,11 @@ CSVReader::processLine( const std::string& line,
                 time = Time( line.substr( cpos, size ) );
                 p->setScheduledTime( time );
                 break;
-            case 4:
+            case 3:
                 fooInt = atoi( line.substr( cpos, size ).c_str( ) );
                 p->setFuel( fooInt );
                 break;
-            case 5:
+            case 4:
                 fooInt = atoi( line.substr( cpos, size ).c_str( ) );
                 p->setFuelUsage( fooInt );
                 break;
