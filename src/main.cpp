@@ -110,7 +110,6 @@ int main( int argc, char* argv[ ] )
             first_time = planes[ t ]->getArrivalTime( ); 
     }
     std::cout << "First time = " << first_time.getFormattedTime( ) << std::endl;
-
     std::vector<Plane*>::iterator it = planes.begin( );
     while( it != planes.end( ) ) {
         Time t = first_time;
@@ -171,7 +170,7 @@ int main( int argc, char* argv[ ] )
             population.push_back( child );
         }
         Mutator m;
-        m.mutateGenomes( population, 0.5 );
+        m.mutateGenomes( population, 0.05 );
         if( population.size( ) != population_size ) {
             std::cout << "ERROR: Something went wrong, " << 
                 "population size not stable" << std::endl;
@@ -193,6 +192,7 @@ int main( int argc, char* argv[ ] )
     Genome* best_genome = population[ index ];
     size_t nr_crash = 0;
     size_t nr_to_early = 0;
+    size_t nr_to_late = 0;
     size_t fuel_used = 0;
     for(size_t t=0;t<best_genome->get_size( );t++) {
         Genome::Gene* gene = best_genome->get_gene( t );
@@ -203,12 +203,14 @@ int main( int argc, char* argv[ ] )
         const Plane* p = gene->getPlane( );
         if( p->getArrivalTime( ) > gene->getTime( ) ) nr_to_early++;
         if( p->getDeadlineTime( ) < gene->getTime( ) ) nr_crash++;
+        if( p->getScheduledTime( ) < gene->getTime( ) ) nr_to_late++;
         size_t min_in_air = gene->getTime( ).getTimeInMinutes( ) - 
                 p->getArrivalTime( ).getTimeInMinutes( );
         fuel_used += min_in_air * p->getFuelUsage( );
     }
     std::cout << "---=== Schedule Stats ===---" << std::endl <<
         "Total Planes crashed:  " << nr_crash << std::endl <<
+        "Total Planes too late: " << nr_to_late << std::endl <<
         "Total Planes to early: " << nr_to_early << std::endl <<
         "Total Fuel used:       " << fuel_used << std::endl;
         
