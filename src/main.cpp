@@ -191,13 +191,26 @@ int main( int argc, char* argv[ ] )
         }
     }
     Genome* best_genome = population[ index ];
+    size_t nr_crash = 0;
+    size_t nr_to_early = 0;
+    size_t fuel_used = 0;
     for(size_t t=0;t<best_genome->get_size( );t++) {
         Genome::Gene* gene = best_genome->get_gene( t );
         std::cout<<gene->getPlane( )->getName( ) << " Lands at: " <<
             gene->getTime( ).getFormattedTime() << std::endl <<
             "    Deadline is:" << gene->getPlane( )->getDeadlineTime( ).getFormattedTime( ) << std::endl << 
             "    Arrival is: "<< gene->getPlane( )->getArrivalTime( ).getFormattedTime( ) << std::endl << std::endl;
+        const Plane* p = gene->getPlane( );
+        if( p->getArrivalTime( ) > gene->getTime( ) ) nr_to_early++;
+        if( p->getDeadlineTime( ) < gene->getTime( ) ) nr_crash++;
+        size_t min_in_air = gene->getTime( ).getTimeInMinutes( ) - 
+                p->getArrivalTime( ).getTimeInMinutes( );
+        fuel_used += min_in_air * p->getFuelUsage( );
     }
+    std::cout << "---=== Schedule Stats ===---" << std::endl <<
+        "Total Planes crashed:  " << nr_crash << std::endl <<
+        "Total Planes to early: " << nr_to_early << std::endl <<
+        "Total Fuel used:       " << fuel_used << std::endl;
         
     return 0;
 }
