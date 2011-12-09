@@ -95,7 +95,7 @@ int main( int argc, char* argv[ ] )
     std::vector< Plane* > planes;
 
     CSVReader reader;
-    if( reader.readFile( "testfile", planes ) ) {
+    if( reader.readFile( filelocation, planes ) ) {
         std::cout << "Input file read succesfully" << std::endl;
     } else {
         std::cout << "Input file not read correctly, " <<
