@@ -10,7 +10,7 @@
 
 class Mutator {
 public:
-	void mutateGenomes(Genome **genomes, int size, double mutationRate);
+	void mutateGenomes(std::vector<Genome*>& genomes, double mutationRate);
 	void mutateGenome(Genome *g, double mutationRate);
 
 };

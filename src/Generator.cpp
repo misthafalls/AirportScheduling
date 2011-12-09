@@ -4,19 +4,21 @@
 #include "Generator.h"
 #include <iostream>
 #include <stdlib.h>
+#include "Controller.h"
 
 //------------------------------------------------------------------------------
 
 const bool
-Generator::init( std::vector< Genome* > population, 
+Generator::init( std::vector< Genome* >& population, size_t todo,
                     const std::vector< Plane* >& planes,
-                    size_t landingduration ) const {
+                    size_t landingduration, Time first_time ) const {
     size_t number_planes = planes.size();
     srand((unsigned)time(0));
-
+    Controller c;
     //for every member of the population
-    for( size_t t = 0; t < population.size( ); t++ ) {
-        Genome* genome = population[ t ];
+    size_t t = 0;
+    while( t < todo ) {
+        Genome* genome = new Genome( ); 
         bool taken_positions[ number_planes ];
         for( size_t b=0;b<number_planes;b++ ) taken_positions[b]=false;
 
@@ -35,12 +37,13 @@ Generator::init( std::vector< Genome* > population,
                 if( random > number_planes ) random = 0;
             }
             taken_positions[random] = true;
-            //TODO: calculate landingtime
-            Time time = p->getArrivalTime( );
+            Time time = first_time;
             time.addMinute( random*landingduration );
-            std::cout << "Setting planenr: " << s << "to " << 
-                time.getFormattedTime( ) << std::endl;
             genome->add_gene( p, time );
         }
+        if ( c.is_feasible( genome, landingduration ) ) {
+            population.push_back( genome ); t++;
+        }
+        std::cout << "Done: " << t << " Genomes." << std::endl;
     }
 }

@@ -4,45 +4,47 @@
 #include <stdlib.h>
 
 Selector::~Selector() {}
-bool Selector::getSelected(Genome ** genomes, size_t m_size) {
+bool Selector::getSelected(std::vector<Genome*>& genomes) {
 	//Generate fitness for every genome.
 	FitnessFunction fitness;
-	fitness.calcTotalFitness(genomes, m_size);
+	fitness.calcTotalFitness(genomes);
+
+    size_t died = 0;
+    while ( died < m_nr_die ) {
+        size_t lowest_fitness = -1;
+        size_t lowest_index = -1;
+        for( size_t t=0;t<genomes.size();t++){
+            if( lowest_fitness > fitness.getFitness( genomes[t] ) ) {
+                lowest_fitness = fitness.getFitness( genomes[t] );
+                lowest_index = t;
+            }
+        }
+        genomes.erase( genomes.begin()+lowest_index );
+        died++;
+    }
 
 	//This makes random safer in random generating.
-	//BTW this is good enough for our little project.
 	srand(time(NULL));
 
-	//The to combining genomes are set in the front of the array.
-	//The genomes that will be deleted are the last ones.
-	int combine = 0;
-	int unsigned i = 0;
-	while(combine < this->combine) {
-		Genome * genome = genomes[i];
+	size_t combined = 0;
+	size_t i = 0;
+    float threshold = ((float)rand())/RAND_MAX;
+	while(combined < m_nr_combine) {
+		Genome* genome = genomes[i];
 
-		float chance = ((float)fitness.getFitness(genome)) / fitness.getTotalFitness();
-		float threshold = ((float)rand())/RAND_MAX;
+		float chance = 
+            ((float)fitness.getFitness(genome)) / fitness.getTotalFitness();
 
-		if(combine < this->combine) {
-			if(chance <= threshold) {
-				for(int j = i-1; j >= combine; j--) {
-					genomes[j+1] = genomes[j];
-				}
-
-				genomes[combine] = genome;
-
-				combine++;
-			}
+		if(combined < m_nr_combine && chance <= threshold ) {
+            for( size_t t=0;t<m_to_combine.size();t++) {
+                if( m_to_combine[t] == i ) continue;
+            }
+            m_to_combine.push_back( i );
+			combined++;
 		}
-
-		if(i < m_size)
-			i = combine;
+        i++;
+        if( i >= genomes.size( ) ) i = 0;
 	}
-
-	//Delete the to be removed Genomes (prevent memory leak)
-	for(unsigned int j = m_size - die; j < m_size; j++) {
-		delete genomes[j];
-	}
-
+    
 	return true;
 }

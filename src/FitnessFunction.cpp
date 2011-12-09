@@ -24,19 +24,20 @@ int FitnessFunction::getFitness(Genome * genome) {
 		if (plane->getScheduledTime() < gene->getTime()) ++total_delayed_planes;
 	}
 
-	int genome_fitness = total_crashes * CONST_PLANES_CRASHED + total_delayed_planes * CONST_PLANES_DELAYED;
+	int genome_fitness = 
+        total_crashes * CONST_PLANES_CRASHED + total_delayed_planes * 
+                CONST_PLANES_DELAYED;
 
 	total_fitness += genome_fitness;
 
 	return genome_fitness;
 }
 
-bool FitnessFunction::calcTotalFitness(Genome ** genomes, std::size_t m_size) {
-	for(unsigned int i = 0; i < m_size; i++) {
+bool FitnessFunction::calcTotalFitness(std::vector< Genome*> genomes) {
+	for(unsigned int i = 0; i < genomes.size( ); i++) {
 		Genome * genome = genomes[i];
 		genome_fitness.insert( std::pair<Genome *, int>(genome, getFitness(genome)));
 	}
-
 	return true;
 }
 

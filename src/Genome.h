@@ -19,7 +19,7 @@ class Genome {
             m_plane( p ), m_time( t )
             { }
         
-        const Plane* getPlane( ) { return m_plane; } const
+        const Plane* getPlane( ) const { return m_plane; } 
 
         Time& getTime( ) { return m_time; }
 

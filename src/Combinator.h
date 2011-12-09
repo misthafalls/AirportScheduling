@@ -10,7 +10,7 @@
 
 class Combinator {
 public:
-	Genome* combinate(Genome *x, Genome *y);
+	Genome* combine(Genome *x, Genome *y);
 
 };
 

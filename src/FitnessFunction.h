@@ -13,6 +13,7 @@
 
 #include <cstring>
 #include <map>
+#include <vector>
 
 class Genome;
 
@@ -22,7 +23,7 @@ public:
 	virtual ~FitnessFunction();
 
 	int getFitness(Genome * genome);
-	bool calcTotalFitness(Genome ** genomes, std::size_t m_size);
+	bool calcTotalFitness(std::vector<Genome*> genomes);
 
 	int getTotalFitness();
 	void resetTotalFitness();

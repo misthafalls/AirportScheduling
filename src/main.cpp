@@ -10,6 +10,10 @@
 #include "Genome.h"
 #include "Generator.h"
 #include "Controller.h"
+#include "Combinator.h"
+#include "Selector.h"
+#include "FitnessFunction.h"
+#include "Mutator.h"
 
 inline void printNewLineAndIndent( int indent ) {
     std::cout << std::endl;
@@ -39,6 +43,7 @@ int main( int argc, char* argv[ ] )
 //    int lanes = 0; 
     size_t population_size = -1;
     size_t landingduration = -1;
+    size_t max_generations = -1;
     if( argc == 1 )
     {
 //        printHelp( );
@@ -60,6 +65,11 @@ int main( int argc, char* argv[ ] )
                 t++;
                 landingduration = atoi( argv[ t ] );
             }
+            else if( !strcmp( argv[ t ], "-G" ) ) {
+                if( t+1 >= argc ) printHelp( );
+                t++;
+                max_generations = atoi( argv[ t ] );
+            }
         }
     }
     //Check validity
@@ -74,6 +84,12 @@ int main( int argc, char* argv[ ] )
         std::cout << "No landing duration given, ASSUMING CONTROL!" << 
             std::endl << "Setting landing duration: 5" << std::endl;
         landingduration = 5;
+    }
+    if( max_generations == -1 )
+    {
+        std::cout << "No max generations given, ASSUMING CONTROL!" << 
+            std::endl << "Setting max generations: 100" << std::endl;
+        max_generations = 100;
     }
     //BEWARE: this vector takes ownership of planes!
     std::vector< Plane* > planes;
@@ -125,19 +141,63 @@ int main( int argc, char* argv[ ] )
     std::vector <Genome*> population;
 
     //initialize
-    size_t t;
-    for( t=0;t<population_size;t++) {
-        population.push_back( new Genome( ) );
-    }
-    std::cout << "Initialized " << t << " Genomes" << std::endl;
-
     Generator g;
-    g.init( population, planes, landingduration);
-    Controller c;
-    int nonfeas=0;
-    for( t=0;t<population_size;t++) {
-        if( !c.is_feasible( population[ t ], landingduration ) ) nonfeas++;
+    g.init( population, population_size, planes, landingduration, first_time);
+//    Controller c;
+//    int nonfeas=0;
+//    for( t=0;t<population_size;t++) {
+//        if( !c.is_feasible( population[ t ], landingduration ) ) nonfeas++;
+//    }
+//    std::cout << nonfeas << " are non feasible!" << std::endl;
+    
+    //MAIN LOOP
+    //FitnessFunction ff;
+    size_t generations = 0;
+    size_t number_to_combine = 20;
+    size_t number_to_die = number_to_combine / 2;
+    while( generations < max_generations ) {
+//        if( !ff.calcTotalFitness( population ) ){
+//            std::cout << "ERROR while calculating fitness of generation: " <<
+//                generations << std::endl;
+//            return 0;
+//       }
+        Selector s = Selector(number_to_combine, number_to_die);
+        s.getSelected( population );
+        Combinator c;
+        for( size_t t=0;t<number_to_die;t++) {
+            Genome* mother = population[ s.get_to_combine_index( t ) ];
+            Genome* father = population[ s.get_to_combine_index( t+10 ) ];
+            Genome* child = c.combine( mother, father );
+            population.push_back( child );
+        }
+        Mutator m;
+        m.mutateGenomes( population, 0.5 );
+        if( population.size( ) != population_size ) {
+            std::cout << "ERROR: Something went wrong, " << 
+                "population size not stable" << std::endl;
+            return 0;
+        }
+        std::cout << "Completed generation: " << generations << std::endl;
+        generations++;
     }
-    std::cout << nonfeas << " are non feasible!" << std::endl;
+    FitnessFunction f;
+    f.calcTotalFitness(population);
+    size_t highest_fitness = 0; size_t index;
+    for(size_t t=0;t<population.size();t++){
+        size_t fitness = f.getFitness( population[t] );
+        if( fitness > highest_fitness ) {
+            highest_fitness = fitness;
+            index = t;
+        }
+    }
+    Genome* best_genome = population[ index ];
+    for(size_t t=0;t<best_genome->get_size( );t++) {
+        Genome::Gene* gene = best_genome->get_gene( t );
+        std::cout<<gene->getPlane( )->getName( ) << " Lands at: " <<
+            gene->getTime( ).getFormattedTime() << std::endl <<
+            "    Deadline is:" << gene->getPlane( )->getDeadlineTime( ).getFormattedTime( ) << std::endl << 
+            "    Arrival is: "<< gene->getPlane( )->getArrivalTime( ).getFormattedTime( ) << std::endl << std::endl;
+    }
+        
     return 0;
 }
