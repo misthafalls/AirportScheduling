@@ -74,6 +74,7 @@ int main( int argc, char* argv[ ] )
     size_t population_size = -1;
     size_t landingduration = -1;
     size_t max_generations = -1;
+    size_t nr_lanes = -1;
     if( argc == 1 )
     {
 //        printHelp( );
@@ -100,6 +101,11 @@ int main( int argc, char* argv[ ] )
                 t++;
                 max_generations = atoi( argv[ t ] );
             }
+            else if( !strcmp( argv[ t ], "-l" ) ) {
+                if( t+1 >= argc ) printHelp( );
+                t++;
+                nr_lanes = atoi( argv[ t ] );
+            }
         }
     }
     //Check validity
@@ -120,6 +126,12 @@ int main( int argc, char* argv[ ] )
         std::cout << "No max generations given, ASSUMING CONTROL!" << 
             std::endl << "Setting max generations: 100" << std::endl;
         max_generations = 100;
+    }
+    if( nr_lanes == -1 )
+    {
+        std::cout << "No number lanes given, ASSUMING CONTROL!" << 
+            std::endl << "Setting nr lanes: 1" << std::endl;
+        nr_lanes = 1;
     }
     //BEWARE: this vector takes ownership of planes!
     std::vector< Plane* > planes;
@@ -154,11 +166,14 @@ int main( int argc, char* argv[ ] )
     size_t number_to_die = number_to_combine / 2;
     Selector* s = new RandomSelector(number_to_combine, number_to_die);
     Mutator* m = new SimpleMutator( );
-    SimpleCombinator c;
+    FitnessFunction* f = new NiceFitnessFunction( );
+    SimpleCombinator c; int sum_fitness;
     while( generations < max_generations ) {
         //TODO move construction
         std::vector< Genome* > selected;
-        s->select( population, selected );
+        sum_fitness = f->calculate_fitness( population, 
+                                            nr_lanes, landingduration );
+        s->select( population, selected, sum_fitness );
         //TODO:Move choice who mother and father
         for( size_t t=0;t<number_to_die;t++) {
             Genome* mother = selected[ t ];
@@ -177,8 +192,7 @@ int main( int argc, char* argv[ ] )
     }
 
     //Choose genome for print
-    FitnessFunction f;
-    f.calculate_fitness(population, 1, landingduration);
+    f->calculate_fitness(population, nr_lanes, landingduration);
     size_t highest_fitness = -1; size_t index;
     for(size_t t=0;t<population.size();t++){
         size_t fitness = population[t]->get_fitness();

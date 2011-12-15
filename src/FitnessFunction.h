@@ -11,8 +11,6 @@
 #include <map>
 #include <vector>
 
-#define CONST_PLANES_CRASHED 5
-#define CONST_PLANES_DELAYED 1
 
 class Genome;
 
@@ -21,9 +19,18 @@ public:
 	FitnessFunction();
 	virtual ~FitnessFunction();
 
+	virtual int calculate_fitness(std::vector<Genome*>& population,
+						   int landing_strips,
+						   int landing_duration) = 0;
+};
+
+class NiceFitnessFunction : public FitnessFunction {
+public:
 	int calculate_fitness(std::vector<Genome*>& population,
 						   int landing_strips,
 						   int landing_duration);
+private:
+const static unsigned int CONST_PLANES_CRASHED = 5;
+const static unsigned int CONST_PLANES_DELAYED = 1;
 };
-
 #endif /* FITNESSFUNCTION_H_ */

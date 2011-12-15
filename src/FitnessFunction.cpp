@@ -6,7 +6,8 @@ FitnessFunction::FitnessFunction() {}
 
 FitnessFunction::~FitnessFunction() {}
 
-int FitnessFunction::calculate_fitness(std::vector<Genome*>& population,
+int 
+NiceFitnessFunction::calculate_fitness(std::vector<Genome*>& population,
 										int landing_strips,
 										int landing_duration) {
 	std::vector<Genome::Gene*> genes;

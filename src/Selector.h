@@ -20,7 +20,8 @@ public:
 		m_nr_die(d) {};
 
 	virtual bool select(std::vector<Genome*>& genomes, 
-                            std::vector< Genome* >& selected ) = 0;
+                            std::vector< Genome* >& selected,
+                            int sum_fitness ) = 0;
 protected:
     unsigned int m_nr_combine;
     unsigned int m_nr_die;
@@ -31,6 +32,7 @@ public:
     //take parent Constructor
     RandomSelector( unsigned int c, unsigned int d ) : Selector( c, d ) { };
 	bool select(std::vector<Genome*>& population, 
-                            std::vector< Genome* >& selected ); 
+                            std::vector< Genome* >& selected,
+                            int sum_fitness ); 
 };
 #endif /* SELECTOR_H_ */

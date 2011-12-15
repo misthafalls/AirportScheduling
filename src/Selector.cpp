@@ -7,12 +7,11 @@
 
 bool 
 RandomSelector::select(std::vector<Genome*>& population, 
-                                std::vector<Genome*>& selected ) {
+                                std::vector<Genome*>& selected,
+                                int sum_fitness ) {
     //This makes random safer in random generating.
 	srand((unsigned int)time(0));
 	//Generate fitness for every genome.
-	FitnessFunction fitness;
-	int sum_fitness = fitness.calculate_fitness(population, 1, 5); //TODO landingduration is hardcoded!!
 
     size_t died = 0;
     while ( died < m_nr_die ) {
