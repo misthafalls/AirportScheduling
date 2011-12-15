@@ -51,6 +51,7 @@ class Genome {
         std::vector<Gene*>* get_genes() { return &m_genome; }
 
         bool set_fitness(int p_fitness) { fitness = p_fitness; return true; }
+        int get_fitness() {return fitness;}
 
 
    

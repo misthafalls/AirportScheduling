@@ -163,11 +163,11 @@ int main( int argc, char* argv[ ] )
         generations++;
     }
     FitnessFunction f;
-    f.calcTotalFitness(population);
-    size_t highest_fitness = 0; size_t index;
+    f.calculate_fitness(population, 1, landingduration);
+    size_t highest_fitness = -1; size_t index;
     for(size_t t=0;t<population.size();t++){
-        size_t fitness = f.getFitness( population[t] );
-        if( fitness > highest_fitness ) {
+        size_t fitness = population[t]->get_fitness();
+        if( fitness < highest_fitness || highest_fitness == -1 ) {
             highest_fitness = fitness;
             index = t;
         }
