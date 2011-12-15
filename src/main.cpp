@@ -93,6 +93,7 @@ int main( int argc, char* argv[ ] )
     }
     //BEWARE: this vector takes ownership of planes!
     std::vector< Plane* > planes;
+    
 
     CSVReader reader;
     if( reader.readFile( filelocation, planes ) ) {
@@ -103,6 +104,10 @@ int main( int argc, char* argv[ ] )
         exit( 0 );
     }
     size_t number_of_planes = planes.size( );
+    std::vector< Plane* >::iterator p;
+    //Calc deadline for all
+    //TODO Move to CSVReader??
+    for( p=planes.begin( ); p!=planes.end( );p++) (*p)->calcDeadlineTime( );
 
     Time first_time = planes[ 0 ]->getArrivalTime( );
     for(size_t t=1;t<number_of_planes;t++) {

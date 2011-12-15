@@ -14,7 +14,7 @@
 class Plane {
 
 public:
-    Plane( ) { crashed = false; };
+    Plane( ) { is_deadline_set = false; }
     virtual ~Plane();
 
     const std::string getName() const { return name; }
@@ -27,33 +27,25 @@ public:
     Time getScheduledTime() const { return scheduledTime; }
     void setScheduledTime( Time &time ) { scheduledTime = time; }
 
-    const Time getFinalLandingTime() const { return finalLandingTime; }
-    void setFinalLandingTime( Time &time ){ finalLandingTime = time; }
-
     const int getFuel( ) const { return fuel; }
     void setFuel( int i ) { fuel = i; }
 
     const int getFuelUsage( ) const { return fuelUsagePerMin; }
     void setFuelUsage( int usage ) { fuelUsagePerMin = usage; }
 
-    Time getDeadlineTime( ) const ;
-
-    void setCrashed(bool b) { crashed = b; }
-    const bool hasCrashed() const { return crashed; }
+    Time getDeadlineTime( ) const{ return deadlineTime; } 
+    void calcDeadlineTime( );
 
     void print( );
 
 private:
-    // fpos and npos = min and max value for place in the genome
-    size_t fpos; size_t npos;
     std::string name;
     Time arrivalTime;
     Time scheduledTime;
-    Time finalLandingTime;
+    Time deadlineTime;
+    bool is_deadline_set;
     int fuel;
     int fuelUsagePerMin;
-
-    bool crashed;
 };
 
 #endif /* PLANE_H_ */

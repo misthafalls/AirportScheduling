@@ -23,7 +23,7 @@ public:
 	virtual ~FitnessFunction();
 
 	int getFitness(Genome * genome);
-	bool calcTotalFitness(std::vector<Genome*> genomes);
+	bool calcTotalFitness(std::vector<Genome*> genomes) ;
 
 	int getTotalFitness();
 	void resetTotalFitness();
