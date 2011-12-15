@@ -1,49 +1,51 @@
 #include "Selector.h"
-#include "Genome.h"
 #include "FitnessFunction.h"
 #include <stdlib.h>
+#include <vector>
+#include "Time.h"
+#include "Genome.h"
 
-Selector::~Selector() {}
-bool Selector::getSelected(std::vector<Genome*>& genomes) {
+bool 
+RandomSelector::select(std::vector<Genome*>& population, 
+                                std::vector<Genome*>& selected ) {
+    //This makes random safer in random generating.
+	srand((unsigned int)time(0));
 	//Generate fitness for every genome.
 	FitnessFunction fitness;
-	int sum_fitness = fitness.calculate_fitness(genomes, 1, 5); //TODO landingduration is hardcoded!!
+	int sum_fitness = fitness.calculate_fitness(population, 1, 5); //TODO landingduration is hardcoded!!
 
     size_t died = 0;
     while ( died < m_nr_die ) {
         size_t lowest_fitness = -1;
         size_t lowest_index = -1;
-        for( size_t t=0;t<genomes.size();t++){
-            if( lowest_fitness > genomes[t]->get_fitness() ) {
-                lowest_fitness = genomes[t]->get_fitness();
+        for( size_t t=0;t<population.size();t++){
+            if( lowest_fitness > population[t]->get_fitness() ) {
+                lowest_fitness = population[t]->get_fitness();
                 lowest_index = t;
             }
         }
-        genomes.erase( genomes.begin()+lowest_index );
+        population.erase( population.begin()+lowest_index );
         died++;
     }
 
-	//This makes random safer in random generating.
-	srand(time(NULL));
-
+	
 	size_t combined = 0;
 	size_t i = 0;
     float threshold = ((float)rand())/RAND_MAX;
 	while(combined < m_nr_combine) {
-		Genome* genome = genomes[i];
+		Genome* genome = population[i];
 
 		float chance = ((float)genome->get_fitness())/sum_fitness;
 
 		if(combined < m_nr_combine && chance <= threshold ) {
-            for( size_t t=0;t<m_to_combine.size();t++) {
-                if( m_to_combine[t] == i ) continue;
+            for( size_t t=0;t<selected.size();t++) {
+                if( selected[t] == population[i] ) continue;
             }
-            m_to_combine.push_back( i );
+            selected.push_back( population[i] );
 			combined++;
 		}
         i++;
-        if( i >= genomes.size( ) ) i = 0;
+        if( i >= population.size( ) ) i = 0;
 	}
-    
 	return true;
 }

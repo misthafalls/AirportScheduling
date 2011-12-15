@@ -37,6 +37,35 @@ void printHelp( ) {
     exit( 0 );
 }
 
+void printGenome( Genome* genome ) {
+    std::vector< Genome::Gene* > sorted_genes;
+    GeneSorter::sort( *(genome->get_genes( )), sorted_genes );
+
+    size_t nr_crash = 0;
+    size_t nr_to_early = 0;
+    size_t nr_to_late = 0;
+    size_t fuel_used = 0;
+    for(size_t t=0;t<sorted_genes.size( );t++) {
+        Genome::Gene* gene = sorted_genes[ t ];
+        std::cout<<gene->getPlane( )->getName( ) << " Lands at: " <<
+            gene->getTime( ).getFormattedTime() << std::endl <<
+            "    Deadline is:" << gene->getPlane( )->getDeadlineTime( ).getFormattedTime( ) << std::endl << 
+            "    Arrival is: "<< gene->getPlane( )->getArrivalTime( ).getFormattedTime( ) << std::endl << std::endl;
+        const Plane* p = gene->getPlane( );
+        if( p->getArrivalTime( ) > gene->getTime( ) ) nr_to_early++;
+        if( p->getDeadlineTime( ) < gene->getTime( ) ) nr_crash++;
+        if( p->getScheduledTime( ) < gene->getTime( ) ) nr_to_late++;
+        size_t min_in_air = gene->getTime( ).getTimeInMinutes( ) - 
+                p->getArrivalTime( ).getTimeInMinutes( );
+        fuel_used += min_in_air * p->getFuelUsage( );
+    }
+    std::cout << "---=== Schedule Stats ===---" << std::endl <<
+        "Total Planes crashed:  " << nr_crash << std::endl <<
+        "Total Planes too late: " << nr_to_late << std::endl <<
+        "Total Planes to early: " << nr_to_early << std::endl <<
+        "Total Fuel used:       " << fuel_used << std::endl;
+}
+
 int main( int argc, char* argv[ ] )
 {
     char filelocation[ 256 ];
@@ -98,8 +127,8 @@ int main( int argc, char* argv[ ] )
 
     CSVReader reader;
 // DEBUG
-//    if( reader.readFile( "testfile", planes ) ) {
-    if( reader.readFile( filelocation, planes ) ) {
+    if( reader.readFile( "testfile", planes ) ) {
+//    if( reader.readFile( filelocation, planes ) ) {
         std::cout << "Input file read succesfully" << std::endl;
     } else {
         std::cout << "Input file not read correctly, " <<
@@ -107,53 +136,37 @@ int main( int argc, char* argv[ ] )
         exit( 0 );
     }
     size_t number_of_planes = planes.size( );
-    std::vector< Plane* >::iterator p;
+
     //Calc deadline for all
     //TODO Move to CSVReader??
-    for( p=planes.begin( ); p!=planes.end( );p++) (*p)->calcDeadlineTime( );
-
-    Time first_time = planes[ 0 ]->getArrivalTime( );
-    for(size_t t=1;t<number_of_planes;t++) {
-        if( planes[ t ]->getArrivalTime( ) < first_time) 
-            first_time = planes[ t ]->getArrivalTime( ); 
-    }
-    std::cout << "First time = " << first_time.getFormattedTime( ) << std::endl;
-    std::vector<Plane*>::iterator it = planes.begin( );
+    for(std::vector< Plane* >::iterator p=planes.begin( ); 
+        p!=planes.end( );p++) (*p)->calcDeadlineTime( );
 
     std::vector <Genome*> population;
 
-    //initialize
+    //setup generation 0
     Generator g;
-    g.init( population, population_size, planes, landingduration, first_time);
-//    Controller c;
-//    int nonfeas=0;
-//    for( t=0;t<population_size;t++) {
-//        if( !c.is_feasible( population[ t ], landingduration ) ) nonfeas++;
-//    }
-//    std::cout << nonfeas << " are non feasible!" << std::endl;
-    
+    g.init( population, population_size, planes );
+
     //MAIN LOOP
-    //FitnessFunction ff;
     size_t generations = 0;
     size_t number_to_combine = 20;
     size_t number_to_die = number_to_combine / 2;
+    Selector* s = new RandomSelector(number_to_combine, number_to_die);
+    Mutator* m = new SimpleMutator( );
+    SimpleCombinator c;
     while( generations < max_generations ) {
-//        if( !ff.calcTotalFitness( population ) ){
-//            std::cout << "ERROR while calculating fitness of generation: " <<
-//                generations << std::endl;
-//            return 0;
-//       }
-        Selector s = Selector(number_to_combine, number_to_die);
-        s.getSelected( population );
-        Combinator c;
+        //TODO move construction
+        std::vector< Genome* > selected;
+        s->select( population, selected );
+        //TODO:Move choice who mother and father
         for( size_t t=0;t<number_to_die;t++) {
-            Genome* mother = population[ s.get_to_combine_index( t ) ];
-            Genome* father = population[ s.get_to_combine_index( t+10 ) ];
+            Genome* mother = selected[ t ];
+            Genome* father = selected[ t+10 ];
             Genome* child = c.combine( mother, father );
             population.push_back( child );
         }
-        Mutator m;
-        m.mutateGenomes( population, 0.05 );
+        m->mutateGenomes( population, 0.05 );
         if( population.size( ) != population_size ) {
             std::cout << "ERROR: Something went wrong, " << 
                 "population size not stable" << std::endl;
@@ -162,6 +175,8 @@ int main( int argc, char* argv[ ] )
         std::cout << "Completed generation: " << generations << std::endl;
         generations++;
     }
+
+    //Choose genome for print
     FitnessFunction f;
     f.calculate_fitness(population, 1, landingduration);
     size_t highest_fitness = -1; size_t index;
@@ -173,35 +188,12 @@ int main( int argc, char* argv[ ] )
         }
     }
     Genome* best_genome = population[ index ];
-    std::vector< Genome::Gene* > sorted_genes;
-    GeneSorter::sort( *(best_genome->get_genes( )), sorted_genes );
-    size_t nr_crash = 0;
-    size_t nr_to_early = 0;
-    size_t nr_to_late = 0;
-    size_t fuel_used = 0;
-    for(size_t t=0;t<sorted_genes.size( );t++) {
-        Genome::Gene* gene = sorted_genes[ t ];
-        std::cout<<gene->getPlane( )->getName( ) << " Lands at: " <<
-            gene->getTime( ).getFormattedTime() << std::endl <<
-            "    Deadline is:" << gene->getPlane( )->getDeadlineTime( ).getFormattedTime( ) << std::endl << 
-            "    Arrival is: "<< gene->getPlane( )->getArrivalTime( ).getFormattedTime( ) << std::endl << std::endl;
-        const Plane* p = gene->getPlane( );
-        if( p->getArrivalTime( ) > gene->getTime( ) ) nr_to_early++;
-        if( p->getDeadlineTime( ) < gene->getTime( ) ) nr_crash++;
-        if( p->getScheduledTime( ) < gene->getTime( ) ) nr_to_late++;
-        size_t min_in_air = gene->getTime( ).getTimeInMinutes( ) - 
-                p->getArrivalTime( ).getTimeInMinutes( );
-        fuel_used += min_in_air * p->getFuelUsage( );
-    }
-    std::cout << "---=== Schedule Stats ===---" << std::endl <<
-        "Total Planes crashed:  " << nr_crash << std::endl <<
-        "Total Planes too late: " << nr_to_late << std::endl <<
-        "Total Planes to early: " << nr_to_early << std::endl <<
-        "Total Fuel used:       " << fuel_used << std::endl;
-    
-    for( std::vector<Genome*>::iterator it = population.begin( );
-            it!=population.end( ); it++ ) delete (*it);
+    printGenome( best_genome );
+        
+    //Cleanup
     for( std::vector<Plane*>::iterator it = planes.begin( );
             it!=planes.end( ); it++ ) delete (*it);
+    for( std::vector<Genome*>::iterator it = population.begin( );
+            it!=population.end( ); it++ ) delete (*it);
     return 0;
 }

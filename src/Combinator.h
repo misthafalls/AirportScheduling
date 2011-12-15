@@ -10,8 +10,13 @@
 
 class Combinator {
 public:
-	Genome* combine(Genome *x, Genome *y);
+	virtual Genome* combine(Genome *x, Genome *y) = 0;
 
 };
 
+class SimpleCombinator : public Combinator {
+public:
+    Genome* combine(Genome *x, Genome *y );
+
+};
 #endif
