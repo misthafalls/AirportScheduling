@@ -14,22 +14,16 @@
 #include <cstring>
 #include <map>
 #include <vector>
-
-class Genome;
+#include "Genome.h"
 
 class FitnessFunction {
 public:
 	FitnessFunction();
 	virtual ~FitnessFunction();
 
-	int getFitness(Genome * genome);
-	bool calcTotalFitness(std::vector<Genome*> genomes) ;
-
-	int getTotalFitness();
-	void resetTotalFitness();
-private:
-	int total_fitness;
-	std::map<Genome *, int> genome_fitness;
+	int calculate_fitness(std::vector<Genome*>& population,
+						   int landing_strips,
+						   int landing_duration);
 };
 
 #endif /* FITNESSFUNCTION_H_ */
