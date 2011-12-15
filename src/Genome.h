@@ -46,7 +46,7 @@ class Genome {
 
         size_t get_size( ) { return m_genome.size( ); }
 
-        std::vector<Gene*> get_genes() { return &m_genome; }
+        std::vector<Gene*>* get_genes() { return &m_genome; }
 
         bool set_fitness(int p_fitness) { fitness = p_fitness; return true; }
 

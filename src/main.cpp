@@ -14,6 +14,7 @@
 #include "Selector.h"
 #include "FitnessFunction.h"
 #include "Mutator.h"
+#include "GeneSorter.h"
 
 inline void printNewLineAndIndent( int indent ) {
     std::cout << std::endl;
@@ -96,6 +97,8 @@ int main( int argc, char* argv[ ] )
     
 
     CSVReader reader;
+// DEBUG
+//    if( reader.readFile( "testfile", planes ) ) {
     if( reader.readFile( filelocation, planes ) ) {
         std::cout << "Input file read succesfully" << std::endl;
     } else {
@@ -170,12 +173,14 @@ int main( int argc, char* argv[ ] )
         }
     }
     Genome* best_genome = population[ index ];
+    std::vector< Genome::Gene* > sorted_genes;
+    GeneSorter::sort( *(best_genome->get_genes( )), sorted_genes );
     size_t nr_crash = 0;
     size_t nr_to_early = 0;
     size_t nr_to_late = 0;
     size_t fuel_used = 0;
-    for(size_t t=0;t<best_genome->get_size( );t++) {
-        Genome::Gene* gene = best_genome->get_gene( t );
+    for(size_t t=0;t<sorted_genes.size( );t++) {
+        Genome::Gene* gene = sorted_genes[ t ];
         std::cout<<gene->getPlane( )->getName( ) << " Lands at: " <<
             gene->getTime( ).getFormattedTime() << std::endl <<
             "    Deadline is:" << gene->getPlane( )->getDeadlineTime( ).getFormattedTime( ) << std::endl << 
