@@ -8,12 +8,12 @@
 #ifndef FITNESSFUNCTION_H_
 #define FITNESSFUNCTION_H_
 
+#include <map>
+#include <vector>
+
 #define CONST_PLANES_CRASHED 5
 #define CONST_PLANES_DELAYED 1
 
-#include <cstring>
-#include <map>
-#include <vector>
 
 class Genome;
 

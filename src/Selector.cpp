@@ -1,50 +1,51 @@
 #include "Selector.h"
-#include "Genome.h"
 #include "FitnessFunction.h"
 #include <stdlib.h>
+#include <vector>
+#include "Time.h"
 
-Selector::~Selector() {}
-bool Selector::getSelected(std::vector<Genome*>& genomes) {
+bool 
+RandomSelector::select(std::vector<Genome*>& population, 
+                                std::vector<Genome*>& selected ) {
+    //This makes random safer in random generating.
+	srand((unsigned int)time(0));
 	//Generate fitness for every genome.
 	FitnessFunction fitness;
-	fitness.calcTotalFitness(genomes);
+    fitness.calcTotalFitness(population);
 
     size_t died = 0;
     while ( died < m_nr_die ) {
         size_t lowest_fitness = -1;
         size_t lowest_index = -1;
-        for( size_t t=0;t<genomes.size();t++){
-            if( lowest_fitness > fitness.getFitness( genomes[t] ) ) {
-                lowest_fitness = fitness.getFitness( genomes[t] );
+        for( size_t t=0;t<population.size();t++){
+            if( lowest_fitness > fitness.getFitness( population[t] ) ) {
+                lowest_fitness = fitness.getFitness( population[t] );
                 lowest_index = t;
             }
         }
-        genomes.erase( genomes.begin()+lowest_index );
+        population.erase( population.begin()+lowest_index );
         died++;
     }
 
-	//This makes random safer in random generating.
-	srand(time(NULL));
-
+	
 	size_t combined = 0;
 	size_t i = 0;
     float threshold = ((float)rand())/RAND_MAX;
 	while(combined < m_nr_combine) {
-		Genome* genome = genomes[i];
+		Genome* genome = population[i];
 
 		float chance = 
             ((float)fitness.getFitness(genome)) / fitness.getTotalFitness();
 
 		if(combined < m_nr_combine && chance <= threshold ) {
-            for( size_t t=0;t<m_to_combine.size();t++) {
-                if( m_to_combine[t] == i ) continue;
+            for( size_t t=0;t<selected.size();t++) {
+                if( selected[t] == population[i] ) continue;
             }
-            m_to_combine.push_back( i );
+            selected.push_back( population[i] );
 			combined++;
 		}
         i++;
-        if( i >= genomes.size( ) ) i = 0;
+        if( i >= population.size( ) ) i = 0;
 	}
-    
 	return true;
 }

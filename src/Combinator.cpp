@@ -6,7 +6,8 @@
 
 #include "Combinator.h"
 
-Genome* Combinator::combine(Genome *x, Genome *y) {
+Genome* 
+SimpleCombinator::combine(Genome *x, Genome *y) {
 	int size = x->get_size( );
 	Genome *z = new Genome();
 	for(int i = 0; i < size; i++) {

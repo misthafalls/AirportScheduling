@@ -10,9 +10,13 @@
 
 class Mutator {
 public:
-	void mutateGenomes(std::vector<Genome*>& genomes, double mutationRate);
-	void mutateGenome(Genome *g, double mutationRate);
-
+	virtual void mutateGenomes(std::vector<Genome*>& genomes, 
+                                double mutationRate) = 0;
 };
 
+class SimpleMutator : public Mutator {
+public:
+    void mutateGenomes(std::vector<Genome*>& genomes, 
+                                double mutationRate) = 0;
+};
 #endif

@@ -1,5 +1,7 @@
 #include "FitnessFunction.h"
 #include "Genome.h"
+#include <map>
+#include <vector>
 
 FitnessFunction::FitnessFunction() {}
 
