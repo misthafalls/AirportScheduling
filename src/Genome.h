@@ -45,11 +45,18 @@ class Genome {
         bool has_plane( const Plane* p );
 
         size_t get_size( ) { return m_genome.size( ); }
+
+        std::vector<Gene*> get_genes() { return &m_genome; }
+
+        bool set_fitness(int p_fitness) { fitness = p_fitness; return true; }
+
+
    
     // The array is a genome, m_genome[ 0 ] is first landing position
     // m_genome[ i ] is the i landing position
     private:
     std::vector <Gene*> m_genome;
+    int fitness;
 
 }; // end Genome
 
