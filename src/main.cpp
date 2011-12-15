@@ -198,6 +198,10 @@ int main( int argc, char* argv[ ] )
         "Total Planes too late: " << nr_to_late << std::endl <<
         "Total Planes to early: " << nr_to_early << std::endl <<
         "Total Fuel used:       " << fuel_used << std::endl;
-        
+    
+    for( std::vector<Genome*>::iterator it = population.begin( );
+            it!=population.end( ); it++ ) delete (*it);
+    for( std::vector<Plane*>::iterator it = planes.begin( );
+            it!=planes.end( ); it++ ) delete (*it);
     return 0;
 }

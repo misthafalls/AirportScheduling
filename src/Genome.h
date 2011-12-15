@@ -32,7 +32,9 @@ class Genome {
     }; // end Gene
     
     public:
-       Genome( ){;}
+        Genome( ){;}
+        ~Genome( ) {for(std::vector<Gene*>::iterator it=m_genome.begin( );
+                    it!=m_genome.end( ); it++) delete (*it);}
 
         Gene* get_gene( size_t position ) { 
             if (position>=m_genome.size( )) return NULL;
