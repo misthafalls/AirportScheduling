@@ -23,22 +23,14 @@ Generator::init( std::vector< Genome* >& population, size_t todo,
 
         //for every plane: make a gene
         for( size_t s = 0; s < planes.size( ); s++ ) {
-            const Plane* p = planes[s];
-            int random = rand( ); 
-            int min = p->get_fpos();
-            int max = p->get_npos();
-            if( max > planes.size( ) ) max = planes.size( );
-
-            // 0 =< random < number_planes
-            random = random % max + min;
-            while( taken_positions[random] ) {
-                random++;
-                if( random > planes.size() ) random = 0;
-            }
-            taken_positions[random] = true;
-            Time time = first_time;
-            time.addMinute( random*landingduration );
-            genome->add_gene( p, time );
+            Plane* p = planes.at( s );
+            Time a = p->getArrivalTime( );
+            Time b = p->getDeadlineTime( );
+            Time c = b - a;
+            int minutes = c.getTimeInMinutes( );
+            int random = rand( ) % minutes;
+            c = a; c.addMinute( random );
+            genome->add_gene( p, c );
         }
         if ( c.is_feasible( genome, landingduration ) ) {
             population.push_back( genome ); t++;

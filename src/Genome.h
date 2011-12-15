@@ -42,6 +42,8 @@ class Genome {
         bool add_gene( const Plane* p, Time t ) {
             m_genome.push_back( new Gene( p, t ) ); }
 
+        bool has_plane( const Plane* p );
+
         size_t get_size( ) { return m_genome.size( ); }
    
     // The array is a genome, m_genome[ 0 ] is first landing position

@@ -111,31 +111,6 @@ int main( int argc, char* argv[ ] )
     }
     std::cout << "First time = " << first_time.getFormattedTime( ) << std::endl;
     std::vector<Plane*>::iterator it = planes.begin( );
-    while( it != planes.end( ) ) {
-        Time t = first_time;
-        size_t pos = 0;
-        while( t < (*it)->getArrivalTime( ) ) {
-            t.addMinute( landingduration );
-            pos++;
-        }
-        if( pos == 0 ) (*it)->set_fpos( pos );
-        else (*it)->set_fpos( pos-1 );
-
-        Time d = (*it)->getDeadlineTime( );
-        while( t < d ) {
-            t.addMinute(landingduration);
-            pos++;
-        }
-        (*it)->set_npos( pos-1 );
-        it++;
-    }
-    std::cout << planes.size( ) << std::endl;
-    for( size_t t = 0; t < planes.size( ); t++ )
-    {
-        planes[t]->print();
-        std::cout << "Earliest pos: " << planes[t]->get_fpos( ) << std::endl;
-        std::cout << "Last pos: " << planes[t]->get_npos() <<std::endl;
-    }
 
     std::vector <Genome*> population;
 

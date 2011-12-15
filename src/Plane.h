@@ -43,12 +43,6 @@ public:
 
     void print( );
 
-    const size_t get_fpos( ) const {return fpos;}
-    const size_t get_npos( ) const {return npos;}
-    
-    void set_fpos( size_t t ) { fpos = t; }
-    void set_npos( size_t t ) { npos = t; }
-
 private:
     // fpos and npos = min and max value for place in the genome
     size_t fpos; size_t npos;
