@@ -17,6 +17,7 @@ public:
 class SimpleMutator : public Mutator {
 public:
     void mutateGenomes(std::vector<Genome*>& genomes, 
-                                double mutationRate) = 0;
+                                double mutationRate);
 };
+
 #endif

@@ -13,16 +13,16 @@ SimpleMutator::mutateGenomes(std::vector<Genome*>& genomes,
     double mutationLength = 2 * mutationRate;
 	double mutationStart = 1 - mutationRate;
 	srand ( time(NULL) );
-    size_t nr_to_mutate = rand( ) % ( genomes.size( ) / 3 );
-    size_t nr_mutated = 0;
-	while(nr_mutated < nr_to_mutate) {
+    size_t genome_to_mutate = rand( ) % ( genomes.size( ) / 3 );
+    size_t genomes_mutated = 0;
+	while(genomes_mutated < genome_to_mutate) {
         size_t index = rand( ) % genomes.size( );
         Genome* g = genomes.at( index );
 
         //Mutate Genome g;
-        size_t nr_to_mutate = rand( ) % ( g->get_size( ) );
-        size_t nr_mutated = 0;
-	    while(nr_mutated < nr_to_mutate) {
+        size_t gene_to_mutate = rand( ) % ( g->get_size( ) );
+        size_t genes_mutated = 0;
+	    while(genes_mutated < gene_to_mutate) {
             size_t index = rand( ) % (g->get_size( ));
 		    mutationRate = 
             ((double)rand())/RAND_MAX * mutationLength + mutationStart;
@@ -32,8 +32,8 @@ SimpleMutator::mutateGenomes(std::vector<Genome*>& genomes,
                 time.getTimeInMinutes() * mutationRate - 
                         time.getTimeInMinutes());
 		    gen->setTime(time);
-            nr_mutated++;
+            genes_mutated++;
 	    }
-        nr_mutated++;
+        genomes_mutated++;
 	}
 }

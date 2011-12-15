@@ -29,7 +29,7 @@ protected:
 class RandomSelector : public Selector {
 public:
     //take parent Constructor
-
+    RandomSelector( unsigned int c, unsigned int d ) : Selector( c, d ) { };
 	bool select(std::vector<Genome*>& population, 
                             std::vector< Genome* >& selected ); 
 };

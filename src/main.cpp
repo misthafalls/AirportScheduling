@@ -127,8 +127,8 @@ int main( int argc, char* argv[ ] )
 
     CSVReader reader;
 // DEBUG
-//    if( reader.readFile( "testfile", planes ) ) {
-    if( reader.readFile( filelocation, planes ) ) {
+    if( reader.readFile( "testfile", planes ) ) {
+//    if( reader.readFile( filelocation, planes ) ) {
         std::cout << "Input file read succesfully" << std::endl;
     } else {
         std::cout << "Input file not read correctly, " <<
@@ -152,20 +152,21 @@ int main( int argc, char* argv[ ] )
     size_t generations = 0;
     size_t number_to_combine = 20;
     size_t number_to_die = number_to_combine / 2;
+    Selector* s = new RandomSelector(number_to_combine, number_to_die);
+    Mutator* m = new SimpleMutator( );
+    SimpleCombinator c;
     while( generations < max_generations ) {
         //TODO move construction
-        Selector s = RandomSelector(number_to_combine, number_to_die);
-        s.getSelected( population );
-        SimpleCombinator c;
+        std::vector< Genome* > selected;
+        s->select( population, selected );
         //TODO:Move choice who mother and father
         for( size_t t=0;t<number_to_die;t++) {
-            Genome* mother = population[ s.get_to_combine_index( t ) ];
-            Genome* father = population[ s.get_to_combine_index( t+10 ) ];
+            Genome* mother = selected[ t ];
+            Genome* father = selected[ t+10 ];
             Genome* child = c.combine( mother, father );
             population.push_back( child );
         }
-        Mutator m;
-        m.mutateGenomes( population, 0.05 );
+        m->mutateGenomes( population, 0.05 );
         if( population.size( ) != population_size ) {
             std::cout << "ERROR: Something went wrong, " << 
                 "population size not stable" << std::endl;

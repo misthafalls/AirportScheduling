@@ -19,6 +19,5 @@ SimpleCombinator::combine(Genome *x, Genome *y) {
 			z->add_gene( y->get_gene(i)->getPlane(), y->get_gene(i)->getTime());
 		}
 	}
-
 	return z;
 }
