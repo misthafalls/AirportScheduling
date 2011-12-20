@@ -2,11 +2,9 @@
 //------------------------------------------------------------------------------
 
 #include "Generator.h"
-#include <iostream>
-#include <stdlib.h>
 #include <memory>
 #include "Controller.h"
-
+#include <stdlib.h>
 //------------------------------------------------------------------------------
 
 const bool

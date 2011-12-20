@@ -2,14 +2,40 @@
 #include "Genome.h"
 #include "GeneSorter.h"
 
-FitnessFunction::FitnessFunction() {}
+#define PRINT_DEBUG 0
+
+#if PRINT_DEBUG
+#include <iostream>
+#endif
+
 
 FitnessFunction::~FitnessFunction() {}
 
+unsigned int
+FitnessFunction::get_number_of_crashes( Genome* g ) {
+
+    size_t nr_crashes;
+    std::vector< Genome::Gene* > sorted;
+    GeneSorter::sort( *(g->get_genes( )), sorted );
+    for( size_t t=0; t<sorted.size( );t++ )
+    {
+        size_t max_planes = t+m_landing_strips;
+        if( max_planes >= sorted.size( ) ) max_planes = sorted.size( )-1;
+        if( sorted[t]->getTime( ) > sorted[t]->getPlane( )->getDeadlineTime( ) )
+            nr_crashes++;
+        else if( ( sorted[max_planes]->getTime( ).getTimeInMinutes( ) 
+                    - sorted[t]->getTime( ).getTimeInMinutes( ) )
+                  < m_landing_duration ) {
+            //If interval < landing duration, both planes crash
+            nr_crashes+=(max_planes - t);
+            t+=(max_planes -t);
+        }
+    }
+}
+
 int 
 NiceFitnessFunction::calculate_fitness(std::vector<Genome*>& population,
-										int landing_strips,
-										int landing_duration) {
+                                        bool check_crashes ) {
 	std::vector<Genome::Gene*> genes;
 	Genome * genome;
 
@@ -31,7 +57,7 @@ NiceFitnessFunction::calculate_fitness(std::vector<Genome*>& population,
 			gene != genes.end(); ++gene) {
 			const Plane* plane = (*gene)->getPlane();
 			Time current_time = (*gene)->getTime();
-			current_time.subMinute(landing_duration);
+			current_time.subMinute(m_landing_duration);
 
 			if (plane->getDeadlineTime() > current_time) {
 				++sum_crashes;
@@ -41,7 +67,7 @@ NiceFitnessFunction::calculate_fitness(std::vector<Genome*>& population,
 				previous_times.push_back((*gene)->getTime());
 				for(unsigned int i = 0; i < previous_times.size(); i++) {
 					if(current_time < previous_times[i]) {
-						if(same_landingtime_planes == landing_strips) {
+						if(same_landingtime_planes == m_landing_strips) {
 							++sum_crashes;
 							break; //Stop the loop, because plane crashed!
 						}
@@ -61,8 +87,8 @@ NiceFitnessFunction::calculate_fitness(std::vector<Genome*>& population,
 			}
 		}
 
-		int genome_fitness = sum_crashes * CONST_PLANES_CRASHED +
-							 sum_planes_delayed * CONST_PLANES_DELAYED;
+		int genome_fitness = sum_crashes * PLANE_CRASHED_PENALTY +
+							 sum_planes_delayed * PLANE_DELAY_PENALTY;
 
 		genome->set_fitness(genome_fitness);
 
@@ -70,3 +96,43 @@ NiceFitnessFunction::calculate_fitness(std::vector<Genome*>& population,
 	}
 	return sum_fitness;
 }
+
+int
+FuelFitnessFunction::calculate_fitness( std::vector<Genome*>& population,
+                                        bool check_crashes )
+{
+    int sum_of_fitness;
+    std::vector<Genome*>::iterator genome_iterator = population.begin( );
+
+    while( genome_iterator != population.end( ) )
+    {
+        size_t nr_crashes;
+        size_t fitness; 
+        if( check_crashes )
+            nr_crashes = get_number_of_crashes( (*genome_iterator ) );
+
+        std::vector<Genome::Gene*>::iterator gene_iterator;
+        for( gene_iterator = (*genome_iterator)->get_genes( )->begin( );
+                gene_iterator != (*genome_iterator)->get_genes( )->end( );
+                gene_iterator++ )
+            {
+                Time a = (*gene_iterator)->getTime( );
+                Time b = (*gene_iterator)->getPlane( )->getArrivalTime( );
+#if PRINT_DEBUG
+                if( a < b ) {
+                    std::cout << "MAJOR ERROR, ARRIVAL < LANDING" << std::endl;
+                }
+#endif
+                b = b - a;
+                fitness += b.getTimeInMinutes( );
+            }
+        fitness *= FUEL_UNIT_PENALTY;
+        fitness += (nr_crashes * PLANE_CRASHED_PENALTY);
+        (*genome_iterator)->set_fitness( fitness );
+
+        sum_of_fitness += fitness;
+        fitness = 0;
+        genome_iterator++;
+    }
+}
+

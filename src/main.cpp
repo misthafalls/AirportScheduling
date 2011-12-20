@@ -44,7 +44,7 @@ void printGenome( Genome* genome ) {
     size_t nr_crash = 0;
     size_t nr_to_early = 0;
     size_t nr_to_late = 0;
-    size_t fuel_used = 0;
+    int fuel_used = 0;
     for(size_t t=0;t<sorted_genes.size( );t++) {
         Genome::Gene* gene = sorted_genes[ t ];
         std::cout<<gene->getPlane( )->getName( ) << " Lands at: " <<
@@ -55,7 +55,7 @@ void printGenome( Genome* genome ) {
         if( p->getArrivalTime( ) > gene->getTime( ) ) nr_to_early++;
         if( p->getDeadlineTime( ) < gene->getTime( ) ) nr_crash++;
         if( p->getScheduledTime( ) < gene->getTime( ) ) nr_to_late++;
-        size_t min_in_air = gene->getTime( ).getTimeInMinutes( ) - 
+        int min_in_air = gene->getTime( ).getTimeInMinutes( ) - 
                 p->getArrivalTime( ).getTimeInMinutes( );
         fuel_used += min_in_air * p->getFuelUsage( );
     }
@@ -166,13 +166,13 @@ int main( int argc, char* argv[ ] )
     size_t number_to_die = number_to_combine / 2;
     Selector* s = new RandomSelector(number_to_combine, number_to_die);
     Mutator* m = new SimpleMutator( );
-    FitnessFunction* f = new NiceFitnessFunction( );
+//    FitnessFunction* f = new NiceFitnessFunction( );
+    FitnessFunction* f = new FuelFitnessFunction( landingduration, nr_lanes );
     SimpleCombinator c; int sum_fitness;
     while( generations < max_generations ) {
         //TODO move construction
         std::vector< Genome* > selected;
-        sum_fitness = f->calculate_fitness( population, 
-                                            nr_lanes, landingduration );
+        sum_fitness = f->calculate_fitness( population );
         s->select( population, selected, sum_fitness );
         //TODO:Move choice who mother and father
         for( size_t t=0;t<number_to_die;t++) {
@@ -187,12 +187,11 @@ int main( int argc, char* argv[ ] )
                 "population size not stable" << std::endl;
             return 0;
         }
-        std::cout << "Completed generation: " << generations << std::endl;
         generations++;
     }
 
     //Choose genome for print
-    f->calculate_fitness(population, nr_lanes, landingduration);
+    f->calculate_fitness(population );
     size_t highest_fitness = -1; size_t index;
     for(size_t t=0;t<population.size();t++){
         size_t fitness = population[t]->get_fitness();

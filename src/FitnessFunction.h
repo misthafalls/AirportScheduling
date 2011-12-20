@@ -16,21 +16,39 @@ class Genome;
 
 class FitnessFunction {
 public:
-	FitnessFunction();
+	FitnessFunction()
+    { };
+
 	virtual ~FitnessFunction();
 
 	virtual int calculate_fitness(std::vector<Genome*>& population,
-						   int landing_strips,
-						   int landing_duration) = 0;
+                           bool check_crashes = true ) = 0;
+
+    unsigned int get_number_of_crashes( Genome* g );
+protected:
+unsigned int m_landing_duration;
+unsigned int m_landing_strips;
+const static unsigned int PLANE_CRASHED_PENALTY = 5;
+const static unsigned int PLANE_DELAY_PENALTY= 1;
+const static unsigned int FUEL_UNIT_PENALTY = 1;
 };
 
 class NiceFitnessFunction : public FitnessFunction {
 public:
+    NiceFitnessFunction( unsigned int ld, unsigned int ls ) 
+        { m_landing_duration = ld; m_landing_strips = ls; }
+
 	int calculate_fitness(std::vector<Genome*>& population,
-						   int landing_strips,
-						   int landing_duration);
-private:
-const static unsigned int CONST_PLANES_CRASHED = 5;
-const static unsigned int CONST_PLANES_DELAYED = 1;
+                           bool check_crashes = true );
 };
+
+class FuelFitnessFunction : public FitnessFunction {
+public:
+    FuelFitnessFunction( unsigned int ld, unsigned int ls ) 
+        { m_landing_duration = ld; m_landing_strips = ls; }
+       
+	int calculate_fitness(std::vector<Genome*>& population,
+                           bool check_crashes = true );
+};
+
 #endif /* FITNESSFUNCTION_H_ */
