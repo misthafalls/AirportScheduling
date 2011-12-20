@@ -36,6 +36,8 @@ FitnessFunction::get_number_of_crashes( Genome* g ) {
 int 
 NiceFitnessFunction::calculate_fitness(std::vector<Genome*>& population,
                                         bool check_crashes ) {
+    //TODO Use get_number_of_crashes AND bool check_crashes
+    //TODO Should become: "TimeFitnessFunction"
 	std::vector<Genome::Gene*> genes;
 	Genome * genome;
 
@@ -124,8 +126,10 @@ FuelFitnessFunction::calculate_fitness( std::vector<Genome*>& population,
                 }
 #endif
                 b = b - a;
-                fitness += b.getTimeInMinutes( );
-            }
+                int time_in_air = b.getTimeInMinutes( );
+                fitness += (time_in_air * 
+                               (*gene_iterator)->getPlane( )->getFuelUsage( ) );
+        }
         fitness *= FUEL_UNIT_PENALTY;
         fitness += (nr_crashes * PLANE_CRASHED_PENALTY);
         (*genome_iterator)->set_fitness( fitness );
