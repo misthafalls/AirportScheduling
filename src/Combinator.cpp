@@ -6,6 +6,19 @@
 
 #include "Combinator.h"
 
+bool Combinator::contains(Genome *a, Plane *p) {
+	bool contains = false;
+	int size = a->get_size( );
+
+	for(int i = 0; i < size && !contains; i++) {
+		if(a->has_plane(p)) {
+			contains = true;
+		}
+	}
+
+	return contains;
+}
+
 Genome* 
 SimpleCombinator::combine(Genome *x, Genome *y) {
 	int size = x->get_size( );
@@ -19,5 +32,82 @@ SimpleCombinator::combine(Genome *x, Genome *y) {
 			z->add_gene( y->get_gene(i)->getPlane(), y->get_gene(i)->getTime());
 		}
 	}
+	return z;
+}
+
+Genome*
+RandomCombinator::combine(Genome *x, Genome *y) {
+	srand ( time(NULL) );
+
+	int size = x->get_size( );
+	Genome *z = new Genome();
+
+	double chanceFactor = 0.75;
+	for(int i = 0; i < size; i++) {
+		if((rand() % 2) < chanceFactor) {
+			z->add_gene( x->get_gene(i)->getPlane(), x->get_gene(i)->getTime());
+		} else {
+			z->add_gene( y->get_gene(i)->getPlane(), y->get_gene(i)->getTime());
+		}
+	}
+	return z;
+}
+
+Genome*
+AverageCombinator::combine(Genome *x, Genome *y) {
+	srand ( time(NULL) );
+
+	int size = x->get_size( );
+	Genome *z = new Genome();
+
+	double chanceFactor = 0.5;
+	for(int i = 0; i < size; i++) {
+		if((rand() % 2) < chanceFactor) {
+			double totalTime = x->get_gene(i)->getTime().getTimeInMinutes() + y->get_gene(i)->getTime().getTimeInMinutes();
+
+			Time t;
+			t.addMinute(floor((totalTime / 2) + 0.5));
+			z->add_gene(x->get_gene(i)->getPlane(), t);
+		}
+	}
+	return z;
+}
+
+Genome*
+BlockCombinator::combine(Genome *x, Genome *y) {
+	srand ( time(NULL) );
+
+	int blockSize = rand() % x->get_size();
+	int size = x->get_size( );
+	Genome *z = new Genome();
+
+	for(int i = 0; i < blockSize; i++) {
+		z->add_gene( x->get_gene(i)->getPlane(), x->get_gene(i)->getTime());
+	}
+	for(int i = blockSize; i < (size - blockSize); i++) {
+		z->add_gene( y->get_gene(i)->getPlane(), y->get_gene(i)->getTime());
+	}
+
+	return z;
+}
+
+Genome*
+TimeCombinator::combine(Genome *x, Genome *y) {
+	srand ( time(NULL) );
+
+	int size = x->get_size( );
+	Genome *z = new Genome();
+
+	for(int i = 0; i < size; i++) {
+		int dX = x->get_gene(i)->getTime().getTimeInMinutes() - x->get_gene(i)->getPlane()->getScheduledTime().getTimeInMinutes();
+		int dY = x->get_gene(i)->getTime().getTimeInMinutes() - x->get_gene(i)->getPlane()->getScheduledTime().getTimeInMinutes();
+
+		if(dX < dY) {
+			z->add_gene( x->get_gene(i)->getPlane(), x->get_gene(i)->getTime());
+		} else {
+			z->add_gene( y->get_gene(i)->getPlane(), y->get_gene(i)->getTime());
+		}
+	}
+
 	return z;
 }
