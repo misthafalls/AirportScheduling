@@ -139,8 +139,8 @@ int main( int argc, char* argv[ ] )
 
     CSVReader reader;
 // DEBUG
-    if( reader.readFile( "testfile", planes ) ) {
-//    if( reader.readFile( filelocation, planes ) ) {
+//    if( reader.readFile( "testfile", planes ) ) {
+    if( reader.readFile( filelocation, planes ) ) {
         std::cout << "Input file read succesfully" << std::endl;
     } else {
         std::cout << "Input file not read correctly, " <<
@@ -165,7 +165,7 @@ int main( int argc, char* argv[ ] )
     size_t number_to_combine = 20;
     size_t number_to_die = number_to_combine / 2;
     Selector* s = new RandomSelector(number_to_combine, number_to_die);
-    Mutator* m = new SimpleMutator( );
+    Mutator* m = new ComboMutator( );
 //    FitnessFunction* f = new NiceFitnessFunction( );
     FitnessFunction* f = new FuelFitnessFunction( landingduration, nr_lanes );
     SimpleCombinator c; int sum_fitness;
@@ -181,7 +181,7 @@ int main( int argc, char* argv[ ] )
             Genome* child = c.combine( mother, father );
             population.push_back( child );
         }
-        m->mutateGenomes( population, 0.05 );
+        m->mutateGenomes( population, 0.5 );
         if( population.size( ) != population_size ) {
             std::cout << "ERROR: Something went wrong, " << 
                 "population size not stable" << std::endl;

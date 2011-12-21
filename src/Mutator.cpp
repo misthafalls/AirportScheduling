@@ -28,12 +28,85 @@ SimpleMutator::mutateGenomes(std::vector<Genome*>& genomes,
             ((double)rand())/RAND_MAX * mutationLength + mutationStart;
 		    Genome::Gene * gen = g->get_gene(index);
 		    Time time = gen->getTime();
+            //TODO Hoe later het vliegtuig gescheduled is, 
+                    // hoe groter de mutatie is. dit is niet wenselijk!!!
 		    time.addMinute(
                 time.getTimeInMinutes() * mutationRate - 
                         time.getTimeInMinutes());
+            if( time < gen->getPlane( )->getArrivalTime( ) )
+                time = gen->getPlane( )->getArrivalTime( );
 		    gen->setTime(time);
             genes_mutated++;
 	    }
         genomes_mutated++;
 	}
 }
+
+void 
+AddTimeMutator::mutateGenomes(std::vector<Genome*>& genomes, 
+                                double mutationRate) {
+    unsigned int max_mutation = MAX_MUTATION_MIN*mutationRate;
+	srand ( time(NULL) );
+    std::vector<Genome*>::iterator genome_iterator = genomes.begin( );
+    std::vector<Genome::Gene*>::iterator gene_iterator;
+    while( genome_iterator != genomes.end( ) ) {
+        gene_iterator = (*genome_iterator)->get_genes( )->begin( );
+        //TODO doet de compiler dit netjes?
+        while( gene_iterator != (*genome_iterator)->get_genes( )->end( ) ) {
+            Time t = (*gene_iterator)->getTime( );
+            size_t to_add = rand( ) % max_mutation;
+            t.addMinute( to_add );
+            if( t < (*gene_iterator)->getPlane( )->getDeadlineTime( ) ){
+                (*gene_iterator)->setTime( t );
+            }
+            gene_iterator++;
+        }
+        genome_iterator++;
+    }
+}
+
+void 
+SubtractTimeMutator::mutateGenomes(std::vector<Genome*>& genomes, 
+                                double mutationRate) {
+    unsigned int max_mutation = MAX_MUTATION_MIN*mutationRate;
+	srand ( time(NULL) );
+    std::vector<Genome*>::iterator genome_iterator = genomes.begin( );
+    std::vector<Genome::Gene*>::iterator gene_iterator;
+    while( genome_iterator != genomes.end( ) ) {
+        gene_iterator = (*genome_iterator)->get_genes( )->begin( );
+        //TODO doet de compiler dit netjes?
+        while( gene_iterator != (*genome_iterator)->get_genes( )->end( ) ) {
+            Time t = (*gene_iterator)->getTime( );
+            size_t to_subtract = rand( ) % max_mutation;
+            t.subMinute( to_subtract );
+            if( t < (*gene_iterator)->getPlane( )->getArrivalTime( ) ){
+                (*gene_iterator)->setTime( t );
+            }
+            gene_iterator++;
+        }
+        genome_iterator++;
+    }
+}
+
+void
+ComboMutator::mutateGenomes( std::vector<Genome*>& genomes,
+                                double mutationRate ) {
+    srand( time( NULL ) );
+    std::vector<Genome*> add;
+    std::vector<Genome*> subtract;
+    std::vector<Genome*>::iterator genome_iterator = genomes.begin( );
+    while( genome_iterator != genomes.end( ) ) {
+        //50-50 verdeling
+        int random = rand( ) % 2;
+        if( !random ) add.push_back( *genome_iterator );
+        else subtract.push_back( *genome_iterator );
+        genome_iterator++;
+    }
+    Mutator* m = new AddTimeMutator( ); 
+    m->mutateGenomes( add, mutationRate );
+    delete m;
+    m = new SubtractTimeMutator( ); 
+    m->mutateGenomes( subtract, mutationRate );
+    delete m;
+}
+
