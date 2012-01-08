@@ -224,7 +224,7 @@ int main( int argc, char* argv[ ] )
             std::cout << "No selector set, using default: " <<
                 "RandomSelector" << std::endl;
         case RANDOM_SELECTOR:
-            selector = new RandomSelector( number_to_combine, number_to_die );
+            selector = new FittestSelector( number_to_combine, number_to_die );
             break;
     }
 
