@@ -28,9 +28,9 @@ public:
 protected:
 unsigned int m_landing_duration;
 unsigned int m_landing_strips;
-const static unsigned int PLANE_CRASHED_PENALTY = 5;
+const static unsigned int PLANE_CRASHED_PENALTY = 500;
 const static unsigned int PLANE_DELAY_PENALTY= 1;
-const static unsigned int FUEL_UNIT_PENALTY = 1;
+const static double FUEL_UNIT_PENALTY = 0.01;
 };
 
 class NiceFitnessFunction : public FitnessFunction {
