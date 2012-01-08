@@ -6,19 +6,6 @@
 
 #include "Combinator.h"
 
-bool Combinator::contains(Genome *a, Plane *p) {
-	bool contains = false;
-	int size = a->get_size( );
-
-	for(int i = 0; i < size && !contains; i++) {
-		if(a->has_plane(p)) {
-			contains = true;
-		}
-	}
-
-	return contains;
-}
-
 Genome* 
 SimpleCombinator::combine(Genome *x, Genome *y) {
 	int size = x->get_size( );
@@ -44,7 +31,7 @@ RandomCombinator::combine(Genome *x, Genome *y) {
 
 	double chanceFactor = 0.75;
 	for(int i = 0; i < size; i++) {
-		if((rand() % 2) < chanceFactor) {
+		if((rand() / RANDMAX+1) < chanceFactor) {
 			z->add_gene( x->get_gene(i)->getPlane(), x->get_gene(i)->getTime());
 		} else {
 			z->add_gene( y->get_gene(i)->getPlane(), y->get_gene(i)->getTime());
@@ -62,12 +49,18 @@ AverageCombinator::combine(Genome *x, Genome *y) {
 
 	double chanceFactor = 0.5;
 	for(int i = 0; i < size; i++) {
-		if((rand() % 2) < chanceFactor) {
+		double chance = (rand() / RANDMAX+1);
+		if(chance < chanceFactor) {
 			double totalTime = x->get_gene(i)->getTime().getTimeInMinutes() + y->get_gene(i)->getTime().getTimeInMinutes();
 
 			Time t;
 			t.addMinute(floor((totalTime / 2) + 0.5));
 			z->add_gene(x->get_gene(i)->getPlane(), t);
+		} else if(chance < 0.75) {
+				z->add_gene( x->get_gene(i)->getPlane(), x->get_gene(i)->getTime());
+			} else {
+				z->add_gene( y->get_gene(i)->getPlane(), y->get_gene(i)->getTime());
+			}
 		}
 	}
 	return z;
