@@ -17,6 +17,25 @@
 #include "GeneSorter.h"
 #include "GenomeUtils.h"
 
+enum FUNCTION {
+    DEFAULT_FUNCTION,
+    TIME_FUNCTION,
+    FUEL_FUNCTION
+};
+
+enum SELECTOR {
+    DEFAULT_SELECTOR,
+    RANDOM_SELECTOR
+};
+
+enum MUTATOR {
+    DEFAULT_MUTATOR,
+    SIMPLE_MUTATOR,
+    SUBTRACT_MUTATOR,
+    ADD_MUTATOR,
+    COMBO_MUTATOR
+};
+
 inline void printNewLineAndIndent( int indent ) {
     std::cout << std::endl;
     for( int i = 0; i < indent; i++ ) {
@@ -28,12 +47,24 @@ inline void printNewLineAndIndent( int indent ) {
 void printHelp( ) {
     std::cout << "Usage: ";
     printNewLineAndIndent( 4 );
-    std::cout << "AirportScheduler [-P <population_size> ] [<file name>]";
+    std::cout << "AirportScheduler [ parameters ] [<file name>]";
     printNewLineAndIndent( 0 );
-    std::cout << "Where:";
+    std::cout << "Available Parameters:";
     printNewLineAndIndent( 4 );
     std::cout << "[-P <population_size> ]  Set number of genomes to create" <<
         "Must be between 25 and 250";
+    printNewLineAndIndent( 4 );
+    std::cout << "[-L <landing duration> ]  Set duration of landing sequence";
+    printNewLineAndIndent( 4 );
+    std::cout << "[-D <death_toll> ]  Set number of deaths per generation";
+    printNewLineAndIndent( 4 );
+    std::cout << "[-l <number> ]  Set number of lanes available at airport";
+    printNewLineAndIndent( 4 );
+    std::cout << "[-F <function> ]  Set fitness function can be: FUEL or TIME";
+    printNewLineAndIndent( 4 );
+    std::cout << "[-S <selector> ]  Set selector can be: RANDOM";
+    printNewLineAndIndent( 4 );
+    std::cout << "[-M <mutator> ]  Set mutator can be: SIMPLE, SUBTRACT, ADD or COMBO";
     std::cout << std::endl;
     exit( 0 );
 }
@@ -41,15 +72,19 @@ void printHelp( ) {
 int main( int argc, char* argv[ ] )
 {
     char filelocation[ 256 ];
-//TODO create lanes abilities
-//    int lanes = 0; 
-    size_t population_size = -1;
-    size_t landingduration = -1;
-    size_t max_generations = -1;
-    size_t nr_lanes = -1;
+    unsigned int population_size = -1;
+    unsigned int landingduration = -1;
+    unsigned int max_generations = -1;
+    unsigned int nr_lanes = -1;
+    unsigned int number_to_die = -1; 
+
+    SELECTOR s = DEFAULT_SELECTOR;
+    MUTATOR m = DEFAULT_MUTATOR;
+    FUNCTION f = DEFAULT_FUNCTION;
+
     if( argc == 1 )
     {
-//        printHelp( );
+        printHelp( );
     }
     else // Get input parameters
     {
@@ -62,6 +97,11 @@ int main( int argc, char* argv[ ] )
                 if( t+1 >= argc ) printHelp( );
                 t++;
                 population_size = atoi( argv[ t ] );
+            }
+            else if( !strcmp( argv[ t ], "-D" ) ) {
+                if( t+1 >= argc ) printHelp( );
+                t++;
+                number_to_die = atoi( argv[ t ] );
             }
             else if( !strcmp( argv[ t ], "-L" ) ) {
                 if( t+1 >= argc ) printHelp( );
@@ -78,6 +118,38 @@ int main( int argc, char* argv[ ] )
                 t++;
                 nr_lanes = atoi( argv[ t ] );
             }
+            else if( !strcmp( argv[ t ], "-F" ) ) {
+                //Set fitness function
+                if( t+1 >= argc ) printHelp( );
+                t++;
+                if( !strcmp( argv[ t ], "FUEL" ) ) {
+                    f = FUEL_FUNCTION;
+                } else if ( !strcmp( argv[ t ], "TIME" ) ) {
+                    f = TIME_FUNCTION;
+                }
+            }
+            else if( !strcmp( argv[ t ], "-M" ) ) {
+                //Set mutator
+                if( t+1 >= argc ) printHelp( );
+                t++;
+                if( !strcmp( argv[ t ], "SIMPLE" ) ) {
+                    m = SIMPLE_MUTATOR;
+                } else if ( !strcmp( argv[ t ], "SUBTRACT" ) ) {
+                    m = SUBTRACT_MUTATOR;
+                } else if ( !strcmp( argv[ t ], "ADD" ) ) {
+                    m = ADD_MUTATOR;
+                } else if ( !strcmp( argv[ t ], "COMBO" ) ) {
+                    m = COMBO_MUTATOR;
+                }
+           }
+           else if( !strcmp( argv[ t ], "-S" ) ) {
+                //Set selector
+                if( t+1 >= argc ) printHelp( );
+                t++;
+                if( !strcmp( argv [ t ], "RANDOM" ) ) {
+                    s = RANDOM_SELECTOR;
+                }
+           }
         }
     }
     //Check validity
@@ -96,8 +168,8 @@ int main( int argc, char* argv[ ] )
     if( max_generations == -1 )
     {
         std::cout << "No max generations given, ASSUMING CONTROL!" << 
-            std::endl << "Setting max generations: 100" << std::endl;
-        max_generations = 100;
+            std::endl << "Setting max generations: 1000" << std::endl;
+        max_generations = 1000;
     }
     if( nr_lanes == -1 )
     {
@@ -105,10 +177,60 @@ int main( int argc, char* argv[ ] )
             std::endl << "Setting nr lanes: 1" << std::endl;
         nr_lanes = 1;
     }
+    if( number_to_die == -1 )
+    {
+        number_to_die = population_size / 5;
+        std::cout << "No dead-toll given, using default: \"population / 5 \" "
+            << " = " << number_to_die << std::endl;
+    } else if( number_to_die > (population_size / 2 ) ) {
+        number_to_die = population_size / 5;
+        std::cout << "Dead-toll too high, using default: \"population / 5 \" "
+            << " = " << number_to_die << std::endl;
+    }
+    unsigned int number_to_combine = number_to_die * 2;
+    FitnessFunction* function;
+    Mutator* mutator;
+    Selector* selector;
+    switch( f ) {
+        case TIME_FUNCTION:
+            function = new NiceFitnessFunction( landingduration, nr_lanes );
+            break;
+        case DEFAULT_FUNCTION:
+            std::cout << "No fitness function set, using default: " <<
+                "FuelFitnessFunction" << std::endl;
+        case FUEL_FUNCTION:
+            function = new FuelFitnessFunction( landingduration, nr_lanes );
+            break;
+    }
+    switch( m ) {
+        case SIMPLE_MUTATOR:
+            mutator = new SimpleMutator( );
+            break;
+        case SUBTRACT_MUTATOR:
+            mutator = new SubtractTimeMutator( );
+            break;
+        case ADD_MUTATOR:
+            mutator = new AddTimeMutator( );
+            break;
+        case DEFAULT_MUTATOR:
+            std::cout << "No mutator set, using default: " <<
+                "ComboMutator" << std::endl;
+         case COMBO_MUTATOR:
+            mutator = new ComboMutator( );
+            break;
+    }
+    switch( s ) {
+        case DEFAULT_SELECTOR:
+            std::cout << "No selector set, using default: " <<
+                "RandomSelector" << std::endl;
+        case RANDOM_SELECTOR:
+            selector = new RandomSelector( number_to_combine, number_to_die );
+            break;
+    }
+
     //BEWARE: this vector takes ownership of planes!
     std::vector< Plane* > planes;
     
-
     CSVReader reader;
 // DEBUG
 //    if( reader.readFile( "testfile", planes ) ) {
@@ -134,18 +256,12 @@ int main( int argc, char* argv[ ] )
 
     //MAIN LOOP
     size_t generations = 0;
-    size_t number_to_combine = 20;
-    size_t number_to_die = number_to_combine / 2;
-    Selector* s = new RandomSelector(number_to_combine, number_to_die);
-    Mutator* m = new ComboMutator( );
-//    FitnessFunction* f = new NiceFitnessFunction( );
-    FitnessFunction* f = new FuelFitnessFunction( landingduration, nr_lanes );
     SimpleCombinator c; int sum_fitness;
     while( generations < max_generations ) {
         //TODO move construction
         std::vector< Genome* > selected;
-        sum_fitness = f->calculate_fitness( population );
-        s->select( population, selected, sum_fitness );
+        sum_fitness = function->calculate_fitness( population );
+        selector->select( population, selected, sum_fitness );
         //TODO:Move choice who mother and father
         for( size_t t=0;t<number_to_die;t++) {
             Genome* mother = selected[ t ];
@@ -153,7 +269,7 @@ int main( int argc, char* argv[ ] )
             Genome* child = c.combine( mother, father );
             population.push_back( child );
         }
-        m->mutateGenomes( population, 0.5 );
+        mutator->mutateGenomes( population, 1 );
         if( population.size( ) != population_size ) {
             std::cout << "ERROR: Something went wrong, " << 
                 "population size not stable" << std::endl;
@@ -163,17 +279,18 @@ int main( int argc, char* argv[ ] )
     }
 
     //Choose genome for print
-    f->calculate_fitness(population );
+    function->calculate_fitness(population );
     size_t highest_fitness = -1; size_t index;
     for(size_t t=0;t<population.size();t++){
         size_t fitness = population[t]->get_fitness();
-        if( fitness < highest_fitness || highest_fitness == -1 ) {
+        if( fitness > highest_fitness || highest_fitness == -1 ) {
             highest_fitness = fitness;
             index = t;
         }
     }
     Genome* best_genome = population[ index ];
-    GenomeUtils::print_genome_more( best_genome );
+    size_t crashes = function->get_number_of_crashes( best_genome );
+    GenomeUtils::print_genome_more( best_genome, crashes );
         
     //Cleanup
     for( std::vector<Plane*>::iterator it = planes.begin( );
