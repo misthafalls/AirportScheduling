@@ -27,12 +27,28 @@ protected:
     unsigned int m_nr_die;
 };
 
-class RandomSelector : public Selector {
+class RouletteSelector : public Selector {
 public:
-    //take parent Constructor
-    RandomSelector( unsigned int c, unsigned int d ) : Selector( c, d ) { };
-	bool select(std::vector<Genome*>& population, 
-                            std::vector< Genome* >& selected,
-                            int sum_fitness ); 
+	RouletteSelector( unsigned int c, unsigned int d ) : Selector( c, d ) { };
+	bool select(std::vector<Genome*>& population,
+							std::vector< Genome* >& selected,
+							int sum_fitness );
 };
+
+class FittestSelector : public Selector {
+public:
+	FittestSelector( unsigned int c, unsigned int d ) : Selector( c, d ) { };
+	bool select(std::vector<Genome*>& population,
+							std::vector< Genome* >& selected,
+							int sum_fitness );
+};
+
+class TournamentSelector : public Selector {
+public:
+	TournamentSelector( unsigned int c, unsigned int d ) : Selector( c, d ) { };
+	bool select(std::vector<Genome*>& population,
+							std::vector< Genome* >& selected,
+							int sum_fitness );
+};
+
 #endif /* SELECTOR_H_ */

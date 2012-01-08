@@ -136,7 +136,7 @@ int main( int argc, char* argv[ ] )
     size_t generations = 0;
     size_t number_to_combine = 20;
     size_t number_to_die = number_to_combine / 2;
-    Selector* s = new RandomSelector(number_to_combine, number_to_die);
+    Selector* s = new FittestSelector(number_to_combine, number_to_die);
     Mutator* m = new ComboMutator( );
 //    FitnessFunction* f = new NiceFitnessFunction( );
     FitnessFunction* f = new FuelFitnessFunction( landingduration, nr_lanes );
@@ -173,7 +173,7 @@ int main( int argc, char* argv[ ] )
         }
     }
     Genome* best_genome = population[ index ];
-    GenomeUtils::print_genome_more( best_genome );
+//    GenomeUtils::print_genome_more( best_genome );
         
     //Cleanup
     for( std::vector<Plane*>::iterator it = planes.begin( );
