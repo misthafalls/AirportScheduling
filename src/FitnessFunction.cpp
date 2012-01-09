@@ -159,5 +159,6 @@ FuelFitnessFunction::calculate_fitness( std::vector<Genome*>& population,
         fitness = 0;
         genome_iterator++;
     }
+    return sum_of_fitness;
 }
 

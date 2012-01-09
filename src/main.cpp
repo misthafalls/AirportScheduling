@@ -316,7 +316,7 @@ int main( int argc, char* argv[ ] )
 
     //MAIN LOOP
     size_t generations = 0;
-    int sum_fitness;
+    unsigned long int sum_fitness;
     while( generations < max_generations ) {
         //TODO move construction
         std::vector< Genome* > selected;
