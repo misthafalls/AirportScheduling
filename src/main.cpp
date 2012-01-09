@@ -350,7 +350,8 @@ int main( int argc, char* argv[ ] )
     }
     Genome* best_genome = population[ index ];
     size_t crashes = function->get_number_of_crashes( best_genome );
-    GenomeUtils::print_genome_more( best_genome, crashes );
+    GenomeUtils::print_genome_more( best_genome, crashes, nr_lanes, 
+                                        landingduration );
         
     //Cleanup
     for( std::vector<Plane*>::iterator it = planes.begin( );
