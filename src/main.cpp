@@ -25,7 +25,9 @@ enum FUNCTION {
 
 enum SELECTOR {
     DEFAULT_SELECTOR,
-    RANDOM_SELECTOR
+    FITTEST_SELECTOR,
+    TOURNAMENT_SELECTOR,
+    ROULETTE_SELECTOR
 };
 
 enum MUTATOR {
@@ -34,6 +36,15 @@ enum MUTATOR {
     SUBTRACT_MUTATOR,
     ADD_MUTATOR,
     COMBO_MUTATOR
+};
+
+enum COMBINATOR {
+	DEFAULT_COMBINATOR,
+	SIMPLE_COMBINATOR,
+	RANDOM_COMBINATOR,
+	AVERAGE_COMBINATOR,
+	BLOCK_COMBINATOR,
+	TIME_COMBINATOR
 };
 
 inline void printNewLineAndIndent( int indent ) {
@@ -65,6 +76,8 @@ void printHelp( ) {
     std::cout << "[-S <selector> ]  Set selector can be: RANDOM";
     printNewLineAndIndent( 4 );
     std::cout << "[-M <mutator> ]  Set mutator can be: SIMPLE, SUBTRACT, ADD or COMBO";
+    printNewLineAndIndent( 4 );
+    std::cout << "[-C <combinator> ]  Set combinator can be: SIMPLE, RANDOM, AVERAGE, BLOCK or TIME";
     std::cout << std::endl;
     exit( 0 );
 }
@@ -81,6 +94,7 @@ int main( int argc, char* argv[ ] )
     SELECTOR s = DEFAULT_SELECTOR;
     MUTATOR m = DEFAULT_MUTATOR;
     FUNCTION f = DEFAULT_FUNCTION;
+    COMBINATOR c = DEFAULT_COMBINATOR;
 
     if( argc == 1 )
     {
@@ -146,9 +160,28 @@ int main( int argc, char* argv[ ] )
                 //Set selector
                 if( t+1 >= argc ) printHelp( );
                 t++;
-                if( !strcmp( argv [ t ], "RANDOM" ) ) {
-                    s = RANDOM_SELECTOR;
+                if( !strcmp( argv [ t ], "FITTEST" ) ) {
+                    s = FITTEST_SELECTOR;
+                } else if( !strcmp( argv [ t ], "TOURNAMENT" ) ) {
+                	s = TOURNAMENT_SELECTOR;
+                } else if( !strcmp( argv [ t ], "ROULETTE" ) ) {
+                	s = ROULETTE_SELECTOR;
                 }
+           }
+           else if( !strcmp( argv[ t ], "-C" ) ) {
+				if( t+1 >= argc ) printHelp( );
+				t++;
+				if( !strcmp( argv [ t ], "SIMPLE" ) ) {
+					c = SIMPLE_COMBINATOR;
+				} else if( !strcmp( argv [ t ], "RANDOM" ) ) {
+					c = RANDOM_COMBINATOR;
+				} else if( !strcmp( argv [ t ], "AVERAGE" ) ) {
+					c = AVERAGE_COMBINATOR;
+				} else if( !strcmp( argv [ t ], "BLOCK" ) ) {
+					c = BLOCK_COMBINATOR;
+				} else if( !strcmp( argv [ t ], "TIME" ) ) {
+					c = TIME_COMBINATOR;
+				}
            }
         }
     }
@@ -191,6 +224,7 @@ int main( int argc, char* argv[ ] )
     FitnessFunction* function;
     Mutator* mutator;
     Selector* selector;
+    Combinator* combinator;
     switch( f ) {
         case TIME_FUNCTION:
             function = new NiceFitnessFunction( landingduration, nr_lanes );
@@ -222,10 +256,36 @@ int main( int argc, char* argv[ ] )
     switch( s ) {
         case DEFAULT_SELECTOR:
             std::cout << "No selector set, using default: " <<
-                "RandomSelector" << std::endl;
-        case RANDOM_SELECTOR:
+                "FittestSelector" << std::endl;
+        case FITTEST_SELECTOR:
             selector = new FittestSelector( number_to_combine, number_to_die );
             break;
+        case TOURNAMENT_SELECTOR:
+        	selector = new TournamentSelector( number_to_combine, number_to_die );
+        	break;
+        case ROULETTE_SELECTOR:
+        	selector = new RouletteSelector( number_to_combine, number_to_die );
+        	break;
+    }
+    switch( c ) {
+    	case DEFAULT_COMBINATOR:
+    		std::cout << "No combinator set, using default: " <<
+    	                "SimpleCombinator" << std::endl;
+    	case SIMPLE_COMBINATOR:
+    		combinator = new SimpleCombinator();
+    		break;
+    	case AVERAGE_COMBINATOR:
+    		combinator = new AverageCombinator();
+    		break;
+    	case RANDOM_COMBINATOR:
+    		combinator = new RandomCombinator();
+    		break;
+    	case BLOCK_COMBINATOR:
+    		combinator = new BlockCombinator();
+    		break;
+    	case TIME_COMBINATOR:
+    		combinator = new TimeCombinator();
+    		break;
     }
 
     //BEWARE: this vector takes ownership of planes!
@@ -256,7 +316,7 @@ int main( int argc, char* argv[ ] )
 
     //MAIN LOOP
     size_t generations = 0;
-    SimpleCombinator c; int sum_fitness;
+    int sum_fitness;
     while( generations < max_generations ) {
         //TODO move construction
         std::vector< Genome* > selected;
@@ -266,12 +326,12 @@ int main( int argc, char* argv[ ] )
         for( size_t t=0;t<number_to_die;t++) {
             Genome* mother = selected[ t ];
             Genome* father = selected[ t+10 ];
-            Genome* child = c.combine( mother, father );
-            population.push_back( child );
+            Genome* child = combinator->combine( mother, father );
+            population.push_back( mother );
         }
         mutator->mutateGenomes( population, 1 );
         if( population.size( ) != population_size ) {
-            std::cout << "ERROR: Something went wrong, " << 
+            std::cout << "ERROR: Something went wrong, " <<
                 "population size not stable" << std::endl;
             return 0;
         }
