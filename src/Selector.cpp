@@ -20,31 +20,22 @@ RouletteSelector::select(std::vector<Genome*>& population,
 		int select = (rand()/(float)RAND_MAX) * sum_fitness;
 		int delete_genome = -1;
 
-		std::cout << "Select for deletion: " << select << " " << sum_fitness << std::endl;
-
 		int start_fitness = 0;
 		int end_fitness = 0;
 		for( size_t i = 0; i < population.size(); i++ ) {
-			end_fitness = start_fitness + population[i]->get_fitness();
-			std::cout << start_fitness << " " << select << " " << end_fitness << std::endl;
 			if( select >= start_fitness &&
-				select < end_fitness) {
+				select < start_fitness + population[i]->get_fitness()) {
 				delete_genome = i;
 				break;
 			}
 			start_fitness = start_fitness + population[i]->get_fitness();
 		}
 
-		if(delete_genome == -1)
-			continue;
-
 		sum_fitness -= population[delete_genome]->get_fitness();
 		delete population[delete_genome];
 		population.erase( population.begin() + delete_genome );
 		died++;
 	}
-
-	std::cout << "Delete done" << std::endl;
 
 	//This list will eventually represent the indexes for genomes to combine.
 	std::vector<int> to_combine;
@@ -66,14 +57,10 @@ RouletteSelector::select(std::vector<Genome*>& population,
 			start_fitness = start_fitness + population[to_combine[i]]->get_fitness();
 		}
 
-		std::cout << "Do not combine: " << to_combine[selected_genome] << std::endl;
-
 		sum_fitness -= population[to_combine[selected_genome]]->get_fitness();
 		to_combine.erase( to_combine.begin() + selected_genome );
 		do_not_combine++;
 	}
-
-	std::cout << "Combine complete" << std::endl;
 
 	for( size_t i = 0; i < to_combine.size(); i++ )
 		selected.push_back( population[to_combine[i]] );
