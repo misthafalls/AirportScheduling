@@ -6,6 +6,7 @@
 
 #include "Mutator.h"
 #include <stdlib.h>
+#include <iostream>
 #include <ctime>
 
 void 
@@ -56,6 +57,7 @@ AddTimeMutator::mutateGenomes(std::vector<Genome*>& genomes,
         while( gene_iterator != (*genome_iterator)->get_genes( )->end( ) ) {
             Time t = (*gene_iterator)->getTime( );
             size_t to_add = rand( ) % max_mutation;
+//            std::cout << "Adding: " << to_add << std::endl;
             t.addMinute( to_add );
             if( t < (*gene_iterator)->getPlane( )->getDeadlineTime( ) ){
                 (*gene_iterator)->setTime( t );
@@ -80,7 +82,7 @@ SubtractTimeMutator::mutateGenomes(std::vector<Genome*>& genomes,
             Time t = (*gene_iterator)->getTime( );
             size_t to_subtract = rand( ) % max_mutation;
             t.subMinute( to_subtract );
-            if( t < (*gene_iterator)->getPlane( )->getArrivalTime( ) ){
+            if( t > (*gene_iterator)->getPlane( )->getArrivalTime( ) ){
                 (*gene_iterator)->setTime( t );
             }
             gene_iterator++;
