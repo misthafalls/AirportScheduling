@@ -155,7 +155,6 @@ FuelFitnessFunction::calculate_fitness( std::vector<Genome*>& population,
         fitness *= FUEL_UNIT_PENALTY;
         fitness += (nr_crashes * PLANE_CRASHED_PENALTY);
         (*genome_iterator)->set_fitness( fitness );
-        std::cout << fitness << std::endl;
         sum_of_fitness += fitness;
         fitness = 0;
         genome_iterator++;
