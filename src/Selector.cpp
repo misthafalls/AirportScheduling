@@ -15,38 +15,6 @@ RouletteSelector::select(std::vector<Genome*>& population,
 	//This makes random safer in random generating.
 	srand((unsigned int)time(0));
 
-	size_t do_not_combine = 0;
-	int combine_fitness = sum_fitness;
-
-	//This list will eventually represent the indexes for genomes to combine.
-	std::vector<int> to_combine(population.size(), 0);
-	for( size_t i = 0; i < to_combine.size(); i++ )
-		to_combine.push_back(i);
-
-	while ( do_not_combine < population.size() - m_nr_combine ) {
-		int select = (int) ((float)rand())/RAND_MAX * combine_fitness;
-		int selected_genome = -1;
-
-		int start_fitness = 0;
-		for( size_t i = 0; i < to_combine.size(); i++ ) {
-			if( select >= start_fitness &&
-				select < start_fitness + population[to_combine[i]]->get_fitness()) {
-				selected_genome = i;
-				break;
-			}
-			start_fitness = start_fitness + population[to_combine[i]]->get_fitness();
-		}
-
-		if( selected_genome != -1) {
-			combine_fitness -= population[to_combine[selected_genome]]->get_fitness();
-			to_combine.erase( to_combine.begin() + selected_genome );
-			do_not_combine++;
-		}
-	}
-
-	for( size_t i = 0; i < to_combine.size(); i++ )
-		selected.push_back( population[to_combine[i]] );
-
 	size_t died = 0;
 	while ( died < m_nr_die ) {
 		int select = (int) ((float)rand())/RAND_MAX * sum_fitness;
@@ -64,11 +32,43 @@ RouletteSelector::select(std::vector<Genome*>& population,
 
 		if( delete_genome != -1) {
 			sum_fitness -= population[delete_genome]->get_fitness();
-			//TODO: Memory Leak!!! But also dangerous to perform delete, because of possible combinator action!
+			delete population[delete_genome];
 			population.erase( population.begin() + delete_genome );
 			died++;
 		}
 	}
+
+	//This list will eventually represent the indexes for genomes to combine.
+	std::vector<int> to_combine(population.size(), 0);
+	for( size_t i = 0; i < to_combine.size(); i++ )
+		to_combine.push_back(i);
+
+	size_t do_not_combine = 0;
+
+	while ( do_not_combine < population.size() - m_nr_combine ) {
+		int select = (int) ((float)rand())/RAND_MAX * sum_fitness;
+		int selected_genome = -1;
+
+		int start_fitness = 0;
+		for( size_t i = 0; i < to_combine.size(); i++ ) {
+			if( select >= start_fitness &&
+				select < start_fitness + population[to_combine[i]]->get_fitness()) {
+				selected_genome = i;
+				break;
+			}
+			start_fitness = start_fitness + population[to_combine[i]]->get_fitness();
+		}
+
+		if( selected_genome != -1) {
+			sum_fitness -= population[to_combine[selected_genome]]->get_fitness();
+			to_combine.erase( to_combine.begin() + selected_genome );
+			do_not_combine++;
+		}
+	}
+
+	for( size_t i = 0; i < to_combine.size(); i++ )
+		selected.push_back( population[to_combine[i]] );
+
 	return true;
 }
 
@@ -82,7 +82,6 @@ FittestSelector::select(std::vector<Genome*>& population,
 
 	//Very easy code, get the lowest fitness (in our case highest)
 	//and remove it from the population.
-	//TODO: Memory leak alert! Genome pointer stays there.
 	size_t died = 0;
 	while ( died < m_nr_die ) {
 		int lowest_fitness = -1;
@@ -93,6 +92,7 @@ FittestSelector::select(std::vector<Genome*>& population,
 				lowest_index = t;
 			}
 		}
+		delete population[lowest_index];
 		population.erase( population.begin()+lowest_index );
 		died++;
 	}
@@ -149,8 +149,6 @@ TournamentSelector::select(std::vector<Genome*>& population,
 			start_subset = tmp;
 		}
 
-		std::cout << "Population: " << population_size << " Start: " << start_subset << " End: " << end_subset << std::endl;
-
 		if( died < m_nr_die ) {
 			int lowest_fitness = -1;
 			size_t lowest_index = -1;
@@ -162,6 +160,7 @@ TournamentSelector::select(std::vector<Genome*>& population,
 				}
 			}
 
+			//TODO: Memory leak, will fix later;
 			population.erase( population.begin()+lowest_index );
 			died++;
 		}
