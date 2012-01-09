@@ -28,7 +28,7 @@ public:
 protected:
 unsigned int m_landing_duration;
 unsigned int m_landing_strips;
-const static unsigned int PLANE_CRASHED_PENALTY = 500;
+const static unsigned int PLANE_CRASHED_PENALTY = 50;
 const static unsigned int PLANE_DELAY_PENALTY= 1;
 const static double FUEL_UNIT_PENALTY = 0.01;
 };
