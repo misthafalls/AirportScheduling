@@ -98,7 +98,7 @@ int main( int argc, char* argv[ ] )
 
     if( argc == 1 )
     {
-        printHelp( );
+//        printHelp( );
     }
     else // Get input parameters
     {
@@ -293,7 +293,7 @@ int main( int argc, char* argv[ ] )
     
     CSVReader reader;
 // DEBUG
-//    if( reader.readFile( "testfile", planes ) ) {
+//    if( reader.readFile( "testfile_fatty", planes ) ) {
     if( reader.readFile( filelocation, planes ) ) {
         std::cout << "Input file read succesfully" << std::endl;
     } else {
@@ -308,7 +308,7 @@ int main( int argc, char* argv[ ] )
     for(std::vector< Plane* >::iterator p=planes.begin( ); 
         p!=planes.end( );p++) (*p)->calcDeadlineTime( );
 
-    std::vector <Genome*> population;
+    std::vector<Genome*> population;
 
     //setup generation 0
     Generator g;
@@ -327,7 +327,7 @@ int main( int argc, char* argv[ ] )
             Genome* mother = selected[ t ];
             Genome* father = selected[ t+10 ];
             Genome* child = combinator->combine( mother, father );
-            population.push_back( mother );
+            population.push_back( child );
         }
         mutator->mutateGenomes( population, 1 );
         if( population.size( ) != population_size ) {
