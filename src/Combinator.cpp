@@ -31,7 +31,7 @@ RandomCombinator::combine(Genome *x, Genome *y) {
 
 	double chanceFactor = 0.75;
 	for(int i = 0; i < size; i++) {
-		if((rand() / RANDMAX+1) < chanceFactor) {
+		if((((double) rand()) / RAND_MAX+1) < chanceFactor) {
 			z->add_gene( x->get_gene(i)->getPlane(), x->get_gene(i)->getTime());
 		} else {
 			z->add_gene( y->get_gene(i)->getPlane(), y->get_gene(i)->getTime());
@@ -49,7 +49,7 @@ AverageCombinator::combine(Genome *x, Genome *y) {
 
 	double chanceFactor = 0.5;
 	for(int i = 0; i < size; i++) {
-		double chance = (rand() / RANDMAX+1);
+		double chance = (((double) rand()) / RAND_MAX+1);
 		if(chance < chanceFactor) {
 			double totalTime = x->get_gene(i)->getTime().getTimeInMinutes() + y->get_gene(i)->getTime().getTimeInMinutes();
 
@@ -57,10 +57,9 @@ AverageCombinator::combine(Genome *x, Genome *y) {
 			t.addMinute(floor((totalTime / 2) + 0.5));
 			z->add_gene(x->get_gene(i)->getPlane(), t);
 		} else if(chance < 0.75) {
-				z->add_gene( x->get_gene(i)->getPlane(), x->get_gene(i)->getTime());
-			} else {
-				z->add_gene( y->get_gene(i)->getPlane(), y->get_gene(i)->getTime());
-			}
+			z->add_gene( x->get_gene(i)->getPlane(), x->get_gene(i)->getTime());
+		} else {
+			z->add_gene( y->get_gene(i)->getPlane(), y->get_gene(i)->getTime());
 		}
 	}
 	return z;
