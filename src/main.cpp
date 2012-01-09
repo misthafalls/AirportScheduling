@@ -327,7 +327,7 @@ int main( int argc, char* argv[ ] )
             Genome* mother = selected[ t ];
             Genome* father = selected[ t+10 ];
             Genome* child = combinator->combine( mother, father );
-            population.push_back( mother );
+            population.push_back( child );
         }
         mutator->mutateGenomes( population, 1 );
         if( population.size( ) != population_size ) {
