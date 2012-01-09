@@ -6,6 +6,7 @@
 
 #include "Mutator.h"
 #include <stdlib.h>
+#include <ctime>
 
 void 
 SimpleMutator::mutateGenomes(std::vector<Genome*>& genomes, 

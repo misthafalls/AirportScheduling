@@ -1,6 +1,7 @@
 #include "FitnessFunction.h"
 #include "Genome.h"
 #include "GeneSorter.h"
+#include "GenomeUtils.h"
 
 #define PRINT_DEBUG 0
 
@@ -13,8 +14,7 @@ FitnessFunction::~FitnessFunction() {}
 
 unsigned int
 FitnessFunction::get_number_of_crashes( Genome* g ) {
-
-    size_t nr_crashes;
+    size_t nr_crashes = 0;
     std::vector< Genome::Gene* > sorted;
     GeneSorter::sort( *(g->get_genes( )), sorted );
     for( size_t t=0; t<sorted.size( );t++ )
@@ -22,15 +22,37 @@ FitnessFunction::get_number_of_crashes( Genome* g ) {
         size_t max_planes = t+m_landing_strips;
         if( max_planes >= sorted.size( ) ) max_planes = sorted.size( )-1;
         if( sorted[t]->getTime( ) > sorted[t]->getPlane( )->getDeadlineTime( ) )
+        {
+#if PRINT_DEBUG
+            std::cout << sorted[t]->getPlane( )->getName( ) <<
+                "is too late" << std::endl;
+#endif
             nr_crashes++;
-        else if( ( sorted[max_planes]->getTime( ).getTimeInMinutes( ) 
+        }
+        else if( ( ( sorted[max_planes]->getTime( ).getTimeInMinutes( ) 
                     - sorted[t]->getTime( ).getTimeInMinutes( ) )
-                  < m_landing_duration ) {
+                  < m_landing_duration ) 
+                  && t != max_planes ) {
             //If interval < landing duration, both planes crash
-            nr_crashes+=(max_planes - t);
+#if PRINT_DEBUG
+            std::cout << "Multiple planes too close:" << std::endl;
+            for( size_t s=t; s<=max_planes;s++ )
+                std::cout << sorted[s]->getPlane( )->getName( ) << ":";
+            std::cout << std::endl;
+            std::cout << "max_planes [" << max_planes << "] - " << "t [" << 
+                t << " ]" << std::endl;
+#endif
+            nr_crashes+=(max_planes - t) + 1;
             t+=(max_planes -t);
         }
     }
+#if PRINT_DEBUG
+    std::cout << "Tested Genome: " << std::endl;
+    print_genome( g );
+    std::cout << "Found: " << nr_crashes << " crashes." << std::endl;
+    std::cout << "------------------------------------" << std::endl;
+#endif
+    return nr_crashes;
 }
 
 int 
@@ -133,7 +155,6 @@ FuelFitnessFunction::calculate_fitness( std::vector<Genome*>& population,
         fitness *= FUEL_UNIT_PENALTY;
         fitness += (nr_crashes * PLANE_CRASHED_PENALTY);
         (*genome_iterator)->set_fitness( fitness );
-
         sum_of_fitness += fitness;
         fitness = 0;
         genome_iterator++;
