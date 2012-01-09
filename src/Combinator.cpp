@@ -10,6 +10,7 @@ Genome*
 SimpleCombinator::combine(Genome *x, Genome *y) {
 	int size = x->get_size( );
 	Genome *z = new Genome();
+
 	for(int i = 0; i < size; i++) {
 		if(i % 2 == 0) {
 			//add gene from x to z at index i
@@ -19,6 +20,7 @@ SimpleCombinator::combine(Genome *x, Genome *y) {
 			z->add_gene( y->get_gene(i)->getPlane(), y->get_gene(i)->getTime());
 		}
 	}
+
 	return z;
 }
 
@@ -29,14 +31,16 @@ RandomCombinator::combine(Genome *x, Genome *y) {
 	int size = x->get_size( );
 	Genome *z = new Genome();
 
-	double chanceFactor = 0.75;
+	//double chanceFactor = 0.75;
 	for(int i = 0; i < size; i++) {
-		if((((double) rand()) / RAND_MAX+1) < chanceFactor) {
+		if((((double) rand()) / RAND_MAX+1) == 0) {
+		//if((((double) rand()) / RAND_MAX+1) < chanceFactor) {
 			z->add_gene( x->get_gene(i)->getPlane(), x->get_gene(i)->getTime());
 		} else {
 			z->add_gene( y->get_gene(i)->getPlane(), y->get_gene(i)->getTime());
 		}
 	}
+
 	return z;
 }
 
@@ -62,6 +66,7 @@ AverageCombinator::combine(Genome *x, Genome *y) {
 			z->add_gene( y->get_gene(i)->getPlane(), y->get_gene(i)->getTime());
 		}
 	}
+
 	return z;
 }
 
