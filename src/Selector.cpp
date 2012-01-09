@@ -17,34 +17,41 @@ RouletteSelector::select(std::vector<Genome*>& population,
 
 	size_t died = 0;
 	while ( died < m_nr_die ) {
-		int select = (int) ((float)rand())/RAND_MAX * sum_fitness;
+		int select = (rand()/(float)RAND_MAX) * sum_fitness;
 		int delete_genome = -1;
 
+		std::cout << "Select for deletion: " << select << " " << sum_fitness << std::endl;
+
 		int start_fitness = 0;
+		int end_fitness = 0;
 		for( size_t i = 0; i < population.size(); i++ ) {
+			end_fitness = start_fitness + population[i]->get_fitness();
+			std::cout << start_fitness << " " << select << " " << end_fitness << std::endl;
 			if( select >= start_fitness &&
-				select < start_fitness + population[i]->get_fitness()) {
+				select < end_fitness) {
 				delete_genome = i;
 				break;
 			}
 			start_fitness = start_fitness + population[i]->get_fitness();
 		}
 
-		if( delete_genome != -1) {
-			sum_fitness -= population[delete_genome]->get_fitness();
-			delete population[delete_genome];
-			population.erase( population.begin() + delete_genome );
-			died++;
-		}
+		if(delete_genome == -1)
+			continue;
+
+		sum_fitness -= population[delete_genome]->get_fitness();
+		delete population[delete_genome];
+		population.erase( population.begin() + delete_genome );
+		died++;
 	}
 
+	std::cout << "Delete done" << std::endl;
+
 	//This list will eventually represent the indexes for genomes to combine.
-	std::vector<int> to_combine(population.size(), 0);
-	for( size_t i = 0; i < to_combine.size(); i++ )
+	std::vector<int> to_combine;
+	for( size_t i = 0; i < population.size(); i++ )
 		to_combine.push_back(i);
 
 	size_t do_not_combine = 0;
-
 	while ( do_not_combine < population.size() - m_nr_combine ) {
 		int select = (int) ((float)rand())/RAND_MAX * sum_fitness;
 		int selected_genome = -1;
@@ -59,12 +66,14 @@ RouletteSelector::select(std::vector<Genome*>& population,
 			start_fitness = start_fitness + population[to_combine[i]]->get_fitness();
 		}
 
-		if( selected_genome != -1) {
-			sum_fitness -= population[to_combine[selected_genome]]->get_fitness();
-			to_combine.erase( to_combine.begin() + selected_genome );
-			do_not_combine++;
-		}
+		std::cout << "Do not combine: " << to_combine[selected_genome] << std::endl;
+
+		sum_fitness -= population[to_combine[selected_genome]]->get_fitness();
+		to_combine.erase( to_combine.begin() + selected_genome );
+		do_not_combine++;
 	}
+
+	std::cout << "Combine complete" << std::endl;
 
 	for( size_t i = 0; i < to_combine.size(); i++ )
 		selected.push_back( population[to_combine[i]] );
@@ -131,53 +140,66 @@ TournamentSelector::select(std::vector<Genome*>& population,
 	srand((unsigned int)time(0));
 
 	size_t died = 0;
-	size_t to_combine = 0;
-	while ( died < m_nr_die || to_combine < m_nr_combine ) {
+	while( died < m_nr_die ) {
 		size_t population_size = population.size();
 
 		size_t start_subset = (int) rand() % population_size;
 		size_t end_subset   = (int) rand() % population_size;
 
-		// When start and end are the same, then the random
-		// generate gave us a unworkable subset.
-		if( start_subset == end_subset ) {
-			continue;
 		//When start is bigger then end then swap them
-		} else if( start_subset > end_subset ) {
+		if( start_subset > end_subset ) {
 			size_t tmp = start_subset;
 			start_subset = end_subset;
 			start_subset = tmp;
 		}
 
-		if( died < m_nr_die ) {
-			int lowest_fitness = -1;
-			size_t lowest_index = -1;
+		int lowest_fitness = -1;
+		size_t lowest_index = -1;
 
-			for( size_t i = start_subset; i < end_subset; i++ ) {
-				if( lowest_fitness > population[i]->get_fitness() ) {
-					lowest_fitness = population[i]->get_fitness();
-					lowest_index = i;
-				}
+		for( size_t i = start_subset; i < end_subset; i++ ) {
+			if( lowest_fitness < population[i]->get_fitness() ) {
+				lowest_fitness = population[i]->get_fitness();
+				lowest_index = i;
 			}
-
-			//TODO: Memory leak, will fix later;
-			population.erase( population.begin()+lowest_index );
-			died++;
 		}
-		if( to_combine < m_nr_combine ) {
-			int highest_fitness = sum_fitness + 1;
-			size_t highest_index = -1;
 
-			for( size_t i = 0; i < population.size(); i++ ) {
-				if( highest_fitness < population[i]->get_fitness() ) {
-					highest_fitness = population[i]->get_fitness();
-					highest_index = i;
-				}
+		delete population[lowest_index];
+		population.erase( population.begin()+lowest_index );
+		died++;
+	}
+
+	std::vector<size_t> index_population;
+	for(size_t i = 0; i < population.size(); i++) {
+		index_population.push_back(i);
+	}
+
+	size_t to_combine = 0;
+	while ( to_combine < m_nr_combine ) {
+		size_t population_size = population.size();
+
+		size_t start_subset = (int) rand() % population_size;
+		size_t end_subset   = (int) rand() % population_size;
+
+		//When start is bigger then end then swap them
+		if( start_subset > end_subset ) {
+			size_t tmp = start_subset;
+			start_subset = end_subset;
+			start_subset = tmp;
+		}
+
+		int highest_fitness = sum_fitness + 1;
+		size_t highest_index = -1;
+
+		for( size_t i = 0; i < index_population.size(); i++ ) {
+			if( highest_fitness > population[index_population[i]]->get_fitness() ) {
+				highest_fitness = population[index_population[i]]->get_fitness();
+				highest_index = i;
 			}
-
-			selected.push_back( population[highest_index] );
-			to_combine++;
 		}
+
+		selected.push_back( population[index_population[highest_index]] );
+		index_population.erase(index_population.begin() + highest_index);
+		to_combine++;
 	}
 
 	return true;
