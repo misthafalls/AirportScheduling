@@ -21,7 +21,7 @@ RouletteSelector::select(std::vector<Genome*>& population,
 	//This list will eventually represent the indexes for genomes to combine.
 	std::vector<int> to_combine(population.size(), 0);
 	for( size_t i = 0; i < to_combine.size(); i++ )
-		to_combine[i] = i;
+		to_combine.push_back(i);
 
 	while ( do_not_combine < population.size() - m_nr_combine ) {
 		int select = (int) ((float)rand())/RAND_MAX * combine_fitness;
@@ -77,6 +77,9 @@ FittestSelector::select(std::vector<Genome*>& population,
                                 std::vector<Genome*>& selected,
                                 int sum_fitness ) {
 
+//	for(int i = 0; i < population.size(); i++)
+//		std::cout << "Start: " << i << " " << population[i]->get_fitness() << std::endl;
+
 	//Very easy code, get the lowest fitness (in our case highest)
 	//and remove it from the population.
 	//TODO: Memory leak alert! Genome pointer stays there.
@@ -85,7 +88,7 @@ FittestSelector::select(std::vector<Genome*>& population,
 		int lowest_fitness = -1;
 		size_t lowest_index = -1;
 		for( size_t t=0;t<population.size();t++){
-			if( lowest_fitness > population[t]->get_fitness() ) {
+			if( lowest_fitness < population[t]->get_fitness() ) {
 				lowest_fitness = population[t]->get_fitness();
 				lowest_index = t;
 			}
@@ -94,20 +97,26 @@ FittestSelector::select(std::vector<Genome*>& population,
 		died++;
 	}
 
+	std::vector<size_t> index_population;
+	for(size_t i = 0; i < population.size(); i++) {
+		index_population.push_back(i);
+	}
+
 	//Now get the highest fitness and put it into the select.
 	size_t to_combine = 0;
 	while ( to_combine < m_nr_combine ) {
 		int highest_fitness = sum_fitness + 1;
 		size_t highest_index = -1;
 
-		for( size_t i = 0; i < population.size(); i++ ) {
-			if( highest_fitness < population[i]->get_fitness() ) {
-				highest_fitness = population[i]->get_fitness();
+		for( size_t i = 0; i < index_population.size(); i++ ) {
+			if( highest_fitness > population[index_population[i]]->get_fitness() ) {
+				highest_fitness = population[index_population[i]]->get_fitness();
 				highest_index = i;
 			}
 		}
 
-		selected.push_back( population[highest_index] );
+		selected.push_back( population[index_population[highest_index]] );
+		index_population.erase(index_population.begin() + highest_index);
 		to_combine++;
 	}
 
