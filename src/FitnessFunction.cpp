@@ -142,15 +142,18 @@ FuelFitnessFunction::calculate_fitness( std::vector<Genome*>& population,
             {
                 Time a = (*gene_iterator)->getTime( );
                 Time b = (*gene_iterator)->getPlane( )->getArrivalTime( );
-#if PRINT_DEBUG
                 if( a < b ) {
+#if PRINT_DEBUG
                     std::cout << "MAJOR ERROR, ARRIVAL < LANDING" << std::endl;
-                }
 #endif
-                b = b - a;
-                int time_in_air = b.getTimeInMinutes( );
-                fitness += (time_in_air * 
+                    fitness+=1000;
+                }
+                else{ 
+                    b = b - a;
+                    int time_in_air = b.getTimeInMinutes( );
+                    fitness += (time_in_air * 
                                (*gene_iterator)->getPlane( )->getFuelUsage( ) );
+                }
         }
         fitness *= FUEL_UNIT_PENALTY;
         fitness += (nr_crashes * PLANE_CRASHED_PENALTY);
