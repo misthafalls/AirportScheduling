@@ -17,7 +17,7 @@ RouletteSelector::select(std::vector<Genome*>& population,
 
 	size_t died = 0;
 	while ( died < m_nr_die ) {
-		int select = (rand()/(float)RAND_MAX) * sum_fitness;
+		unsigned long int select = (rand()/(float)RAND_MAX) * sum_fitness;
 		int delete_genome = -1;
 
 		int start_fitness = 0;
@@ -135,7 +135,8 @@ TournamentSelector::select(std::vector<Genome*>& population,
 			size_t tmp = start_subset;
 			start_subset = end_subset;
 			end_subset = tmp;
-		}
+		} else if( start_subset == end_subset )
+            end_subset++;
 
 		int lowest_fitness = -1;
 		size_t lowest_index = -1;
@@ -168,8 +169,9 @@ TournamentSelector::select(std::vector<Genome*>& population,
 		if( start_subset > end_subset ) {
 			size_t tmp = start_subset;
 			start_subset = end_subset;
-			start_subset = tmp;
-		}
+			end_subset = tmp;
+		} else if( start_subset == end_subset )
+            end_subset++;
 
 		int highest_fitness = sum_fitness + 1;
 		size_t highest_index = -1;

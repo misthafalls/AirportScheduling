@@ -21,7 +21,7 @@ public:
 
 	virtual ~FitnessFunction();
 
-	virtual unsigned long int calculate_fitness(std::vector<Genome*>& population,
+	virtual unsigned int calculate_fitness(std::vector<Genome*>& population,
                            bool check_crashes = true ) = 0;
 
     unsigned int get_number_of_crashes( Genome* g );
@@ -38,7 +38,7 @@ public:
     NiceFitnessFunction( unsigned int ld, unsigned int ls ) 
         { m_landing_duration = ld; m_landing_strips = ls; }
 
-	unsigned long int calculate_fitness(std::vector<Genome*>& population,
+	unsigned int calculate_fitness(std::vector<Genome*>& population,
                            bool check_crashes = true );
 };
 
@@ -47,7 +47,7 @@ public:
     FuelFitnessFunction( unsigned int ld, unsigned int ls ) 
         { m_landing_duration = ld; m_landing_strips = ls; }
        
-	unsigned long int calculate_fitness(std::vector<Genome*>& population,
+	unsigned int calculate_fitness(std::vector<Genome*>& population,
                            bool check_crashes = true );
 };
 
