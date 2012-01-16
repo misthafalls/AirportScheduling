@@ -4,6 +4,7 @@
 #include "string.h"
 #include <time.h>
 #include <iostream>
+#include <sstream>
 #include <stdlib.h>
 #include <vector>
 #include "Plane.h"
@@ -55,6 +56,81 @@ inline void printNewLineAndIndent( int indent ) {
     }
 }
 
+inline std::string get_settings_string( FUNCTION f, MUTATOR m, SELECTOR s,
+                                            COMBINATOR c ) {
+    // creates string format:
+    // FUNCTION,MUTATOR,SELECTOR,COMBINATOR
+    std::ostringstream r ( std::ostringstream::out);
+    switch ( f ) {
+        case TIME_FUNCTION:
+            r << "TIME";
+            break;
+        case FUEL_FUNCTION:
+            r << "FUEL";
+            break;
+        default:
+            r << "UNKNOWN";
+            break;
+    }
+    r << ",";
+
+    switch ( m ) {
+        case SIMPLE_MUTATOR:
+            r << "SIMPLE";
+            break;
+        case SUBTRACT_MUTATOR:
+            r << "SUBTRACT";
+            break;
+        case ADD_MUTATOR:
+            r << "ADD";
+            break;
+        case COMBO_MUTATOR:
+            r << "COMBO";
+            break;
+        default:
+            r << "UNKNOWN";
+            break;
+    }
+    r << ",";
+
+    switch ( s ) {
+        case FITTEST_SELECTOR:
+            r << "FITTEST";
+            break;
+        case TOURNAMENT_SELECTOR:
+            r << "TOURNAMENT";
+            break;
+        case ROULETTE_SELECTOR:
+            r << "ROULETTE";
+            break;
+        default:
+            r << "UNKNOWN";
+            break;
+    }
+    r << ",";
+    switch ( c ) {
+	    case SIMPLE_COMBINATOR:
+            r << "SIMPLE";
+            break;
+	    case RANDOM_COMBINATOR:
+            r << "RANDOM";
+            break;
+	    case AVERAGE_COMBINATOR:
+            r << "AVERAGE";
+            break;
+	    case BLOCK_COMBINATOR:
+            r << "BLOCK";
+            break;
+	    case TIME_COMBINATOR:
+            r << "TIME";
+            break;
+        default:
+            r << "UNKNOWN";
+            break;
+    }
+    return r.str( );
+}
+
 //TODO update helptext
 void printHelp( ) {
     std::cout << "Usage: ";
@@ -62,6 +138,12 @@ void printHelp( ) {
     std::cout << "AirportScheduler [ parameters ] [<file name>]";
     printNewLineAndIndent( 0 );
     std::cout << "Available Parameters:";
+    printNewLineAndIndent( 4 );
+    std::cout << "-v                       be verbose";
+    printNewLineAndIndent( 4 );
+    std::cout << "-csv                     give output for statistics";
+    printNewLineAndIndent( 4 );
+    std::cout << "--no-results             do not give results in file";
     printNewLineAndIndent( 4 );
     std::cout << "[-P <population_size> ]  Set number of genomes to create" <<
         "Must be between 25 and 250";
@@ -74,7 +156,7 @@ void printHelp( ) {
     printNewLineAndIndent( 4 );
     std::cout << "[-F <function> ]  Set fitness function can be: FUEL or TIME";
     printNewLineAndIndent( 4 );
-    std::cout << "[-S <selector> ]  Set selector can be: RANDOM";
+    std::cout << "[-S <selector> ]  Set selector can be: FITTEST, TOURNAMENT, ROULETTE";
     printNewLineAndIndent( 4 );
     std::cout << "[-M <mutator> ]  Set mutator can be: SIMPLE, SUBTRACT, ADD or COMBO";
     printNewLineAndIndent( 4 );
@@ -92,6 +174,8 @@ int main( int argc, char* argv[ ] )
     unsigned int nr_lanes = -1;
     unsigned int number_to_die = -1; 
     bool be_verbose = false;
+    bool print_for_csv = false;
+    bool print_results = true;
 
     SELECTOR s = DEFAULT_SELECTOR;
     MUTATOR m = DEFAULT_MUTATOR;
@@ -100,11 +184,13 @@ int main( int argc, char* argv[ ] )
 
     if( argc == 1 )
     {
-//        printHelp( );
+        printHelp( );
     }
     else // Get input parameters
     {
         //get File
+        if( !strcmp( argv[ 1 ], "-h" ) ) 
+                printHelp( );
         strcpy( filelocation, argv[ argc-1 ] );
         for( int t = 1; t < argc-1; ++t )
         {
@@ -115,6 +201,10 @@ int main( int argc, char* argv[ ] )
                 population_size = atoi( argv[ t ] );
             }else if( !strcmp( argv[ t ], "-v" ) ) {
                 be_verbose = true;
+            }else if( !strcmp( argv[ t ], "-csv" ) ) {
+                print_for_csv = true;
+            }else if( !strcmp( argv[ t ], "--no-results" ) ) {
+                print_results = false;
             }else if( !strcmp( argv[ t ], "-D" ) ) {
                 if( t+1 >= argc ) printHelp( );
                 t++;
@@ -249,6 +339,7 @@ int main( int argc, char* argv[ ] )
             std::cout << "No fitness function set, using default: " <<
                 "FuelFitnessFunction" << std::endl;
             }
+            f = FUEL_FUNCTION;
         case FUEL_FUNCTION:
             function = new FuelFitnessFunction( landingduration, nr_lanes );
             break;
@@ -268,6 +359,7 @@ int main( int argc, char* argv[ ] )
             std::cout << "No mutator set, using default: " <<
                 "ComboMutator" << std::endl;
             }
+            m = COMBO_MUTATOR;
          case COMBO_MUTATOR:
             mutator = new ComboMutator( );
             break;
@@ -278,6 +370,7 @@ int main( int argc, char* argv[ ] )
             std::cout << "No selector set, using default: " <<
                 "RouletteSelector" << std::endl;
             }
+            s = ROULETTE_SELECTOR;
         case ROULETTE_SELECTOR:
         	selector = new RouletteSelector( number_to_combine, number_to_die );
         	break;
@@ -294,6 +387,7 @@ int main( int argc, char* argv[ ] )
     		std::cout << "No combinator set, using default: " <<
     	                "AverageCombinator" << std::endl;
             }
+            c = AVERAGE_COMBINATOR;
     	case AVERAGE_COMBINATOR:
     		combinator = new AverageCombinator();
     		break;
@@ -382,7 +476,8 @@ int main( int argc, char* argv[ ] )
     }
     Genome* best_genome = population[ index ];
     size_t crashes = function->get_number_of_crashes( best_genome );
-    GenomeUtils::print_genome_more( best_genome, crashes, nr_lanes, 
+    if( print_results ) 
+        GenomeUtils::print_genome_more( best_genome, crashes, nr_lanes, 
                                         landingduration );
     
     //End time measurement
@@ -400,6 +495,15 @@ int main( int argc, char* argv[ ] )
     if( be_verbose ) {
     std::cout << "Duration: " << dur.tv_sec << ":" << dur.tv_nsec << 
         " seconds" << std::endl;
+    }
+
+    //CSV statistics
+    //FORMAT: FITNESSFUNCTION, MUTATOR, SELECTOR, COMBINATOR, POPULATIONSIZE,
+    //      MAX_GENERATION, TIME (in seconds)
+    if( print_for_csv ) {
+        std::cout << get_settings_string( f,m,s,c ) << "," << population_size 
+            << "," << max_generations << "," 
+            << dur.tv_sec << "." << dur.tv_nsec << std::endl;
     }
 
     //Cleanup
