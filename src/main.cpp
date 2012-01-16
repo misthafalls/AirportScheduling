@@ -148,6 +148,8 @@ void printHelp( ) {
     std::cout << "[-P <population_size> ]  Set number of genomes to create" <<
         "Must be between 25 and 250";
     printNewLineAndIndent( 4 );
+    std::cout << "[-p <max planes>]       Set maximum number of planes to read";
+    printNewLineAndIndent( 4 );
     std::cout << "[-L <landing duration> ]  Set duration of landing sequence";
     printNewLineAndIndent( 4 );
     std::cout << "[-D <death_toll> ]  Set number of deaths per generation";
@@ -171,6 +173,7 @@ int main( int argc, char* argv[ ] )
     unsigned int population_size = -1;
     unsigned int landingduration = -1;
     unsigned int max_generations = -1;
+    unsigned int max_planes = -1;
     unsigned int nr_lanes = -1;
     unsigned int number_to_die = -1; 
     bool be_verbose = false;
@@ -219,6 +222,11 @@ int main( int argc, char* argv[ ] )
                 if( t+1 >= argc ) printHelp( );
                 t++;
                 max_generations = atoi( argv[ t ] );
+            }
+            else if( !strcmp( argv[ t ], "-p" ) ) {
+                if( t+1 >= argc ) printHelp( );
+                t++;
+                max_planes = atoi( argv[ t ] );
             }
             else if( !strcmp( argv[ t ], "-l" ) ) {
                 if( t+1 >= argc ) printHelp( );
@@ -409,7 +417,7 @@ int main( int argc, char* argv[ ] )
     std::vector< Plane* > planes;
     
     CSVReader reader;
-    if( reader.readFile( filelocation, planes ) ) {
+    if( reader.readFile( filelocation, planes, max_planes ) ) {
         if( be_verbose ) {
         std::cout << "Input file read succesfully" << std::endl;
         }
@@ -499,10 +507,10 @@ int main( int argc, char* argv[ ] )
 
     //CSV statistics
     //FORMAT: FITNESSFUNCTION, MUTATOR, SELECTOR, COMBINATOR, POPULATIONSIZE,
-    //      MAX_GENERATION, TIME (in seconds)
+    //      MAX_GENERATION, NR_PLANES, TIME (in seconds)
     if( print_for_csv ) {
         std::cout << get_settings_string( f,m,s,c ) << "," << population_size 
-            << "," << max_generations << "," 
+            << "," << max_generations << "," << planes.size( ) << ","
             << dur.tv_sec << "." << dur.tv_nsec << std::endl;
     }
 
