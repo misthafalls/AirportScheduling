@@ -2,6 +2,7 @@
 //------------------------------------------------------------------------------
 
 #include "string.h"
+#include <time.h>
 #include <iostream>
 #include <stdlib.h>
 #include <vector>
@@ -256,26 +257,26 @@ int main( int argc, char* argv[ ] )
     switch( s ) {
         case DEFAULT_SELECTOR:
             std::cout << "No selector set, using default: " <<
-                "FittestSelector" << std::endl;
+                "RouletteSelector" << std::endl;
+        case ROULETTE_SELECTOR:
+        	selector = new RouletteSelector( number_to_combine, number_to_die );
+        	break;
         case FITTEST_SELECTOR:
             selector = new FittestSelector( number_to_combine, number_to_die );
             break;
         case TOURNAMENT_SELECTOR:
         	selector = new TournamentSelector( number_to_combine, number_to_die );
         	break;
-        case ROULETTE_SELECTOR:
-        	selector = new RouletteSelector( number_to_combine, number_to_die );
-        	break;
     }
     switch( c ) {
     	case DEFAULT_COMBINATOR:
     		std::cout << "No combinator set, using default: " <<
-    	                "SimpleCombinator" << std::endl;
-    	case SIMPLE_COMBINATOR:
-    		combinator = new SimpleCombinator();
-    		break;
+    	                "AverageCombinator" << std::endl;
     	case AVERAGE_COMBINATOR:
     		combinator = new AverageCombinator();
+    		break;
+    	case SIMPLE_COMBINATOR:
+    		combinator = new SimpleCombinator();
     		break;
     	case RANDOM_COMBINATOR:
     		combinator = new RandomCombinator();
@@ -292,8 +293,6 @@ int main( int argc, char* argv[ ] )
     std::vector< Plane* > planes;
     
     CSVReader reader;
-// DEBUG
-//    if( reader.readFile( "testfile_fatty", planes ) ) {
     if( reader.readFile( filelocation, planes ) ) {
         std::cout << "Input file read succesfully" << std::endl;
     } else {
@@ -313,6 +312,11 @@ int main( int argc, char* argv[ ] )
     //setup generation 0
     Generator g;
     g.init( population, population_size, planes );
+
+
+    //Time measurement variables
+    timespec time1, time2;
+    clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &time1);
 
     //MAIN LOOP
     size_t generations = 0;
@@ -352,7 +356,22 @@ int main( int argc, char* argv[ ] )
     size_t crashes = function->get_number_of_crashes( best_genome );
     GenomeUtils::print_genome_more( best_genome, crashes, nr_lanes, 
                                         landingduration );
-        
+    
+    //End time measurement
+    clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &time2 );
+    
+    timespec dur;
+
+	if ((time2.tv_nsec-time1.tv_nsec)<0) {
+		dur.tv_sec = time2.tv_sec-time1.tv_sec-1;
+		dur.tv_nsec = 1000000000+time2.tv_nsec-time1.tv_nsec;
+	} else {
+		dur.tv_sec = time2.tv_sec-time1.tv_sec;
+		dur.tv_nsec = time2.tv_nsec-time1.tv_nsec;
+	}
+    std::cout << "Duration: " << dur.tv_sec << ":" << dur.tv_nsec << 
+        " seconds" << std::endl;
+
     //Cleanup
     for( std::vector<Plane*>::iterator it = planes.begin( );
             it!=planes.end( ); it++ ) delete (*it);

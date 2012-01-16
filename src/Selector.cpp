@@ -11,7 +11,7 @@
 bool
 RouletteSelector::select(std::vector<Genome*>& population,
 								std::vector<Genome*>& selected,
-								int sum_fitness ) {
+								unsigned long int sum_fitness ) {
 	//This makes random safer in random generating.
 	srand((unsigned int)time(0));
 
@@ -39,8 +39,8 @@ RouletteSelector::select(std::vector<Genome*>& population,
 	}
 
 	//This list will eventually represent the indexes for genomes to combine.
-	std::vector<int> to_combine(population.size(), 0);
-	for( size_t i = 0; i < to_combine.size(); i++ )
+	std::vector<int> to_combine;
+	for( size_t i = 0; i < population.size(); i++ )
 		to_combine.push_back(i);
 
 	size_t do_not_combine = 0;
@@ -75,10 +75,7 @@ RouletteSelector::select(std::vector<Genome*>& population,
 bool
 FittestSelector::select(std::vector<Genome*>& population,
                                 std::vector<Genome*>& selected,
-                                int sum_fitness ) {
-
-//	for(int i = 0; i < population.size(); i++)
-//		std::cout << "Start: " << i << " " << population[i]->get_fitness() << std::endl;
+                                unsigned long int sum_fitness ) {
 
 	//Very easy code, get the lowest fitness (in our case highest)
 	//and remove it from the population.
@@ -97,7 +94,7 @@ FittestSelector::select(std::vector<Genome*>& population,
 		died++;
 	}
 
-	std::vector<size_t> index_population;
+	std::vector<unsigned int> index_population;
 	for(size_t i = 0; i < population.size(); i++) {
 		index_population.push_back(i);
 	}
@@ -126,7 +123,7 @@ FittestSelector::select(std::vector<Genome*>& population,
 bool
 TournamentSelector::select(std::vector<Genome*>& population,
                                 std::vector<Genome*>& selected,
-                                int sum_fitness ) {
+                                unsigned long int sum_fitness ) {
 	//This makes random safer in random generating.
 	srand((unsigned int)time(0));
 

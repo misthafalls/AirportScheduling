@@ -55,7 +55,7 @@ FitnessFunction::get_number_of_crashes( Genome* g ) {
     return nr_crashes;
 }
 
-int 
+unsigned long int 
 NiceFitnessFunction::calculate_fitness(std::vector<Genome*>& population,
                                         bool check_crashes ) {
     //TODO Use get_number_of_crashes AND bool check_crashes
@@ -121,7 +121,7 @@ NiceFitnessFunction::calculate_fitness(std::vector<Genome*>& population,
 	return sum_fitness;
 }
 
-int
+unsigned long int
 FuelFitnessFunction::calculate_fitness( std::vector<Genome*>& population,
                                         bool check_crashes )
 {
