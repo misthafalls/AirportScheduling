@@ -91,6 +91,7 @@ int main( int argc, char* argv[ ] )
     unsigned int max_generations = -1;
     unsigned int nr_lanes = -1;
     unsigned int number_to_die = -1; 
+    bool be_verbose = false;
 
     SELECTOR s = DEFAULT_SELECTOR;
     MUTATOR m = DEFAULT_MUTATOR;
@@ -112,8 +113,9 @@ int main( int argc, char* argv[ ] )
                 if( t+1 >= argc ) printHelp( );
                 t++;
                 population_size = atoi( argv[ t ] );
-            }
-            else if( !strcmp( argv[ t ], "-D" ) ) {
+            }else if( !strcmp( argv[ t ], "-v" ) ) {
+                be_verbose = true;
+            }else if( !strcmp( argv[ t ], "-D" ) ) {
                 if( t+1 >= argc ) printHelp( );
                 t++;
                 number_to_die = atoi( argv[ t ] );
@@ -189,37 +191,49 @@ int main( int argc, char* argv[ ] )
     //Check validity
     if( population_size == -1 )
     {
+        if( be_verbose ) {
         std::cout << "No population size given, ASSUMING CONTROL!" << 
             std::endl << "Setting population size: 50" << std::endl;
+        }
         population_size = 50;
     }
     if( landingduration == -1 )
     {
+        if( be_verbose ) {
         std::cout << "No landing duration given, ASSUMING CONTROL!" << 
             std::endl << "Setting landing duration: 5" << std::endl;
+        }
         landingduration = 5;
     }
     if( max_generations == -1 )
     {
+        if( be_verbose ) {
         std::cout << "No max generations given, ASSUMING CONTROL!" << 
             std::endl << "Setting max generations: 1000" << std::endl;
+        }
         max_generations = 1000;
     }
     if( nr_lanes == -1 )
     {
+        if( be_verbose ) {
         std::cout << "No number lanes given, ASSUMING CONTROL!" << 
             std::endl << "Setting nr lanes: 1" << std::endl;
+        }
         nr_lanes = 1;
     }
     if( number_to_die == -1 )
     {
         number_to_die = population_size / 5;
+        if( be_verbose ) {
         std::cout << "No dead-toll given, using default: \"population / 5 \" "
             << " = " << number_to_die << std::endl;
+        }
     } else if( number_to_die > (population_size / 2 ) ) {
         number_to_die = population_size / 5;
+        if( be_verbose ) {
         std::cout << "Dead-toll too high, using default: \"population / 5 \" "
             << " = " << number_to_die << std::endl;
+        }
     }
     unsigned int number_to_combine = number_to_die * 2;
     FitnessFunction* function;
@@ -231,8 +245,10 @@ int main( int argc, char* argv[ ] )
             function = new NiceFitnessFunction( landingduration, nr_lanes );
             break;
         case DEFAULT_FUNCTION:
+            if( be_verbose ) {
             std::cout << "No fitness function set, using default: " <<
                 "FuelFitnessFunction" << std::endl;
+            }
         case FUEL_FUNCTION:
             function = new FuelFitnessFunction( landingduration, nr_lanes );
             break;
@@ -248,16 +264,20 @@ int main( int argc, char* argv[ ] )
             mutator = new AddTimeMutator( );
             break;
         case DEFAULT_MUTATOR:
+            if( be_verbose ) {
             std::cout << "No mutator set, using default: " <<
                 "ComboMutator" << std::endl;
+            }
          case COMBO_MUTATOR:
             mutator = new ComboMutator( );
             break;
     }
     switch( s ) {
         case DEFAULT_SELECTOR:
+            if( be_verbose ) {
             std::cout << "No selector set, using default: " <<
                 "RouletteSelector" << std::endl;
+            }
         case ROULETTE_SELECTOR:
         	selector = new RouletteSelector( number_to_combine, number_to_die );
         	break;
@@ -270,8 +290,10 @@ int main( int argc, char* argv[ ] )
     }
     switch( c ) {
     	case DEFAULT_COMBINATOR:
+            if( be_verbose ) {
     		std::cout << "No combinator set, using default: " <<
     	                "AverageCombinator" << std::endl;
+            }
     	case AVERAGE_COMBINATOR:
     		combinator = new AverageCombinator();
     		break;
@@ -294,10 +316,14 @@ int main( int argc, char* argv[ ] )
     
     CSVReader reader;
     if( reader.readFile( filelocation, planes ) ) {
+        if( be_verbose ) {
         std::cout << "Input file read succesfully" << std::endl;
+        }
     } else {
+        if( be_verbose ) {
         std::cout << "Input file not read correctly, " <<
             "are you sure the path is correct?" << std::endl;
+        }
         exit( 0 );
     }
     size_t number_of_planes = planes.size( );
@@ -335,8 +361,10 @@ int main( int argc, char* argv[ ] )
         }
         mutator->mutateGenomes( population, 1 );
         if( population.size( ) != population_size ) {
+            if( be_verbose ) {
             std::cout << "ERROR: Something went wrong, " <<
                 "population size not stable" << std::endl;
+            }
             return 0;
         }
         generations++;
@@ -369,8 +397,10 @@ int main( int argc, char* argv[ ] )
 		dur.tv_sec = time2.tv_sec-time1.tv_sec;
 		dur.tv_nsec = time2.tv_nsec-time1.tv_nsec;
 	}
+    if( be_verbose ) {
     std::cout << "Duration: " << dur.tv_sec << ":" << dur.tv_nsec << 
         " seconds" << std::endl;
+    }
 
     //Cleanup
     for( std::vector<Plane*>::iterator it = planes.begin( );
