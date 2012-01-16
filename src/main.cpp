@@ -325,12 +325,6 @@ int main( int argc, char* argv[ ] )
         //TODO move construction
         std::vector< Genome* > selected;
         sum_fitness = function->calculate_fitness( population );
-        unsigned int sum_fitness1;
-        for( size_t t = 0; t < population.size( ); t++ ) 
-            sum_fitness1 += population[ t ]->get_fitness( );
-        if( sum_fitness != sum_fitness1 ) {
-            ;
-        }
         selector->select( population, selected, sum_fitness );
         //TODO:Move choice who mother and father
         for( size_t t=0;t<number_to_die;t++) {
