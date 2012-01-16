@@ -137,7 +137,7 @@ TournamentSelector::select(std::vector<Genome*>& population,
 		if( start_subset > end_subset ) {
 			size_t tmp = start_subset;
 			start_subset = end_subset;
-			start_subset = tmp;
+			end_subset = tmp;
 		}
 
 		int lowest_fitness = -1;
