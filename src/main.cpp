@@ -457,7 +457,7 @@ int main( int argc, char* argv[ ] )
         //TODO:Move choice who mother and father
         for( size_t t=0;t<number_to_die;t++) {
             Genome* mother = selected[ t ];
-            Genome* father = selected[ t+10 ];
+            Genome* father = selected[ number_to_combine - t - 1 ];
             Genome* child = combinator->combine( mother, father );
             population.push_back( child );
         }
