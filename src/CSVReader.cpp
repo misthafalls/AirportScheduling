@@ -11,7 +11,8 @@
 
 // -----------------------------------------------------------------------------
 
-bool CSVReader::readFile( const char* file, std::vector< Plane* >& planes ){
+bool CSVReader::readFile( const char* file, std::vector< Plane* >& planes,
+                            unsigned int max_planes ){
     char buffer[ BUFFERSIZE ];
     std::ifstream inFile;
 
@@ -22,10 +23,13 @@ bool CSVReader::readFile( const char* file, std::vector< Plane* >& planes ){
 #endif
         return false;
     }
+    unsigned int planes_read = 0;
     while( !inFile.eof( ) ) {
         inFile.getline( buffer, BUFFERSIZE );
         std::string s ( buffer );
         if( !processLine( s, planes ) ) return false;
+        planes_read++;
+        if( planes_read == max_planes+1 ) break;
     }
     return true;
 }

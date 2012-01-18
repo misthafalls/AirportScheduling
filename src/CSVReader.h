@@ -19,7 +19,8 @@ public:
 
     CSVReader( ){ };
 
-    bool readFile( const char* file, std::vector< Plane* >& planes );
+    bool readFile( const char* file, std::vector< Plane* >& planes,
+                    unsigned int max_planes );
 
 private:
     bool processLine( const std::string& line, std::vector< Plane* >& planes );

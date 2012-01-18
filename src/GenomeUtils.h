@@ -3,6 +3,7 @@
 
 #include "Genome.h"
 #include <iostream>
+#include <fstream>
 #include <stdlib.h>
 #include "GeneSorter.h"
 
@@ -29,12 +30,14 @@ static void print_genome_more( Genome* genome, size_t crashes, size_t lanes,
     std::vector< Genome::Gene* > sorted_genes;
     GeneSorter::sort( *(genome->get_genes( )), sorted_genes );
 
+    std::ofstream ofile ("results.txt");
+
     size_t nr_to_early = 0;
     size_t nr_to_late = 0;
     int fuel_used = 0;
     for(size_t t=0;t<sorted_genes.size( );t++) {
         Genome::Gene* gene = sorted_genes[ t ];
-        std::cout<<gene->getPlane( )->getName( ) << " Lands at: " <<
+        ofile<<gene->getPlane( )->getName( ) << " Lands at: " <<
             gene->getTime( ).getFormattedTime() << std::endl <<
             "    Deadline is:" << gene->getPlane( )->getDeadlineTime( ).getFormattedTime( ) << std::endl << 
             "    Arrival is: "<< gene->getPlane( )->getArrivalTime( ).getFormattedTime( ) << std::endl;
@@ -48,21 +51,23 @@ static void print_genome_more( Genome* genome, size_t crashes, size_t lanes,
         if( max_space >= sorted_genes.size( ) ) 
             max_space = sorted_genes.size( ) - 1;
         if( p->getDeadlineTime( ) < gene->getTime( ) )
-            std::cout << "Plane has Crashed because it's too late" << std::endl;
+            ofile<< "Plane has Crashed because it's too late" << std::endl;
         else if ( sorted_genes[ max_space ]->getTime( ) <= important_time )
             if( max_space != t ) 
-                std::cout << "Plane has Crashed into next: " << lanes << std::endl;
+                ofile<< "Plane has Crashed into next: " << lanes << std::endl;
         int min_in_air = gene->getTime( ).getTimeInMinutes( ) - 
                 p->getArrivalTime( ).getTimeInMinutes( );
         fuel_used += min_in_air * p->getFuelUsage( );
-        std::cout << std::endl;
+        ofile<< std::endl;
     }
 
-    std::cout << "---=== Schedule Stats ===---" << std::endl <<
+    ofile<< "---=== Schedule Stats ===---" << std::endl <<
         "Total Planes crashed:  " << crashes << std::endl <<
         "Total Planes too late: " << nr_to_late << std::endl <<
         "Total Planes to early: " << nr_to_early << std::endl <<
         "Total Fuel used:       " << fuel_used << std::endl;
+
+    ofile.close( );
 }
 
 }; // End GenomeUtils
