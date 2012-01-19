@@ -51,7 +51,7 @@ enum COMBINATOR {
 	TIME_COMBINATOR
 };
 
-inline timespec get_time_diff( timespec& time1, timespec& time2 ) {
+timespec get_time_diff( timespec& time1, timespec& time2 ) {
     timespec ret;
 	if ((time2.tv_nsec-time1.tv_nsec)<0) {
 		ret.tv_sec = time2.tv_sec-time1.tv_sec-1;
@@ -60,8 +60,25 @@ inline timespec get_time_diff( timespec& time1, timespec& time2 ) {
 		ret.tv_sec = time2.tv_sec-time1.tv_sec;
 		ret.tv_nsec = time2.tv_nsec-time1.tv_nsec;
 	}
+    time1.tv_sec = 0;
+    time1.tv_nsec = 0;
+    time2.tv_sec = 0;
+    time2.tv_nsec = 0;
     return ret;
 }
+
+#ifdef EXTRA_MEASUREMENTS
+
+inline void add_time_to( timespec& add_to, timespec& to_add ) {
+    add_to.tv_sec += to_add.tv_sec;
+    add_to.tv_nsec += to_add.tv_nsec;
+    if( add_to.tv_nsec > 1000000000 ) {
+        add_to.tv_nsec -= 1000000000;
+        add_to.tv_sec += 1;
+    }
+}
+
+#endif
 
 inline void printNewLineAndIndent( int indent ) {
     std::cout << std::endl;
@@ -461,22 +478,21 @@ int main( int argc, char* argv[ ] )
     clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &time1);
 
 #if EXTRA_MEASUREMENTS
-    timespec fitness_time1, fitness_time2;
-    timespec select_time1, select_time2;
-    timespec mutate_time1, mutate_time2;
-    timespec combine_time1, combine_time2;
-    clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &time1);
-    int fitness_total_sec = 0;
-    int fitness_total_nsec = 0;
+    timespec fitness_t, fitness_time1, fitness_time2;
+    timespec select_t, select_time1, select_time2;
+    timespec mutate_t, mutate_time1, mutate_time2;
+    timespec combine_t, combine_time1, combine_time2;
+    fitness_t.tv_sec = 0;
+    fitness_t.tv_nsec = 0;
 
-    int select_total_sec = 0;
-    int select_total_nsec = 0;
+    select_t.tv_sec = 0;
+    select_t.tv_nsec = 0;
 
-    int mutate_total_sec = 0;
-    int mutate_total_nsec = 0;
+    mutate_t.tv_sec = 0;
+    mutate_t.tv_nsec = 0;
 
-    int combine_total_sec = 0;
-    int combine_total_nsec = 0;
+    combine_t.tv_sec = 0;
+    combine_t.tv_nsec = 0;
 #endif
    
 
@@ -493,16 +509,14 @@ int main( int argc, char* argv[ ] )
 #if EXTRA_MEASUREMENTS
     clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &fitness_time2);
     timespec a = get_time_diff( fitness_time1, fitness_time2 );
-    fitness_total_sec += a.tv_sec;
-    fitness_total_nsec += a.tv_nsec;
+    add_time_to( fitness_t, a );
     clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &select_time1);
 #endif
         selector->select( population, selected, sum_fitness );
 #if EXTRA_MEASUREMENTS
     clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &select_time2);
     timespec b = get_time_diff( select_time1, select_time2 );
-    select_total_sec += b.tv_sec;
-    select_total_nsec += b.tv_nsec;
+    add_time_to( select_t, b );
     clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &combine_time1);
 #endif
         //TODO:Move choice who mother and father
@@ -515,16 +529,14 @@ int main( int argc, char* argv[ ] )
 #if EXTRA_MEASUREMENTS
     clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &combine_time2);
     timespec c = get_time_diff( combine_time1, combine_time2 );
-    combine_total_sec += c.tv_sec;
-    combine_total_nsec += c.tv_nsec;
+    add_time_to( combine_t, c );
     clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &mutate_time1);
 #endif
         mutator->mutateGenomes( population, 1 );
 #if EXTRA_MEASUREMENTS
     clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &mutate_time2);
     timespec d = get_time_diff( mutate_time1, mutate_time2 );
-    mutate_total_sec += d.tv_sec;
-    mutate_total_nsec += d.tv_nsec;
+    add_time_to( mutate_t, d );
 #endif
         if( population.size( ) != population_size ) {
             if( be_verbose ) {
@@ -569,10 +581,10 @@ int main( int argc, char* argv[ ] )
         std::cout << get_settings_string( f,m,s,c ) << "," << population_size <<
             "," << max_generations << "," << planes.size( ) << "," <<
             dur.tv_sec << "." << dur.tv_nsec << "," <<
-            "fit," << fitness_total_sec << "." << fitness_total_nsec << "," <<
-            "sel," << select_total_sec << "." << select_total_nsec << "," <<
-            "com," << combine_total_sec << "." << combine_total_nsec << "," <<
-            "mut," << mutate_total_sec << "." << mutate_total_nsec << "," <<
+            "fit," << fitness_t.tv_sec << "." << fitness_t.tv_nsec << "," <<
+            "sel," << select_t.tv_sec << "." << select_t.tv_nsec << "," <<
+            "com," << combine_t.tv_sec<< "." << combine_t.tv_nsec << "," <<
+            "mut," << mutate_t.tv_sec << "." << mutate_t.tv_nsec << "," <<
             std::endl;
     }
 
