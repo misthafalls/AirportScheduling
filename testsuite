@@ -16,24 +16,58 @@ POPULATIONSIZES="25 50 100 200 250"
 
 echo "Warning: This is going to take extremly long"
 
+echo "Starting Fitness Function test" >> testresult
 for a in $FITNESSFUNCTION
 do
-    for b in $SELECTORFUNCTION
+    for e in $PLANESIZES
     do
-        for c in $MUTATORFUNCTION
+        for f in $POPULATIONSIZES
         do
-            for d in $COMBINATORFUNCTION
-            do
-                for e in $PLANESIZES
-                do
-                    for f in $POPULATIONSIZES
-                    do
-                        output=`$PATH/bin/AirportScheduler -csv --no-results -P $f -p $e -F $a -S $b -M $c -C $d huge_testfile`
-                        echo $output
-                        echo $output >> testresult
-                    done
-                done
-            done
+            output=`$PATH/bin/AirportScheduler -csv --no-results -G 100 -P $f -p $e -F $a huge_testfile`
+            echo $output
+            echo $output >> testresult
+        done
+    done
+done
+
+echo "Starting Selector Function test" >> testresult
+for b in $SELECTORFUNCTION
+do
+    for e in $PLANESIZES
+    do
+        for f in $POPULATIONSIZES
+        do
+            output=`$PATH/bin/AirportScheduler -csv --no-results -G 100 -P $f -p $e -S $b huge_testfile`
+            echo $output
+            echo $output >> testresult
+        done
+    done
+done
+
+echo "Starting mutator Function test" >> testresult
+for c in $MUTATORFUNCTION
+do
+    for e in $PLANESIZES
+    do
+        for f in $POPULATIONSIZES
+        do
+            output=`$PATH/bin/AirportScheduler -csv --no-results -G 100 -P $f -p $e -M $c huge_testfile`
+            echo $output
+            echo $output >> testresult
+        done
+    done
+done
+
+echo "Starting combinator Function test" >> testresult
+for d in $COMBINATORFUNCTION
+do
+    for e in $PLANESIZES
+    do
+        for f in $POPULATIONSIZES
+        do
+            output=`$PATH/bin/AirportScheduler -csv --no-results -G 100 -P $f -p $e -C $d huge_testfile`
+            echo $output
+            echo $output >> testresult
         done
     done
 done

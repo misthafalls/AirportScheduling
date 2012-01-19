@@ -19,6 +19,8 @@
 #include "GeneSorter.h"
 #include "GenomeUtils.h"
 
+#define EXTRA_MEASUREMENTS 1
+
 enum FUNCTION {
     DEFAULT_FUNCTION,
     TIME_FUNCTION,
@@ -48,6 +50,18 @@ enum COMBINATOR {
 	BLOCK_COMBINATOR,
 	TIME_COMBINATOR
 };
+
+inline timespec get_time_diff( timespec& time1, timespec& time2 ) {
+    timespec ret;
+	if ((time2.tv_nsec-time1.tv_nsec)<0) {
+		ret.tv_sec = time2.tv_sec-time1.tv_sec-1;
+		ret.tv_nsec = 1000000000 + time2.tv_nsec - time1.tv_nsec;
+	} else {
+		ret.tv_sec = time2.tv_sec-time1.tv_sec;
+		ret.tv_nsec = time2.tv_nsec-time1.tv_nsec;
+	}
+    return ret;
+}
 
 inline void printNewLineAndIndent( int indent ) {
     std::cout << std::endl;
@@ -446,14 +460,51 @@ int main( int argc, char* argv[ ] )
     timespec time1, time2;
     clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &time1);
 
+#if EXTRA_MEASUREMENTS
+    timespec fitness_time1, fitness_time2;
+    timespec select_time1, select_time2;
+    timespec mutate_time1, mutate_time2;
+    timespec combine_time1, combine_time2;
+    clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &time1);
+    int fitness_total_sec = 0;
+    int fitness_total_nsec = 0;
+
+    int select_total_sec = 0;
+    int select_total_nsec = 0;
+
+    int mutate_total_sec = 0;
+    int mutate_total_nsec = 0;
+
+    int combine_total_sec = 0;
+    int combine_total_nsec = 0;
+#endif
+   
+
     //MAIN LOOP
     size_t generations = 0;
     unsigned long int sum_fitness;
     while( generations < max_generations ) {
         //TODO move construction
         std::vector< Genome* > selected;
+#if EXTRA_MEASUREMENTS
+    clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &fitness_time1);
+#endif
         sum_fitness = function->calculate_fitness( population );
+#if EXTRA_MEASUREMENTS
+    clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &fitness_time2);
+    timespec a = get_time_diff( fitness_time1, fitness_time2 );
+    fitness_total_sec += a.tv_sec;
+    fitness_total_nsec += a.tv_nsec;
+    clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &select_time1);
+#endif
         selector->select( population, selected, sum_fitness );
+#if EXTRA_MEASUREMENTS
+    clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &select_time2);
+    timespec b = get_time_diff( select_time1, select_time2 );
+    select_total_sec += b.tv_sec;
+    select_total_nsec += b.tv_nsec;
+    clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &combine_time1);
+#endif
         //TODO:Move choice who mother and father
         for( size_t t=0;t<number_to_die;t++) {
             Genome* mother = selected[ t ];
@@ -461,7 +512,20 @@ int main( int argc, char* argv[ ] )
             Genome* child = combinator->combine( mother, father );
             population.push_back( child );
         }
+#if EXTRA_MEASUREMENTS
+    clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &combine_time2);
+    timespec c = get_time_diff( combine_time1, combine_time2 );
+    combine_total_sec += c.tv_sec;
+    combine_total_nsec += c.tv_nsec;
+    clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &mutate_time1);
+#endif
         mutator->mutateGenomes( population, 1 );
+#if EXTRA_MEASUREMENTS
+    clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &mutate_time2);
+    timespec d = get_time_diff( mutate_time1, mutate_time2 );
+    mutate_total_sec += d.tv_sec;
+    mutate_total_nsec += d.tv_nsec;
+#endif
         if( population.size( ) != population_size ) {
             if( be_verbose ) {
             std::cout << "ERROR: Something went wrong, " <<
@@ -491,15 +555,8 @@ int main( int argc, char* argv[ ] )
     //End time measurement
     clock_gettime( CLOCK_PROCESS_CPUTIME_ID, &time2 );
     
-    timespec dur;
+    timespec dur = get_time_diff( time1, time2 );
 
-	if ((time2.tv_nsec-time1.tv_nsec)<0) {
-		dur.tv_sec = time2.tv_sec-time1.tv_sec-1;
-		dur.tv_nsec = 1000000000+time2.tv_nsec-time1.tv_nsec;
-	} else {
-		dur.tv_sec = time2.tv_sec-time1.tv_sec;
-		dur.tv_nsec = time2.tv_nsec-time1.tv_nsec;
-	}
     if( be_verbose ) {
     std::cout << "Duration: " << dur.tv_sec << ":" << dur.tv_nsec << 
         " seconds" << std::endl;
@@ -509,9 +566,14 @@ int main( int argc, char* argv[ ] )
     //FORMAT: FITNESSFUNCTION, MUTATOR, SELECTOR, COMBINATOR, POPULATIONSIZE,
     //      MAX_GENERATION, NR_PLANES, TIME (in seconds)
     if( print_for_csv ) {
-        std::cout << get_settings_string( f,m,s,c ) << "," << population_size 
-            << "," << max_generations << "," << planes.size( ) << ","
-            << dur.tv_sec << "." << dur.tv_nsec << std::endl;
+        std::cout << get_settings_string( f,m,s,c ) << "," << population_size <<
+            "," << max_generations << "," << planes.size( ) << "," <<
+            dur.tv_sec << "." << dur.tv_nsec << "," <<
+            "fit," << fitness_total_sec << "." << fitness_total_nsec << "," <<
+            "sel," << select_total_sec << "." << select_total_nsec << "," <<
+            "com," << combine_total_sec << "." << combine_total_nsec << "," <<
+            "mut," << mutate_total_sec << "." << mutate_total_nsec << "," <<
+            std::endl;
     }
 
     //Cleanup
