@@ -81,7 +81,7 @@ BlockCombinator::combine(Genome *x, Genome *y) {
 	for(int i = 0; i < blockSize; i++) {
 		z->add_gene( x->get_gene(i)->getPlane(), x->get_gene(i)->getTime());
 	}
-	for(int i = blockSize; i < (size - blockSize); i++) {
+	for(int i = blockSize; i < size; i++) {
 		z->add_gene( y->get_gene(i)->getPlane(), y->get_gene(i)->getTime());
 	}
 
