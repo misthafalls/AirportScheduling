@@ -52,9 +52,11 @@ static void print_genome_more( Genome* genome, size_t crashes, size_t lanes,
             max_space = sorted_genes.size( ) - 1;
         if( p->getDeadlineTime( ) < gene->getTime( ) )
             ofile<< "Plane has Crashed because it's too late" << std::endl;
-        else if ( sorted_genes[ max_space ]->getTime( ) <= important_time )
+        else if ( ( sorted_genes[ max_space ]->getTime( ) <= important_time )
+                && ( max_space - t > lanes ) )
             if( max_space != t ) 
-                ofile<< "Plane has Crashed into next: " << lanes << std::endl;
+                ofile<< "Plane has Crashed into next: " << (max_space - t) 
+                    << std::endl;
         int min_in_air = gene->getTime( ).getTimeInMinutes( ) - 
                 p->getArrivalTime( ).getTimeInMinutes( );
         fuel_used += min_in_air * p->getFuelUsage( );

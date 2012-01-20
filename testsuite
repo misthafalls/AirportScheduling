@@ -14,23 +14,23 @@ POPULATIONSIZE=250
 #PLANESIZES="10"
 #POPULATIONSIZES="25"
 
-echo "Starting Fitness Function test" >> testresult
-for ((i=0;i<3;i+=1));
-do
-    echo "Fitness testrun: '$i'" >> testresult
-    for a in $FITNESSFUNCTION
-    do
-        for e in $PLANESIZES
-        do
-            output=`$PATH/bin/AirportScheduler -csv --no-results -G 100 -P $POPULATIONSIZE -p $e -F $a huge_testfile`
-            echo $output
-            echo $output >> testresult
-        done
-    done
-done
-
-echo "Starting Selector Function test" >> testresult
-
+#echo "Starting Fitness Function test" >> testresult
+#for ((i=0;i<3;i+=1));
+#do
+#    echo "Fitness testrun: '$i'" >> testresult
+#    for a in $FITNESSFUNCTION
+#    do
+#        for e in $PLANESIZES
+#        do
+#            output=`$PATH/bin/AirportScheduler -csv --no-results -G 100 -P $POPULATIONSIZE -p $e -F $a huge_testfile`
+#            echo $output
+#            echo $output >> testresult
+#        done
+#    done
+#done
+#
+#echo "Starting Selector Function test" >> testresult
+#
 for ((i=0;i<3;i+=1));
 do
     echo "Selector testrun: '$i'" >> testresult
@@ -38,43 +38,43 @@ do
     do
         for e in $PLANESIZES
         do
-            output=`$PATH/bin/AirportScheduler -csv --no-results -G 100 -P $POPULATOINSIZE -p $e -S $b huge_testfile`
+            output=`$PATH/bin/AirportScheduler -csv --no-results -G 100 -P $POPULATIONSIZE -p $e -S $b huge_testfile`
             echo $output
             echo $output >> testresult
         done
     done
 done
-
-echo "Starting mutator Function test" >> testresult
-for ((i=0;i<3;i+=1));
-do
-    echo "Selector testrun: '$i'" >> testresult
-    for c in $MUTATORFUNCTION
-    do
-        for e in $PLANESIZES
-        do
-            output=`$PATH/bin/AirportScheduler -csv --no-results -G 100 -P $POPULATIONSIZE -p $e -M $c huge_testfile`
-            echo $output
-            echo $output >> testresult
-        done
-    done
-done
-
-echo "Starting combinator Function test" >> testresult
-for ((i=0;i<3;i+=1));
-do
-    echo "Selector testrun: '$i'" >> testresult
-    for d in $COMBINATORFUNCTION
-    do
-        for e in $PLANESIZES
-        do
-            output=`$PATH/bin/AirportScheduler -csv --no-results -G 100 -P $POPULATIONSIZE -p $e -C $d huge_testfile`
-            echo $output
-            echo $output >> testresult
-        done
-    done
-done
-
-echo "Test Suite is finished"
-
+#
+#echo "Starting mutator Function test" >> testresult
+#for ((i=0;i<3;i+=1));
+#do
+#    echo "Selector testrun: '$i'" >> testresult
+#    for c in $MUTATORFUNCTION
+#    do
+#        for e in $PLANESIZES
+#        do
+#            output=`$PATH/bin/AirportScheduler -csv --no-results -G 100 -P $POPULATIONSIZE -p $e -M $c huge_testfile`
+#            echo $output
+#            echo $output >> testresult
+#        done
+#    done
+#done
+#
+#echo "Starting combinator Function test" >> testresult
+#for ((i=0;i<3;i+=1));
+#do
+#    echo "Selector testrun: '$i'" >> testresult
+#    for d in $COMBINATORFUNCTION
+#    do
+#        for e in $PLANESIZES
+#        do
+#            output=`$PATH/bin/AirportScheduler -csv --no-results -G 100 -P $POPULATIONSIZE -p $e -C $d huge_testfile`
+#            echo $output
+#            echo $output >> testresult
+#        done
+#    done
+#done
+#
+#echo "Test Suite is finished"
+#
 exit 0
