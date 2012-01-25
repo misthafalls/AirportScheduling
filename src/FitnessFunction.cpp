@@ -80,8 +80,11 @@ NiceFitnessFunction::calculate_fitness(std::vector<Genome*>& population,
 #endif
 									fitness+=1000;
 							}
-							else if(a.subMinute(m_landing_duration) > (*gene_iterator)->getPlane( )->getScheduledTime()){
+							else {
+								a.subMinute(m_landing_duration);
+								if(a > (*gene_iterator)->getPlane( )->getScheduledTime()) {
 									fitness++;
+								}
 							}
 			}
 			fitness *= PLANE_DELAY_PENALTY;
@@ -96,8 +99,7 @@ NiceFitnessFunction::calculate_fitness(std::vector<Genome*>& population,
 
 unsigned int
 FuelFitnessFunction::calculate_fitness( std::vector<Genome*>& population,
-                                        bool check_crashes )
-{
+                                        bool check_crashes ) {
     unsigned int sum_of_fitness = 0;
     std::vector<Genome*>::iterator genome_iterator = population.begin( );
 
